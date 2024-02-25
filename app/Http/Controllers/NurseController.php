@@ -1476,9 +1476,61 @@ public function requestImagingServices(Request $request)
 
 
 
+public function requestService($id)
+{
 
+    $patient = Patients::findOrFail($id);
+    // Fetch completed service requests for the selected patient handled by medtech
+    $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
+                                        ->where('status', 'completed')
+                                        ->whereHas('receiver', function ($query) {
+                                            $query->where('role', 'medtech');
+                                        })
+                                        ->get();
 
+    // Fetch completed service requests for the selected patient handled by radtech
+    $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
+                                        ->where('status', 'completed')
+                                        ->whereHas('receiver', function ($query) {
+                                            $query->where('role', 'radtech');
+                                        })
+                                        ->get();
+    return view('nurse.request-service', compact('patient', 'medtechCompletedResults', 'radtechCompletedResults'));
 
+}
+
+public function requestLaboratory($id)
+{
+
+    $patient = Patients::findOrFail($id);
+    // Fetch completed service requests for the selected patient handled by medtech
+    $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
+                                        ->where('status', 'completed')
+                                        ->whereHas('receiver', function ($query) {
+                                            $query->where('role', 'medtech');
+                                        })
+                                        ->get();
+
+    return view('nurse.request-lab', compact('patient', 'medtechCompletedResults'));
+
+}
+
+public function requestImaging($id)
+{
+
+    $patient = Patients::findOrFail($id);
+    // Fetch completed service requests for the selected patient handled by medtech
+
+    // Fetch completed service requests for the selected patient handled by radtech
+    $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
+                                        ->where('status', 'completed')
+                                        ->whereHas('receiver', function ($query) {
+                                            $query->where('role', 'radtech');
+                                        })
+                                        ->get();
+    return view('nurse.request-image', compact('patient', 'radtechCompletedResults'));
+
+}
 
 
 
@@ -1661,30 +1713,7 @@ public function requestImagingServices(Request $request)
         return view('nurse.result', compact('patient', 'request'));
     }
     
-    public function requestService($id)
-    {
-    
 
-
-        $patient = Patients::findOrFail($id);
-        // Fetch completed service requests for the selected patient handled by medtech
-        $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
-                                            ->where('status', 'completed')
-                                            ->whereHas('receiver', function ($query) {
-                                                $query->where('role', 'medtech');
-                                            })
-                                            ->get();
-
-        // Fetch completed service requests for the selected patient handled by radtech
-        $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
-                                            ->where('status', 'completed')
-                                            ->whereHas('receiver', function ($query) {
-                                                $query->where('role', 'radtech');
-                                            })
-                                            ->get();
-        return view('nurse.request-service', compact('patient', 'medtechCompletedResults', 'radtechCompletedResults'));
-
-    }
     
     
 

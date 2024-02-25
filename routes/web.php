@@ -85,6 +85,10 @@ Route::controller(NurseController::class)->group(function() {
 
 
         Route::get('/nurse-patients/{patientId}/request-service/', 'requestService')->name('requestService');
+        Route::get('/nurse-patients/{patientId}/request-service/laboratory', 'requestLaboratory')->name('requestLaboratory');
+        Route::get('/nurse-patients/{patientId}/request-service/imaging', 'requestImaging')->name('requestImaging');
+
+
 
         Route::post('/nurse-patients/{id}/request-laboratory-services', 'requestLaboratoryServices')->name('nurse.requestLaboratoryServices');
         Route::post('/nurse-patients/{id}/request-imaging-services', 'requestImagingServices')->name('nurse.requestImagingServices');

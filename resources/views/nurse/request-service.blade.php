@@ -282,7 +282,8 @@ html {
                     
                     
                 {{-- <p class="text-white m-0">Laboratory Service</p> --}}
-                <input type="radio" name="procedure_type" value="laboratory" class="invisible" onclick="toggleSections('laboratory')">
+                <input type="radio" name="procedure_type" value="imaging" class="invisible" onclick="redirectToService('laboratory')">
+
             </label>
             <label class="label-opt rounded">
                 {{-- <img src="http://127.0.0.1:8000/storage/image/outpatient.png" alt="Outpatient Image" class="w-20 h-auto" style="filter: brightness(0) invert(1);"> --}}
@@ -298,7 +299,8 @@ html {
                     
                     
                 {{-- <p class="text-white m-0">Imaging Service</p> --}}
-                <input type="radio" name="procedure_type" value="imaging" class="invisible" onclick="toggleSections('imaging')">
+                <input type="radio" name="procedure_type" value="imaging" class="invisible" onclick="redirectToService('imaging')">
+
             </label>            
         </div>
         <p id="error-message" style="color: red; display: none;">Please select either inpatient or outpatient.</p>
@@ -670,7 +672,7 @@ html {
         </div>
 
         {{-- MEDTECH RESULTS --}}
-        @if ($medtechCompletedResults->isNotEmpty())
+        {{-- @if ($medtechCompletedResults->isNotEmpty()) --}}
         <div id="medtechResults" class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
@@ -686,18 +688,24 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($medtechCompletedResults as $result)
-                        <tr>
-                            <td><a href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">{{ $result->message }}</a></td>                            
-                            <td class="text-center">{{ $result->created_at->format('n/j/Y') }}</td>
-                            <td class="text-center">{{ $result->created_at->format('h:i A') }}</td>
-                            <td class="text-center">{{ optional($result->medtech)->first_name }} {{ optional($result->medtech)->last_name }}</td>
-                            @endforeach
+                        @forelse ($medtechCompletedResults as $result)
+                            <tr>
+                                <td><a href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">{{ $result->message }}</a></td>                            
+                                <td class="text-center">{{ $result->created_at->format('n/j/Y') }}</td>
+                                <td class="text-center">{{ $result->created_at->format('h:i A') }}</td>
+                                <td class="text-center">{{ optional($result->medtech)->first_name }} {{ optional($result->medtech)->last_name }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No available results</td>
+                            </tr>
+                        @endforelse
                     </tbody>
+                    
                 </table>
             </div>
         </div>
-        @endif
+        {{-- @endif --}}
 
          {{-- RADTECH --}}
          <div id="radtechRequest" class="card pe-0 mb-4 shadow-md">
@@ -1345,7 +1353,7 @@ html {
         </div>
         
          {{-- RADTECH RESULTS--}}
-        @if ($radtechCompletedResults->isNotEmpty())       
+        {{-- @if ($radtechCompletedResults->isNotEmpty())        --}}
         <div id="radtechResults" class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
@@ -1361,19 +1369,24 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($radtechCompletedResults as $result)
-                        <tr>
-                            <td><a href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">{{ $result->message }}</a></td>                            
-                            <td class="text-center">{{ $result->created_at->format('n/j/Y') }}</td>
-                            <td class="text-center">{{ $result->created_at->format('h:i A') }}</td>
-                            <td class="text-center">{{ optional($result->radtech)->first_name }} {{ optional($result->radtech)->last_name }}</td>
-                        </tr>
-                        @endforeach
+                        @forelse ($radtechCompletedResults as $result)
+                            <tr>
+                                <td><a href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">{{ $result->message }}</a></td>                            
+                                <td class="text-center">{{ $result->created_at->format('n/j/Y') }}</td>
+                                <td class="text-center">{{ $result->created_at->format('h:i A') }}</td>
+                                <td class="text-center">{{ optional($result->radtech)->first_name }} {{ optional($result->radtech)->last_name }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No available results</td>
+                            </tr>
+                        @endforelse
                     </tbody>
+                    
                 </table>
             </div>
         </div>
-        @endif
+        {{-- @endif --}}
 
       </div>
     
@@ -1383,6 +1396,23 @@ html {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+
+function redirectToService(serviceType) {
+        if (serviceType === 'laboratory') {
+            window.location.href = "{{ route('requestLaboratory', ['patientId' => $patient->patient_id]) }}";
+        } else if (serviceType === 'imaging') {
+            window.location.href = "{{ route('requestImaging', ['patientId' => $patient->patient_id]) }}";
+        }
+    }
+
+
+
+
+
+
+
+
+
 document.getElementById('procedure_type').addEventListener('change', function() {
     var chemistryOptions = document.getElementById('chemistryOptions');
     var hematologyOptions = document.getElementById('hematologyOptions');
