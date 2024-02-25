@@ -117,15 +117,15 @@
                 <ul class="nav nav-underline overflow-x-auto">
                     <!-- List item for Inpatient -->
                     <li class="nav-item">
-                        <a class="nav-link {{ request('admissionType') == 'inpatient' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.view', ['admissionType' => 'inpatient']) }}">Inpatient</a>
+                        <a class="nav-link {{ request('admissionType') == 'inpatient' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.view', ['admissionType' => 'inpatient']) }}">Inpatient</a>
                     </li>
                     <!-- List item for Outpatient -->
                     <li class="nav-item">
-                        <a class="nav-link {{ request('admissionType') == 'outpatient' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.view', ['admissionType' => 'outpatient']) }}">Outpatient</a>
+                        <a class="nav-link {{ request('admissionType') == 'outpatient' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.view', ['admissionType' => 'outpatient']) }}">Outpatient</a>
                     </li>
                     <!-- List item for Archived Patients -->
                     <li class="nav-item">
-                        <a class="nav-link {{ request('admissionType') == 'archived' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.view', ['admissionType' => 'archived']) }}">Archived</a>
+                        <a class="nav-link {{ request('admissionType') == 'archived' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.view', ['admissionType' => 'archived']) }}">Archived</a>
                     </li>
                 </ul>
                 

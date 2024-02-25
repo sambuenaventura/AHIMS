@@ -2,7 +2,7 @@
     <div class="">
         <div class="card-body m-1">
             <h4 class="font-bold">Nurse Remarks</h4>
-            <div class="card pe-0">
+            <div class="card pe-0 gap-3">
                     <!-- BAR -->
                     {{-- <div class="bar mt-5">
                         <div class="position-relative mb-5 mx-5">
@@ -27,7 +27,7 @@
                     
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="date" class="form-control rounded-4" placeholder="Vital Sign Date" id="vital_date" name="vital_date" value="{{ optional($patient->vitalSigns->first())->vital_date }}" />
+                                <input type="date" class="form-control rounded" placeholder="Vital Sign Date" id="vital_date" name="vital_date" value="{{ optional($patient->vitalSigns->first())->vital_date }}" />
                                 <label for="vital_date">Vital Sign Date:</label>
                                 @error('vital_date')
                                 <p class="text-red-500 text-xs p-1">
@@ -38,7 +38,7 @@
                         </div>
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="time" class="form-control rounded-4" placeholder="Vital Sign Time" id="vital_time" name="vital_time" value="{{ optional($patient->vitalSigns->first())->vital_time }}" />
+                                <input type="time" class="form-control rounded" placeholder="Vital Sign Time" id="vital_time" name="vital_time" value="{{ optional($patient->vitalSigns->first())->vital_time }}" />
                                 <label for="vital_time">Vital Sign Time:</label>
                                 @error('vital_time')
                                 <p class="text-red-500 text-xs p-1">
@@ -53,13 +53,13 @@
                     <div class="row mx-4">
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="text" class="form-control rounded-4" placeholder="Blood Pressure" id="blood_pressure" name="blood_pressure" value="{{ optional($patient->vitalSigns->first())->blood_pressure }}" />
+                                <input type="text" class="form-control rounded" placeholder="Blood Pressure" id="blood_pressure" name="blood_pressure" value="{{ optional($patient->vitalSigns->first())->blood_pressure }}" />
                                 <label for="temperature">Blood Pressure (mmHg)</label>                                              
                             </div>
                         </div> 
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="text" class="form-control rounded-4" placeholder="Respiratory Rate" id="respiratory_rate" name="respiratory_rate" value="{{ optional($patient->vitalSigns->first())->respiratory_rate }}" />
+                                <input type="text" class="form-control rounded" placeholder="Respiratory Rate" id="respiratory_rate" name="respiratory_rate" value="{{ optional($patient->vitalSigns->first())->respiratory_rate }}" />
                                 <label for="respiratory_rate">Respiratory Rate (cpm)</label>                                              
                             </div>
                         </div> 
@@ -67,13 +67,13 @@
                     <div class="row mx-4">
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="text" class="form-control rounded-4" placeholder="Pulse Rate" id="pulse" name="pulse" value="{{ optional($patient->vitalSigns->first())->pulse }}" />
+                                <input type="text" class="form-control rounded" placeholder="Pulse Rate" id="pulse" name="pulse" value="{{ optional($patient->vitalSigns->first())->pulse }}" />
                                 <label for="pulse">Pulse Rate (bpm)</label>                                              
                             </div>
                         </div> 
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="text" class="form-control rounded-4" placeholder="Temperature" id="temperature" name="temperature" value="{{ optional($patient->vitalSigns->first())->temperature }}" />
+                                <input type="text" class="form-control rounded" placeholder="Temperature" id="temperature" name="temperature" value="{{ optional($patient->vitalSigns->first())->temperature }}" />
                                 <label for="temperature">Temperature (°C)</label>                                              
                             </div>
                         </div> 
@@ -81,13 +81,13 @@
                     <div class="row mx-4">
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="text" class="form-control rounded-4" placeholder="Oxygen" id="oxygen" name="oxygen" value="{{ optional($patient->vitalSigns->first())->oxygen }}" />
+                                <input type="text" class="form-control rounded" placeholder="Oxygen" id="oxygen" name="oxygen" value="{{ optional($patient->vitalSigns->first())->oxygen }}" />
                                 <label for="oxygen">Oxygen (%)</label>                                              
                             </div>
                         </div> 
                         <div class="col">
                             <div class="form-floating mt-2" hidden>
-                                <input type="text" class="form-control rounded-4" placeholder="" id="" name="" value="" disabled />
+                                <input type="text" class="form-control rounded" placeholder="" id="" name="" value="" disabled />
                                 <label for=""></label>                                              
                             </div>
                         </div> 

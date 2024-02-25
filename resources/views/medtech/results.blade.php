@@ -85,22 +85,22 @@ html {
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Chemistry' ? 'active text-success' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Chemistry']) }}">Chemistry</a>
+                        <a class="nav-link {{ request('procedure') === 'Chemistry' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Chemistry']) }}">Chemistry</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Hematology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Hematology']) }}">Hematology</a>
+                        <a class="nav-link {{ request('procedure') === 'Hematology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Hematology']) }}">Hematology</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Bbis' ? 'active text-success' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Bbis']) }}">BB-IS</a>
+                        <a class="nav-link {{ request('procedure') === 'Bbis' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Bbis']) }}">BB-IS</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Parasitology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Parasitology']) }}">Parasitology</a>
+                        <a class="nav-link {{ request('procedure') === 'Parasitology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Parasitology']) }}">Parasitology</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Microbiology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Microbiology']) }}">Microbiology</a>
+                        <a class="nav-link {{ request('procedure') === 'Microbiology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Microbiology']) }}">Microbiology</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Microscopy' ? 'active text-success' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Microscopy']) }}">Microscopy</a>
+                        <a class="nav-link {{ request('procedure') === 'Microscopy' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('medtech.results', ['procedure' => 'Microscopy']) }}">Microscopy</a>
                     </li>
                 </ul>
                 

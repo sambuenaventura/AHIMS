@@ -174,11 +174,11 @@ public function nurseView(Request $request)
     // Your existing methods
 
     // Method to handle /nurse-laboratory-services route
-    public function laboratoryServices()
-    {
-        // Assuming lab-services.blade.php exists in resources/views directory
-        return view('nurse.lab-services');
-    }
+    // public function laboratoryServices()
+    // {
+    //     // Assuming lab-services.blade.php exists in resources/views directory
+    //     return view('nurse.lab-services');
+    // }
 
 
 
@@ -307,22 +307,6 @@ public function searchOutpatient(Request $request)
 
     return view('nurse.nurse', compact('patients'));
 }
-
-
-// public function searchArchived(Request $request)
-// {
-//     $search = $request->input('archivedSearch');
-//     $patients = Patients::query()
-//         ->where('archived', 1) // Search among archived patients
-//         ->where(function ($q) use ($search) {
-//             $q->where('first_name', 'like', '%' . $search . '%')
-//                 ->orWhere('last_name', 'like', '%' . $search . '%');
-//         })
-//         ->paginate(10);
-
-//     return view('nurse.nurse', compact('patients'));
-// }
-
 
 public function searchArchived(Request $request)
 {
@@ -1511,7 +1495,11 @@ public function requestLaboratory($id)
                                         })
                                         ->get();
 
-    return view('nurse.request-lab', compact('patient', 'medtechCompletedResults'));
+    // Fetch physical examinations from the physical_examinations table
+    $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+
+    return view('nurse.request-lab', compact('patient', 'medtechCompletedResults', 'physicalExaminations'));
 
 }
 
@@ -1528,7 +1516,11 @@ public function requestImaging($id)
                                             $query->where('role', 'radtech');
                                         })
                                         ->get();
-    return view('nurse.request-image', compact('patient', 'radtechCompletedResults'));
+
+    // Fetch physical examinations from the physical_examinations table
+    $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+    return view('nurse.request-image', compact('patient', 'radtechCompletedResults', 'physicalExaminations'));
 
 }
 

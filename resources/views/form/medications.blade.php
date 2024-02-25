@@ -1,7 +1,7 @@
 
     <div class="">
         <div class="card-body m-1">
-            <div class="card pe-0">
+            <div class="card pe-0 gap-3">
                     <!-- BAR -->
                     {{-- <div class="bar mt-5">
                         <div class="position-relative mb-5 mx-5">
@@ -25,7 +25,7 @@
                         <h5 class="text-success font-bold">II. Medication</h5>              
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="date" class="form-control rounded-4" placeholder="Medication Date" id="medication_date" name="medication_date" value="{{ optional($patient->MedicationRemarks->first())->medication_date }}" />
+                                <input type="date" class="form-control rounded" placeholder="Medication Date" id="medication_date" name="medication_date" value="{{ optional($patient->MedicationRemarks->first())->medication_date }}" />
                                 <label for="medication_date">Medication Date:</label>
                                 @error('medication_date')
                                 <p class="text-red-500 text-xs p-1">
@@ -36,7 +36,7 @@
                         </div>                                               
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <select id="shift" class="form-select rounded-4" placeholder="Vital Sign Date" id="shift" name="shift">
+                                <select id="shift" class="form-select rounded" placeholder="Vital Sign Date" id="shift" name="shift">
                                     <option value="7:00am-3:00pm" @if(old('shift', optional($patient->MedicationRemarks->first())->shift) == '7:00am-3:00pm') selected @endif>7:00am-3:00pm</option>
                                     <option value="3:00pm-11:00pm" @if(old('shift', optional($patient->MedicationRemarks->first())->shift) == '3:00pm-11:00pm') selected @endif>3:00pm-11:00pm</option>
                                     <option value="11:00pm-7:00am" @if(old('shift', optional($patient->MedicationRemarks->first())->shift) == '11:00pm-7:00am') selected @endif>11:00pm-7:00am</option>

@@ -85,16 +85,16 @@ html {
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'pending' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'pending']) }}">Pending Requests</a>
+                        <a class="nav-link {{ request('status') === 'pending' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'pending']) }}">Pending Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'accepted' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'accepted']) }}">Accepted Requests</a>
+                        <a class="nav-link {{ request('status') === 'accepted' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'accepted']) }}">Accepted Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'completed' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'completed']) }}">Completed Requests</a>
+                        <a class="nav-link {{ request('status') === 'completed' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'completed']) }}">Completed Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'declined' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'declined']) }}">Declined Requests</a>
+                        <a class="nav-link {{ request('status') === 'declined' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.requests', ['status' => 'declined']) }}">Declined Requests</a>
                     </li>
                 
                     

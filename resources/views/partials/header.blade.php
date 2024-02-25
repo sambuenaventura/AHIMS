@@ -104,7 +104,38 @@ span {
 .text-custom-color {
     color: #418363;
 }
+.nav-link {
+    border-radius: 0.25rem;
+    padding: 0.75rem 0.5rem !important;
+    font-weight: 700;
+    color: #418363 !important;
+    border-bottom: none !important;
+    font-size: 0.95em;
+}
 
+.nav-link:hover {
+    background-color: #418363;
+    border-radius: 0.35rem;
+    color: white !important;
+    font-weight: 700;
+    padding: 0.75rem 0.5rem;
+
+}
+.active {
+    color: white !important;
+
+}
+.btn-succes{
+    background-color: #418363 !important;
+
+}
+input, textarea, select{
+    background-color: #FAFAFA !important;
+}
+td {
+    width: 50px;
+    height: 50px;
+}
 </style>
 <body class="{{ isset($bgColor) ? $bgColor : 'bg-custom-500' }} min-h-screen background-with-image"> 
     {{-- pt-12 pb-6 px-2 --}}

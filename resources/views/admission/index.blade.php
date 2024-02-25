@@ -172,35 +172,35 @@ text-align: center;
                 <ul class="nav nav-underline overflow-x-auto">
                   <!-- List item for Internist -->
                   <li class="nav-item">
-                    <a class="nav-link {{ request('specialty') == 'Internal_Medicine' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Internal_Medicine', 'search' => request('search')]) }}">Internist</a>
+                    <a class="nav-link {{ request('specialty') == 'Internal_Medicine' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Internal_Medicine', 'search' => request('search')]) }}">Internist</a>
                   </li>
                   <!-- List item for Gastroenterologist -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Gastroenterology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Gastroenterology']) }}">Gastroenterologist</a>
+                      <a class="nav-link {{ request('specialty') == 'Gastroenterology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Gastroenterology']) }}">Gastroenterologist</a>
                   </li>
                   <!-- List item for Neurologist -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Neurology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Neurology']) }}">Neurologist</a>
+                      <a class="nav-link {{ request('specialty') == 'Neurology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Neurology']) }}">Neurologist</a>
                   </li>
                   <!-- List item for Cardiologist -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Cardiology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Cardiology']) }}">Cardiologist</a>
+                      <a class="nav-link {{ request('specialty') == 'Cardiology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Cardiology']) }}">Cardiologist</a>
                   </li>
                   <!-- List item for Pulmonologist -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Pulmonology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Pulmonology']) }}">Pulmonologist</a>
+                      <a class="nav-link {{ request('specialty') == 'Pulmonology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Pulmonology']) }}">Pulmonologist</a>
                   </li>
                   <!-- List item for Pediatrician -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Pediatrics' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Pediatrics']) }}">Pediatrician</a>
+                      <a class="nav-link {{ request('specialty') == 'Pediatrics' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Pediatrics']) }}">Pediatrician</a>
                   </li>
                   <!-- List item for Endocrinologist -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Endocrinology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Endocrinology']) }}">Endocrinologist</a>
+                      <a class="nav-link {{ request('specialty') == 'Endocrinology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Endocrinology']) }}">Endocrinologist</a>
                   </li>
                   <!-- List item for Otolaryngologist -->
                   <li class="nav-item">
-                      <a class="nav-link {{ request('specialty') == 'Otolaryngology' ? 'active text-success' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Otolaryngology']) }}">Otolaryngologist</a>
+                      <a class="nav-link {{ request('specialty') == 'Otolaryngology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Otolaryngology']) }}">Otolaryngologist</a>
                   </li>
               </ul>
               

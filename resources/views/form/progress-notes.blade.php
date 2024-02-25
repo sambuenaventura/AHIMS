@@ -108,7 +108,7 @@
             
     <div class="">
         <div class="card-body m-1">
-            <div class="card pe-0">
+            <div class="card pe-0 gap-3">
                     <!-- BAR -->
                     {{-- <div class="bar mt-5">
                         <div class="position-relative mb-5 mx-5">
@@ -132,7 +132,7 @@
                         <h5 class="text-success">Progress Notes</h5>              
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <input type="date" class="form-control rounded-4" placeholder="Medication Date" id="progress_date" name="progress_date" value="{{ optional($patient->progressNotes->first())->progress_date }}" />
+                                <input type="date" class="form-control rounded" placeholder="Medication Date" id="progress_date" name="progress_date" value="{{ optional($patient->progressNotes->first())->progress_date }}" />
                                 <label for="progress_date">Progress Date:</label>
                                 @error('progress_date')
                                 <p class="text-red-500 text-xs p-1">
@@ -143,7 +143,7 @@
                         </div>                                               
                         <div class="col">
                             <div class="form-floating mt-2">
-                                <select id="shift" class="form-select rounded-4" placeholder="Vital Sign Date" id="shift" name="shift">
+                                <select id="shift" class="form-select rounded" placeholder="Vital Sign Date" id="shift" name="shift">
                                     <option value="7:00am-3:00pm" @if(old('shift', optional($patient->progressNotes->first())->shift) == '7:00am-3:00pm') selected @endif>7:00am-3:00pm</option>
                                     <option value="3:00pm-11:00pm" @if(old('shift', optional($patient->progressNotes->first())->shift) == '3:00pm-11:00pm') selected @endif>3:00pm-11:00pm</option>
                                     <option value="11:00pm-7:00am" @if(old('shift', optional($patient->progressNotes->first())->shift) == '11:00pm-7:00am') selected @endif>11:00pm-7:00am</option>
@@ -192,9 +192,13 @@
                     <div class="row mx-4">
   
                     <div class="buttons my-4 d-flex justify-content-end">
-                        <a href="{{ route('nurse.edit', ['id' => $patient->patient_id]) }}" class="btn btn-light me-2">Back</a>
+                        <a href="{{ route('nurse.edit', ['id' => $patient->patient_id]) }}" class="btn btn-light ms-2 btn-custom-style btn-cancel">Back</a>
                         {{-- <button type="button" onclick="nextStep()" class="btn btn-success">Submit</button> --}}
-                        <button type="button" class="btn btn-success ms-2 btn-archive" onclick="showConfirmationModal()">Submit</button>
+                        <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Submit</button>
+                        {{-- <button type="button" onclick="nextStep()" class="btn btn-success">Submit</button> --}}
+                        
+
+                    
                     </div>
                 </div>
 

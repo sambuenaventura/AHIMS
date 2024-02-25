@@ -209,8 +209,8 @@ html {
                 </div>
                 <div class="left-top-2 flexi">
                     <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
-                    <p class="font-bold">{{ optional($patient->physicalExamination)->LabRequests_weight }} kg</p>
-                    <p class="font-bold">{{ optional($patient->physicalExamination)->LabRequests_blood_pressure }} mmHg</p>
+                    <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
+                    <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
 
 

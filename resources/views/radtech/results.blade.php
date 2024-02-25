@@ -85,13 +85,13 @@ html {
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'X_Ray' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'X_Ray']) }}">X-Ray</a>
+                        <a class="nav-link {{ request('procedure') === 'X_Ray' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'X_Ray']) }}">X-Ray</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Ultrasound' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'Ultrasound']) }}">Ultrasound</a>
+                        <a class="nav-link {{ request('procedure') === 'Ultrasound' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'Ultrasound']) }}">Ultrasound</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'CT_Scan' ? 'active text-success' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'CT_Scan']) }}">CT Scan</a>
+                        <a class="nav-link {{ request('procedure') === 'CT_Scan' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'CT_Scan']) }}">CT Scan</a>
                     </li>
                 </ul>
                 

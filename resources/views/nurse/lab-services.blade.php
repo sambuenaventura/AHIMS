@@ -70,8 +70,7 @@ html {
   height: 50rem;
   overflow: auto; /* This prevents the child from overflowing */
 }
-.personnel {
-}
+
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -85,16 +84,16 @@ html {
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'pending' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'pending']) }}">Pending Requests</a>
+                        <a class="nav-link {{ request('status') === 'pending' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'pending']) }}">Pending Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'accepted' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'accepted']) }}">Accepted Requests</a>
+                        <a class="nav-link {{ request('status') === 'accepted' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'accepted']) }}">Accepted Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'completed' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'completed']) }}">Completed Requests</a>
+                        <a class="nav-link {{ request('status') === 'completed' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'completed']) }}">Completed Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'declined' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'declined']) }}">Declined Requests</a>
+                        <a class="nav-link {{ request('status') === 'declined' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'declined']) }}">Declined Requests</a>
                     </li>
                     
                     
@@ -137,22 +136,25 @@ html {
         <div class="card pe-0">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4>Requests</h4>
+                    <h4 class="font-bold">Laboratory Requests</h4>
+                    
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'pending' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'pending']) }}">Pending Requests</a>
+                        <a class="nav-link {{ request('status') === 'pending' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'pending']) }}">Pending Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'accepted' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'accepted']) }}">Accepted Requests</a>
+                        <a class="nav-link {{ request('status') === 'accepted' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'accepted']) }}">Accepted Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'completed' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'completed']) }}">Completed Requests</a>
+                        <a class="nav-link {{ request('status') === 'completed' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'completed']) }}">Completed Requests</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('status') === 'declined' ? 'active text-success' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'declined']) }}">Declined Requests</a>
+                        <a class="nav-link {{ request('status') === 'declined' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('nurse.viewRequestLab', ['status' => 'declined']) }}">Declined Requests</a>
                     </li>
                 </ul>
+                
+                
                 <table class="table table-striped mt-3">
                     <thead>
                         <tr>

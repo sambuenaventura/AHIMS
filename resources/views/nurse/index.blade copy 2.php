@@ -121,36 +121,37 @@ html {
             <h1 id="timePlaceholder" class="font-bold text-black"></h1>
           </div>
           
-          <div class="box bg-custom-101 shadow d-flex justify-content-center align-items-center position-relative">
-            <span class="badge bg-success position-absolute top-0 end-0 font-small">Available</span>
-            <div class="flexi">
+          <div class="box bg-custom-101 shadow">
+            <div class="flexi mb-3">
                 <div>
-                    <img src="{{ asset('storage/image/laboratory.png') }}" alt="Laboratory Image" class="w-24 h-auto mr-4">
+                    <img src="{{ asset('storage/image/laboratory.png') }}" alt="Inpatient Image" class="w-20 h-auto mr-4">
                 </div>
                 <div class="flex-col">
                     <h3 class="font-bold text-black text-big">Laboratory</h3>
                     <h5 class="font-bold text-black text-small">Services</h5>
                 </div>
             </div>
-        </div>
-        
-        
+            <div class="flexi btn-container">
+                <button class="btn btn-success custom-btn">Request</button>
+            </div>
+          </div>
         
 
 
-        <div class="box bg-custom-101 shadow d-flex justify-content-center align-items-center position-relative">
-          <span class="badge bg-success position-absolute top-0 end-0">Available</span>
-          <div class="flexi">
+        <div class="box bg-custom-101 shadow">
+          <div class="flexi mb-3">
               <div>
-                  <img src="{{ asset('storage/image/imaging.png') }}" alt="Imaging Image" class="w-24 h-auto mr-4">
+                  <img src="{{ asset('storage/image/imaging.png') }}" alt="Inpatient Image" class="w-20 h-auto mr-4">
               </div>
               <div class="flex-col">
                   <h3 class="font-bold text-black text-big">Imaging</h3>
                   <h5 class="font-bold text-black text-small">Services</h5>
               </div>
           </div>
+          <div class="flexi btn-container">
+              <button class="btn btn-success custom-btn">Request</button>
+          </div>
       </div>
-      
 
         
           <!-- Remove one box -->

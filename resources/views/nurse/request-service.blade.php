@@ -209,8 +209,8 @@ html {
                 </div>
                 <div class="left-top-2 flexi">
                     <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
-                    <p class="font-bold">{{ optional($patient->physicalExamination)->LabRequests_weight }} kg</p>
-                    <p class="font-bold">{{ optional($patient->physicalExamination)->LabRequests_blood_pressure }} mmHg</p>
+                    <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
+                    <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
 
 
@@ -282,7 +282,7 @@ html {
                     
                     
                 {{-- <p class="text-white m-0">Laboratory Service</p> --}}
-                <input type="radio" name="procedure_type" value="imaging" class="invisible" onclick="redirectToService('laboratory')">
+                <input type="radio" name="procedure_type" value="laboratory" class="invisible" onclick="redirectToService('laboratory')">
 
             </label>
             <label class="label-opt rounded">
@@ -1398,14 +1398,40 @@ html {
 <script>
 
 function redirectToService(serviceType) {
-        if (serviceType === 'laboratory') {
-            window.location.href = "{{ route('requestLaboratory', ['patientId' => $patient->patient_id]) }}";
-        } else if (serviceType === 'imaging') {
-            window.location.href = "{{ route('requestImaging', ['patientId' => $patient->patient_id]) }}";
-        }
+    var medtechChecked = document.querySelector('input[name="procedure_type"][value="laboratory"]');
+    var radtechChecked = document.querySelector('input[name="procedure_type"][value="imaging"]');
+    var medtechSvg = document.querySelector('#medtechSvg');
+    var radtechSvg = document.querySelector('#radtechSvg');
+
+    if (serviceType === 'laboratory') {
+        window.location.href = "{{ route('requestLaboratory', ['patientId' => $patient->patient_id]) }}";
+
+        // Update styles for laboratory selection
+        medtechChecked.parentElement.style.backgroundColor = "#9BCAB3"; // Green color for laboratory
+        medtechSvg.querySelectorAll('path').forEach(function(path) {
+            path.style.fill = '#5DA07F'; // Fill color for laboratory procedures
+        });
+        medtechSvg.querySelectorAll('g').forEach(function(group) {
+            group.style.fill = '#5DA07F'; // Fill color for laboratory procedures
+        });
+        var imagingRadio = document.querySelector('input[name="procedure_type"][value="imaging"]');
+        imagingRadio.disabled = true;
+
+    } else if (serviceType === 'imaging') {
+        window.location.href = "{{ route('requestImaging', ['patientId' => $patient->patient_id]) }}";
+
+        // Update styles for imaging selection
+        radtechChecked.parentElement.style.backgroundColor = "#9BCAB3"; // Green color for imaging
+        radtechSvg.querySelectorAll('path').forEach(function(path) {
+            path.style.fill = '#5DA07F'; // Fill color for imaging procedures
+        });
+        radtechSvg.querySelectorAll('g').forEach(function(group) {
+            group.style.fill = '#5DA07F'; // Fill color for imaging procedures
+        });
+        var laboratoryRadio = document.querySelector('input[name="procedure_type"][value="laboratory"]');
+        laboratoryRadio.disabled = true;
     }
-
-
+}
 
 
 
@@ -1848,65 +1874,7 @@ document.getElementById('submitButton').addEventListener('click', function() {
 // }
 
 
-function toggleSections(procedureType) {
-    var medtechRequest = document.getElementById('medtechRequest');
-    var medtechResults = document.getElementById('medtechResults');
-    var radtechRequest = document.getElementById('radtechRequest');
-    var radtechResults = document.getElementById('radtechResults');
-    var medtechChecked = document.querySelector('input[name="procedure_type"][value="laboratory"]');
-    var radtechChecked = document.querySelector('input[name="procedure_type"][value="imaging"]');
-    var medtechSvg = document.querySelector('#medtechSvg'); // Replace 'yourSVGElementId' with the actual ID of your SVG element
-    var radtechSvg = document.querySelector('#radtechSvg'); // Replace 'yourSVGElementId' with the actual ID of your SVG element
 
-
-    if (procedureType === 'laboratory') {
-        // medtechRequest.style.backgroundColor = "#9CCA9E"; // Green color for Inpatient
-        medtechChecked.parentElement.style.backgroundColor = "#9BCAB3"; // Green color for Inpatient
-        // Change fill color for paths
-        medtechSvg.querySelectorAll('path').forEach(function(path) {
-            path.style.fill = '#5DA07F'; // Replace '#yourColor' with the desired fill color for laboratory procedures
-        });
-
-        // Change fill color for groups
-        medtechSvg.querySelectorAll('g').forEach(function(group) {
-            group.style.fill = '#5DA07F'; // Replace '#yourColor' with the desired fill color for laboratory procedures
-        });
-        medtechRequest.style.display = 'block';
-        medtechResults.style.display = 'block';
-        radtechRequest.style.display = 'none';
-        radtechResults.style.display = 'none';
-
-        // Disable the imaging option
-        var imagingRadio = document.querySelector('input[name="procedure_type"][value="imaging"]');
-        imagingRadio.disabled = true;
-
-    } else {
-        radtechChecked.parentElement.style.backgroundColor = "#9BCAB3"; // Green color for Inpatient
-        // Change fill color for paths
-        radtechSvg.querySelectorAll('path').forEach(function(path) {
-            path.style.fill = '#5DA07F'; // Replace '#yourColor' with the desired fill color for imaging procedures
-        });
-
-        // Change fill color for groups
-        radtechSvg.querySelectorAll('g').forEach(function(group) {
-            group.style.fill = '#5DA07F'; // Replace '#yourColor' with the desired fill color for imaging procedures
-        });
-        medtechRequest.style.display = 'none';
-        medtechResults.style.display = 'none';
-        radtechRequest.style.display = 'block';
-        radtechResults.style.display = 'block';
-
-        // Disable the laboratory option
-        var laboratoryRadio = document.querySelector('input[name="procedure_type"][value="laboratory"]');
-        laboratoryRadio.disabled = true;
-    }
-
-    // Hide the modal after a delay of 300 milliseconds
-    setTimeout(function() {
-        var modalOverlay = document.getElementById('patientOptionsOverlay');
-        modalOverlay.style.display = 'none';
-    }, 300);
-}
 
 
 

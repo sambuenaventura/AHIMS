@@ -101,32 +101,32 @@ html {
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Patients</h4>
-                        @if(request('admissionType') == 'inpatient')
-                        <form class="d-flex" action="{{ route('nurse.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
-                        <input class="form-control me-2" type="search" placeholder="Search Inpatient Patients" aria-label="Search" name="inpatientSearch">
-                        <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                        @elseif(request('admissionType') == 'outpatient')
-                        <form class="d-flex" action="{{ route('nurse.searchOutpatient', ['admissionType' => 'outpatient']) }}" method="GET">
-                        <input class="form-control me-2" type="search" placeholder="Search Outpatient Patients" aria-label="Search" name="outpatientSearch">
-                        <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                        @elseif(request('admissionType') == 'archived')
-                        <form class="d-flex" action="{{ route('nurse.searchArchived', ['admissionType' => 'archived']) }}" method="GET">
-                        <input class="form-control me-2" type="search" placeholder="Search Archived Patients" aria-label="Search" name="archivedSearch">
-                        <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                    
-                        @else
-                        <form class="d-flex" action="{{ route('nurse.view', ['admissionType' => request('admissionType')]) }}" method="GET">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
-                        <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                        @endif
+                    @if(request('admissionType') == 'inpatient')
+                    <form class="d-flex" action="{{ route('nurse.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
+                      <input class="form-control me-2" type="search" placeholder="Search Inpatient Patients" aria-label="Search" name="inpatientSearch">
+                      <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                  </form>
+                @elseif(request('admissionType') == 'outpatient')
+                <form class="d-flex" action="{{ route('nurse.searchOutpatient', ['admissionType' => 'outpatient']) }}" method="GET">
+                  <input class="form-control me-2" type="search" placeholder="Search Outpatient Patients" aria-label="Search" name="outpatientSearch">
+                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+                @elseif(request('admissionType') == 'archived')
+                <form class="d-flex" action="{{ route('nurse.searchArchived', ['admissionType' => 'archived']) }}" method="GET">
+                  <input class="form-control me-2" type="search" placeholder="Search Archived Patients" aria-label="Search" name="archivedSearch">
+                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+              
+                @else
+                <form class="d-flex" action="{{ route('nurse.view', ['admissionType' => request('admissionType')]) }}" method="GET">
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+                @endif
                 
                 
                 
