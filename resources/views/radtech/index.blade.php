@@ -3,7 +3,7 @@
 
 <style>
 
-  * {
+* {
 margin: 0;
 padding: 0;
 box-sizing: border-box;
@@ -23,15 +23,15 @@ margin-left: 10rem;
 margin-top: 3rem;
 }
 .admission-content {
-display: flex;
-  /* align-items: center; */
-justify-content: center;
-width: 100%;
-max-width: 100rem;
-/* padding: 1.8rem 1.2rem; */
-gap: 3rem;
-/* height: 50rem; */
-/* overflow: hidden; */
+  display: flex;
+    /* align-items: center; */
+  justify-content: center;
+  width: 100%;
+  max-width: 100rem;
+  padding: 1.8rem 1.2rem;
+  gap: 3rem;
+  /* height: 50rem; */
+  /* overflow: hidden; */
 }
 .boxes {
   display: grid;
@@ -93,7 +93,7 @@ gap: 0 !important;
 
 }
 .left {
-width: 120rem;
+width: 100rem;
 /* height: 50rem; */
 /* overflow: hidden; This prevents the child from overflowing */
 }
@@ -193,48 +193,50 @@ text-align: center;
           
           
           <div class="row">
-            <div class="box bg-white shadow box-center">
-              <div class="flexi">
-                  <div class="flex-col">
-                      <img src="{{ asset('storage/image/chemistry.png') }}" alt="Chemistry Image" class="w-20 h-auto">
-                      <h5 class="text-center mt-2">Chemistry</h5>
-                    </div>
-                    <p class="patients">{{ $xrayPatientsCount }} Patients</p>
-                  </div>
-            </div>
-
-            <div class="box bg-white shadow box-center">
-              <div class="flexi">
-                  <div class="flex-col">
-                      <img src="{{ asset('storage/image/hematology.png') }}" alt="Hematology Image" class="w-20 h-auto">
-                      <p class="patients">{{ $ultrasoundPatientsCount }} Patients</p>
-
-                    </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="box bg-white shadow box-center">
+            <div class="box bg-white shadow box-center position-relative">
+                <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $xrayPatientsCount }} Requests</span>
                 <div class="flexi">
                     <div class="flex-col">
-                        <img src="{{ asset('storage/image/bb-is.png') }}" alt="BB-IS Image" class="w-20 h-auto">
-                        <h5 class="text-center mt-2">BB-IS</h5>
+                        <img src="{{ asset('storage/image/xray.png') }}" alt="X-Ray Image" class="w-20 h-auto">
+                        <h5 class="text-center mt-2">X-Ray</h5>
                     </div>
-                    <p class="patients">{{ $ctscanPatientsCount }} Patients</p>
                 </div>
             </div>
         
-            <div class="box bg-white shadow box-center" style="visibility: hidden;">
-              <div class="flexi">
+            <div class="box bg-white shadow box-center position-relative">
+                <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $ultrasoundPatientsCount }} Requests</span>
+                <div class="flexi">
                     <div class="flex-col">
-                        <img src="" alt="" class="w-20 h-auto">
-                        <h5 class="text-center mt-2"></h5>
+                        <img src="{{ asset('storage/image/ultrasound.png') }}" alt="Ultrasound Image" class="w-20 h-auto">
+                        <h5 class="text-center mt-2">Ultrasound</h5>
                     </div>
-                    <p class="patients"></p>
                 </div>
             </div>
         </div>
+        
+        <div class="row">
+            <div class="box bg-white shadow box-center position-relative">
+                <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $ctscanPatientsCount }} Requests</span>
+                <div class="flexi">
+                    <div class="flex-col">
+                        <img src="{{ asset('storage/image/ctscan.png') }}" alt="CT Scan Image" class="w-20 h-auto">
+                        <h5 class="text-center mt-2">CT Scan</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box bg-white shadow box-center position-relative" style="visibility: hidden;"">
+              <span class="badge bg-success position-absolute top-0 end-0 font-small"></span>
+              <div class="flexi">
+                  <div class="flex-col">
+                      <img src="">
+                      <h5 class="text-center mt-2"></h5>
+                  </div>
+              </div>
+          </div>
+            <!-- Add more sections as needed -->
+        </div>
+        
         
 
         
@@ -266,7 +268,7 @@ text-align: center;
         <tr>
             <th scope="col">Patient ID</th>
             <th scope="col">Patient Name</th>
-            <th scope="col">Type of Service</th>
+            <th scope="col">Service</th>
             <th scope="col">Time Requested</th>
             <th scope="col">Actions</th> <!-- Add a new column for actions -->
             <th scope="col">Actions</th> <!-- Add a new column for actions -->
@@ -276,9 +278,9 @@ text-align: center;
         @foreach ($requests as $request)
             <tr>
                 <td>{{ $request->patient_id }}</td>
-                <td>{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
+                <td style="min-width: 140px;">{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
                 <td>{{ $request->procedure_type }}</td>
-                <td>{{ $request->created_at }}</td>
+                <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>
                 <td>
                   {{-- <form action="{{ route('radtech.accept', $request->request_id) }}" method="POST" id="acceptDeclineForm_{{ $request->request_id }}"> --}}
                   <form id="acceptForm_{{ $request->request_id }}" action="{{ route('radtech.accept', ['request_id' => $request->request_id]) }}" method="POST" onsubmit="return validatePasswordAccept('{{ $request->request_id }}')">
@@ -349,8 +351,8 @@ text-align: center;
 
 
             <div class="mt-4">
-              {{ $requests->links() }}
-          </div>
+              {{ $requests->appends(['search' => $search])->links() }}
+            </div>
           
           </div>
       </div>

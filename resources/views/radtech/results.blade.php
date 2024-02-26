@@ -82,16 +82,21 @@ html {
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4>Requests</h4>
+                    <form action="{{ route('radtech.results') }}" method="GET" class="d-flex">
+                        <input type="hidden" name="procedure" value="{{ $procedureType }}">
+                        <input type="text" name="search" class="form-control me-2" placeholder="Search..." value="{{ $search }}">
+                        <button type="submit" class="btn btn-outline-success">Search</button>
+                    </form>
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'X_Ray' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'X_Ray']) }}">X-Ray</a>
+                        <a class="nav-link {{ request('procedure') === 'Xray' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'Xray']) }}">X-Ray</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request('procedure') === 'Ultrasound' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'Ultrasound']) }}">Ultrasound</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'CT_Scan' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'CT_Scan']) }}">CT Scan</a>
+                        <a class="nav-link {{ request('procedure') === 'Ctscan' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('radtech.results', ['procedure' => 'Ctscan']) }}">CT Scan</a>
                     </li>
                 </ul>
                 
@@ -104,6 +109,9 @@ html {
                             <th scope="col">File Name</th>
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
+                            @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
+                                <th scope="col">Service</th>
+                            @endif         
                             <th scope="col">Date Performed</th>
                             <th scope="col">Time Performed</th>
                         </tr>
@@ -127,6 +135,9 @@ html {
                             
                             <td>{{ $request->patient_id }}</td>
                             <td>{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
+                            @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
+                                <td>{{ ucfirst($request->procedure_type) }}</td>
+                            @endif   
                             <td>{{ $request->created_at->format('n/j/Y') }}</td>
                             <td>{{ $request->created_at->format('h:i A') }}</td>
                         </tr>
@@ -139,7 +150,7 @@ html {
 
 
                 <div class="mt-4">
-                    {{-- {{ $requests->appends(['requestType' => request('requestType')])->links() }} --}}
+                    {{ $requests->appends(['search' => $search, 'procedure' => $procedureType])->links() }}
                 </div>
             </div>
         </div>

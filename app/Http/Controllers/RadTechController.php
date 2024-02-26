@@ -16,36 +16,82 @@ use App\Models\ServiceRequest;
 
 class RadTechController extends Controller
 {
-    public function index(Request $request)
-    {
-        // Get the authenticated radtech's ID
-        $radtechId = auth()->user()->id;
+    // public function index(Request $request)
+    // {
+    //     // Get the authenticated radtech's ID
+    //     $radtechId = auth()->user()->id;
         
-        // Query for pending service requests assigned to the authenticated medtech
-        $requests = ServiceRequest::query()
-                                   ->where('status', 'pending')
-                                   ->whereIn('procedure_type', ['Xray', 'Ultrasound', 'Ctscan'])
-                                   ->paginate(10); 
+    //     // Query for pending service requests assigned to the authenticated medtech
+    //     $requests = ServiceRequest::query()
+    //                                ->where('status', 'pending')
+    //                                ->whereIn('procedure_type', ['Xray', 'Ultrasound', 'Ctscan'])
+    //                                ->paginate(10); 
     
-        // Query for the count of patients for each procedure type with the condition on receiver_id
-        $xrayPatientsCount = ServiceRequest::where('status', 'accepted')
-                                                ->where('procedure_type', 'Xray')
-                                                ->where('receiver_id', $radtechId)
-                                                ->count();
+    //     // Query for the count of patients for each procedure type with the condition on receiver_id
+    //     $xrayPatientsCount = ServiceRequest::where('status', 'accepted')
+    //                                             ->where('procedure_type', 'Xray')
+    //                                             ->where('receiver_id', $radtechId)
+    //                                             ->count();
     
-        $ultrasoundPatientsCount = ServiceRequest::where('status', 'accepted')
-                                                 ->where('procedure_type', 'Ultrasound')
-                                                 ->where('receiver_id', $radtechId)
-                                                 ->count();
+    //     $ultrasoundPatientsCount = ServiceRequest::where('status', 'accepted')
+    //                                              ->where('procedure_type', 'Ultrasound')
+    //                                              ->where('receiver_id', $radtechId)
+    //                                              ->count();
     
-        $ctscanPatientsCount = ServiceRequest::where('status', 'accepted')
-                                            ->where('procedure_type', 'Ctscan')
-                                            ->where('receiver_id', $radtechId)
-                                            ->count();
+    //     $ctscanPatientsCount = ServiceRequest::where('status', 'accepted')
+    //                                         ->where('procedure_type', 'Ctscan')
+    //                                         ->where('receiver_id', $radtechId)
+    //                                         ->count();
     
-        // Pass the counts and requests to the view
-        return view('radtech.index', compact('requests', 'xrayPatientsCount', 'ultrasoundPatientsCount', 'ctscanPatientsCount'));
-    }
+    //     // Pass the counts and requests to the view
+    //     return view('radtech.index', compact('requests', 'xrayPatientsCount', 'ultrasoundPatientsCount', 'ctscanPatientsCount'));
+    // }
+
+    public function index(Request $request)
+{
+    // Get the authenticated radtech's ID
+    $radtechId = auth()->user()->id;
+    
+    // Retrieve the search query from the request
+    $search = $request->input('search');
+    
+    // Base query for pending service requests assigned to the authenticated radtech
+    $query = ServiceRequest::query()
+    ->where('status', 'pending')
+    ->whereIn('procedure_type', ['Xray', 'Ultrasound', 'Ctscan'])
+    ->where(function ($q) use ($search) {
+        $q->where('procedure_type', 'like', '%' . $search . '%')
+            ->orWhere('patient_id', 'like', '%' . $search . '%')
+            ->orWhereHas('patient', function ($q) use ($search) {
+                $q->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%');
+            });
+    })
+    ->orderBy('created_at', 'asc'); // Sorting by time requested in ascending order
+
+    // Paginate the results
+    $requests = $query->paginate(10); 
+
+    // Query for the count of patients for each procedure type with the condition on receiver_id
+    $xrayPatientsCount = ServiceRequest::where('status', 'accepted')
+                                        ->where('procedure_type', 'Xray')
+                                        ->where('receiver_id', $radtechId)
+                                        ->count();
+
+    $ultrasoundPatientsCount = ServiceRequest::where('status', 'accepted')
+                                             ->where('procedure_type', 'Ultrasound')
+                                             ->where('receiver_id', $radtechId)
+                                             ->count();
+
+    $ctscanPatientsCount = ServiceRequest::where('status', 'accepted')
+                                        ->where('procedure_type', 'Ctscan')
+                                        ->where('receiver_id', $radtechId)
+                                        ->count();
+
+    // Pass the counts, search query, and requests to the view
+    return view('radtech.index', compact('requests', 'xrayPatientsCount', 'ultrasoundPatientsCount', 'ctscanPatientsCount', 'search'));
+}
+
     
     
 
@@ -112,18 +158,22 @@ class RadTechController extends Controller
                 $query->where('status', 'declined');
                 break;
             default:
-                // Default to pending requests
-                $query->where('status', 'pending');
+                // Default to include all statuses
+                $query->whereIn('status', ['accepted', 'completed', 'declined']);
                 break;
         }
     
-        // Apply search query if it exists
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('patient_id', 'like', '%' . $search . '%')
-                    ->orWhere('procedure_type', 'like', '%' . $search . '%');
-            });
-        }
+    // Apply search query if it exists
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('patient_id', 'like', '%' . $search . '%')
+                ->orWhere('procedure_type', 'like', '%' . $search . '%')
+                ->orWhereHas('patient', function ($q) use ($search) {
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                      ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
+        });
+    }
     
         // Retrieve requests and paginate the results
         $requests = $query->paginate(10); // Adjust pagination limit as needed
@@ -131,6 +181,7 @@ class RadTechController extends Controller
         // Pass request status to the view to maintain consistency
         return view('radtech.requests', compact('requests', 'status'));
     }
+    
 
 
     public function processResult(Request $request)
@@ -159,25 +210,60 @@ class RadTechController extends Controller
                         ->with('message', 'Result sent successfully');
     }
 
-    public function viewResults(Request $request)
-    {
-        $radtechId = auth()->user()->id;
+    // public function viewResults(Request $request)
+    // {
+    //     $radtechId = auth()->user()->id;
 
-        $status = 'completed';
-        $procedureType = $request->input('procedure');
+    //     $status = 'completed';
+    //     $procedureType = $request->input('procedure');
         
-        // Fetch data based on the procedure_type and status
-        $query = ServiceRequest::where('status', $status)
-                                ->where('receiver_id', $radtechId);
+    //     // Fetch data based on the procedure_type and status
+    //     $query = ServiceRequest::where('status', $status)
+    //                             ->where('receiver_id', $radtechId);
         
-        if (!empty($procedureType)) {
-            $query->where('procedure_type', $procedureType);
-        }
+    //     if (!empty($procedureType)) {
+    //         $query->where('procedure_type', $procedureType);
+    //     }
         
-        $requests = $query->paginate(10);
+    //     $requests = $query->paginate(10);
         
-        return view('radtech.results', compact('requests'));
+    //     return view('radtech.results', compact('requests'));
+    // }
+
+    public function viewResults(Request $request)
+{
+    $radtechId = auth()->user()->id;
+    $status = 'completed';
+    $procedureType = $request->input('procedure');
+    $search = $request->input('search');
+    
+    // Fetch data based on the procedure_type, status, and search query
+    $query = ServiceRequest::where('status', $status)
+                            ->where('receiver_id', $radtechId);
+    
+    if (!empty($procedureType)) {
+        $query->where('procedure_type', $procedureType);
     }
+    
+    if ($search) {
+        // Search by first name, last name, file name, patient ID, and procedure type
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('patient', function ($q) use ($search) {
+                $q->where('first_name', 'like', '%' . $search . '%')
+                  ->orWhere('last_name', 'like', '%' . $search . '%');
+            })
+            ->orWhere('image', 'like', '%' . $search . '%')
+            ->orWhere('patient_id', 'like', '%' . $search . '%')
+            ->orWhere('procedure_type', 'like', '%' . $search . '%');
+        });
+    }
+    
+    
+    $requests = $query->paginate(10);
+    
+    return view('radtech.results', compact('requests', 'procedureType', 'search'));
+}
+
     
     
     
