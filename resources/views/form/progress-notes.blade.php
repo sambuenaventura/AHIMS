@@ -97,7 +97,9 @@
       flex: 1; /* Allow elements to grow to fill available space */
       margin-right: 10px; /* Add spacing between elements */
   }
-
+  input, textarea, select{
+    background-color: #FAFAFA !important;
+}
 </style>
 
 <section id="admission">

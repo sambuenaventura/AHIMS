@@ -81,7 +81,15 @@ html {
         <div class="card pe-0">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4>Requests</h4>
+                    <h4>Results</h4>
+                    <form action="{{ route('medtech.results') }}" method="GET" class="d-flex">
+                        <input type="text" name="search" class="form-control me-2" placeholder="Search...">
+                        @if(request()->has('procedure'))
+                            <input type="hidden" name="procedure" value="{{ request('procedure') }}">
+                        @endif
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                    
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
@@ -113,7 +121,10 @@ html {
                             <th scope="col">File Name</th>
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
-                            <th scope="col">Date Performed</th>
+                            @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
+                                <th scope="col">Service Type</th>
+                            @endif                            
+                        <th scope="col">Date Performed</th>
                             <th scope="col">Time Performed</th>
                         </tr>
                     </thead>
@@ -135,7 +146,10 @@ html {
                             </td>
                             <td>{{ $request->patient_id }}</td>
                             <td>{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
-                            <td>{{ $request->created_at->format('n/j/Y') }}</td>
+                            @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
+                                <td>{{ ucfirst($request->procedure_type) }}</td>
+                            @endif                            
+                        <td>{{ $request->created_at->format('n/j/Y') }}</td>
                             <td>{{ $request->created_at->format('h:i A') }}</td>
                         </tr>
                         @endforeach
@@ -146,8 +160,11 @@ html {
                 
 
 
+                {{-- <div class="mt-4">
+                    {{ $requests->appends(['requestType' => request('requestType')])->links() }}
+                </div> --}}
                 <div class="mt-4">
-                    {{-- {{ $requests->appends(['requestType' => request('requestType')])->links() }} --}}
+                    {{ $requests->appends(request()->except('page'))->links() }}
                 </div>
             </div>
         </div>

@@ -129,9 +129,7 @@ span {
     background-color: #418363 !important;
 
 }
-input, textarea, select{
-    background-color: #FAFAFA !important;
-}
+
 td {
     width: 50px;
     height: 50px;

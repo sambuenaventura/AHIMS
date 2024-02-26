@@ -1,6 +1,4 @@
 @include('partials.header', ['bgColor' => 'bg-custom-51'])
-
-
 <style>
 
   * {
@@ -23,15 +21,15 @@ margin-left: 10rem;
 margin-top: 3rem;
 }
 .admission-content {
-display: flex;
-  /* align-items: center; */
-justify-content: center;
-width: 100%;
-max-width: 100rem;
-/* padding: 1.8rem 1.2rem; */
-gap: 3rem;
-/* height: 50rem; */
-/* overflow: hidden; */
+  display: flex;
+    /* align-items: center; */
+  justify-content: center;
+  width: 100%;
+  max-width: 100rem;
+  padding: 1.8rem 1.2rem;
+  gap: 3rem;
+  /* height: 50rem; */
+  /* overflow: hidden; */
 }
 .boxes {
   display: grid;
@@ -93,7 +91,7 @@ gap: 0 !important;
 
 }
 .left {
-width: 120rem;
+width: 100rem;
 /* height: 50rem; */
 /* overflow: hidden; This prevents the child from overflowing */
 }
@@ -192,74 +190,71 @@ text-align: center;
           
           
           
-          <div class="row">
-            <div class="box bg-white shadow box-center">
-              <div class="flexi">
-                  <div class="flex-col">
-                      <img src="{{ asset('storage/image/chemistry.png') }}" alt="Chemistry Image" class="w-20 h-auto">
-                      <h5 class="text-center mt-2">Chemistry</h5>
+              <div class="row">
+                <div class="box bg-white shadow box-center position-relative">
+                    <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $chemistryPatientsCount }} Requests</span>
+                    <div class="flexi">
+                        <div class="flex-col">
+                            <img src="{{ asset('storage/image/chemistry.png') }}" alt="Chemistry Image" class="w-20 h-auto">
+                            <h5 class="text-center mt-2">Chemistry</h5>
+                        </div>
                     </div>
-                    <p class="patients">{{ $chemistryPatientsCount }} Patients</p>
+                </div>
+
+                <div class="box bg-white shadow box-center position-relative">
+                    <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $hematologyPatientsCount }} Requests</span>
+                    <div class="flexi">
+                        <div class="flex-col">
+                            <img src="{{ asset('storage/image/hematology.png') }}" alt="Hematology Image" class="w-20 h-auto">
+                            <h5 class="text-center mt-2">Hematology</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="box bg-white shadow box-center position-relative">
+                  <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $bbIsPatientsCount }} Requests</span>
+                  <div class="flexi">
+                      <div class="flex-col">
+                          <img src="{{ asset('storage/image/bb-is.png') }}" alt="BB-IS Image" class="w-20 h-auto">
+                          <h5 class="text-center mt-2">BB-IS</h5>
+                      </div>
                   </div>
-            </div>
-
-            <div class="box bg-white shadow box-center">
-              <div class="flexi">
-                  <div class="flex-col">
-                      <img src="{{ asset('storage/image/hematology.png') }}" alt="Hematology Image" class="w-20 h-auto">
-                      <p class="patients">{{ $hematologyPatientsCount }} Patients</p>
-
-                    </div>
               </div>
-            </div>
-          </div>
 
-          <div class="row">
-            <div class="box bg-white shadow box-center">
-                <div class="flexi">
-                    <div class="flex-col">
-                        <img src="{{ asset('storage/image/bb-is.png') }}" alt="BB-IS Image" class="w-20 h-auto">
-                        <h5 class="text-center mt-2">BB-IS</h5>
+              <div class="box bg-white shadow box-center position-relative">
+                    <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $parasitologyPatientsCount }} Requests</span>
+                    <div class="flexi">
+                      <div class="flex-col">
+                          <img src="{{ asset('storage/image/parasitology.png') }}" alt="Parasitology Image" class="w-20 h-auto">
+                          <h5 class="text-center mt-2">Parasitology</h5>
+                      </div>
                     </div>
-                    <p class="patients">{{ $bbIsPatientsCount }} Patients</p>
                 </div>
             </div>
         
-            <div class="box bg-white shadow box-center">
-                <div class="flexi">
-                    <div class="flex-col">
-                        <img src="{{ asset('storage/image/parasitology.png') }}" alt="Parasitology Image" class="w-20 h-auto">
-                        <h5 class="text-center mt-2">Parasitology</h5>
-                    </div>
-                    <p class="patients">{{ $parasitologyPatientsCount }} Patients</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="box bg-white shadow box-center">
-                <div class="flexi">
+            <div class="row">
+              <div class="box bg-white shadow box-center position-relative">
+                  <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $microbiologyPatientsCount }} Requests</span>
+                  <div class="flexi">
                     <div class="flex-col">
                         <img src="{{ asset('storage/image/microbiology.png') }}" alt="Microbiology Image" class="w-20 h-auto">
                         <h5 class="text-center mt-2">Microbiology</h5>
                     </div>
-                    <p class="patients">{{ $microbiologyPatientsCount }} Patients</p>
                 </div>
             </div>
         
-            <div class="box bg-white shadow box-center">
+            <div class="box bg-white shadow box-center position-relative">
+              <span class="badge bg-success position-absolute top-0 end-0 font-small">{{ $microscopyPatientsCount }} Requests</span>
                 <div class="flexi">
-                    <div class="flex-col">
-                        <img src="{{ asset('storage/image/microscopy.png') }}" alt="Microscopy Image" class="w-20 h-auto">
-                        <h5 class="text-center mt-2">Microscopy</h5>
-                    </div>
-                    <p class="patients">{{ $microscopyPatientsCount }} Patients</p>
+                  <div class="flex-col">
+                      <img src="{{ asset('storage/image/microscopy.png') }}" alt="Microscopy Image" class="w-20 h-auto">
+                      <h5 class="text-center mt-2">Microscopy</h5>
+                  </div>
                 </div>
             </div>
         </div>
-        
-
-
 
           <!-- Remove one box -->
         </div>
@@ -298,7 +293,8 @@ text-align: center;
                   <td>{{ $request->patient_id }}</td>
                   <td>{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
                   <td>{{ $request->procedure_type }}</td>
-                  <td>{{ $request->created_at }}</td>
+                  <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>
+
                   <td>
                     {{-- <form action="{{ route('medtech.accept', $request->request_id) }}" method="POST" id="acceptDeclineForm_{{ $request->request_id }}"> --}}
                     <form id="acceptForm_{{ $request->request_id }}" action="{{ route('medtech.accept', ['request_id' => $request->request_id]) }}" method="POST" onsubmit="return validatePasswordAccept('{{ $request->request_id }}')">
