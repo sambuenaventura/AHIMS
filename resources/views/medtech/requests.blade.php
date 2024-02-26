@@ -115,7 +115,7 @@ html {
                             <th scope="col">Request ID</th>
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
-                            <th scope="col">Type of Service</th>
+                            <th scope="col">Service</th>
                             <th scope="col">Date Requested</th>
                             @if($status == 'accepted')
                                 <th scope="col">Action</th>

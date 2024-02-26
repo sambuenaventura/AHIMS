@@ -83,12 +83,11 @@ html {
                 <div class="d-flex justify-content-between mb-4">
                     <h4>Results</h4>
                     <form action="{{ route('medtech.results') }}" method="GET" class="d-flex">
-                        <input type="text" name="search" class="form-control me-2" placeholder="Search...">
-                        @if(request()->has('procedure'))
-                            <input type="hidden" name="procedure" value="{{ request('procedure') }}">
-                        @endif
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <input type="hidden" name="procedure" value="{{ $procedureType }}">
+                        <input type="text" name="search" class="form-control me-2" placeholder="Search..." value="{{ $search }}">
+                        <button type="submit" class="btn btn-outline-success">Search</button>
                     </form>
+                    
                     
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
@@ -122,7 +121,7 @@ html {
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
                             @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
-                                <th scope="col">Service Type</th>
+                                <th scope="col">Service</th>
                             @endif                            
                         <th scope="col">Date Performed</th>
                             <th scope="col">Time Performed</th>
@@ -164,7 +163,7 @@ html {
                     {{ $requests->appends(['requestType' => request('requestType')])->links() }}
                 </div> --}}
                 <div class="mt-4">
-                    {{ $requests->appends(request()->except('page'))->links() }}
+                    {{ $requests->appends(['search' => $search, 'procedure' => $procedureType])->links() }}
                 </div>
             </div>
         </div>

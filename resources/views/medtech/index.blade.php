@@ -281,7 +281,7 @@ text-align: center;
           <tr>
               <th scope="col">Patient ID</th>
               <th scope="col">Patient Name</th>
-              <th scope="col">Type of Service</th>
+              <th scope="col">Service</th>
               <th scope="col">Time Requested</th>
               <th scope="col">Actions</th> <!-- Add a new column for actions -->
               <th scope="col">Actions</th> <!-- Add a new column for actions -->
@@ -291,7 +291,7 @@ text-align: center;
           @foreach ($requests as $request)
               <tr>
                   <td>{{ $request->patient_id }}</td>
-                  <td>{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
+                  <td style="min-width: 140px;">{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
                   <td>{{ $request->procedure_type }}</td>
                   <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>
 
@@ -365,8 +365,8 @@ text-align: center;
 
 
               <div class="mt-4">
-                {{ $requests->links() }}
-            </div>
+                {{ $requests->appends(['search' => $search])->links() }}
+              </div>
             
             </div>
         </div>

@@ -84,15 +84,18 @@ class MedTechController extends Controller
         
         // Base query for pending service requests assigned to the authenticated medtech
         $query = ServiceRequest::query()
-            ->where('status', 'pending')
-            ->whereIn('procedure_type', ['Chemistry', 'Bbis', 'Parasitology', 'Microbiology', 'Microscopy', 'Hematology'])
-            ->whereHas('patient', function ($q) use ($search) {
-                $q->where('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%');
-            })
-            ->orderBy('created_at', 'asc'); // Sorting by time requested in ascending order
-
-        
+        ->where('status', 'pending')
+        ->whereIn('procedure_type', ['Chemistry', 'Bbis', 'Parasitology', 'Microbiology', 'Microscopy', 'Hematology'])
+        ->where(function ($q) use ($search) {
+            $q->where('procedure_type', 'like', '%' . $search . '%')
+                ->orWhere('patient_id', 'like', '%' . $search . '%')
+                ->orWhereHas('patient', function ($q) use ($search) {
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
+        })
+        ->orderBy('created_at', 'asc'); // Sorting by time requested in ascending order
+     
         // Paginate the results
         $requests = $query->paginate(10); 
     
@@ -248,9 +251,13 @@ class MedTechController extends Controller
 
     // Apply search query if it exists
     if ($search) {
-        $query->whereHas('patient', function ($q) use ($search) {
-            $q->where('first_name', 'like', '%' . $search . '%')
-            ->orWhere('last_name', 'like', '%' . $search . '%');
+        $query->where(function ($q) use ($search) {
+            $q->where('patient_id', 'like', '%' . $search . '%')
+                ->orWhere('procedure_type', 'like', '%' . $search . '%')
+                ->orWhereHas('patient', function ($q) use ($search) {
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                      ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
         });
     }
 
@@ -310,7 +317,44 @@ class MedTechController extends Controller
     // }
 
 
-    public function viewResults(Request $request)
+//     public function viewResults(Request $request)
+// {
+//     $medtechId = auth()->user()->id;
+//     $status = 'completed';
+//     $procedureType = $request->input('procedure');
+//     $search = $request->input('search');
+    
+//     // Fetch data based on the procedure_type, status, and search query
+//     $query = ServiceRequest::where('status', $status)
+//                             ->where('receiver_id', $medtechId);
+    
+//     if (!empty($procedureType)) {
+//         $query->where('procedure_type', $procedureType);
+//     }
+    
+//     if ($search) {
+//         // Search by first name, last name, file name, patient ID, and procedure type
+//         $query->where(function ($q) use ($search) {
+//             $q->whereHas('patient', function ($q) use ($search) {
+//                 $q->where('first_name', 'like', '%' . $search . '%')
+//                   ->orWhere('last_name', 'like', '%' . $search . '%');
+//             })
+//             ->orWhere('image', 'like', '%' . $search . '%')
+//             ->orWhere('patient_id', 'like', '%' . $search . '%')
+//             ->orWhere('procedure_type', 'like', '%' . $search . '%');
+//         });
+//     }
+    
+    
+    
+//     $requests = $query->paginate(10);
+    
+//     return view('medtech.results', compact('requests', 'procedureType', 'search'));
+// }
+
+
+
+public function viewResults(Request $request)
 {
     $medtechId = auth()->user()->id;
     $status = 'completed';
@@ -326,23 +370,27 @@ class MedTechController extends Controller
     }
     
     if ($search) {
-        // Search by first name, last name, file name, and patient ID
+        // Search by first name, last name, file name, patient ID, and procedure type
         $query->where(function ($q) use ($search) {
             $q->whereHas('patient', function ($q) use ($search) {
                 $q->where('first_name', 'like', '%' . $search . '%')
                   ->orWhere('last_name', 'like', '%' . $search . '%');
-            })->orWhere('image', 'like', '%' . $search . '%')
-              ->orWhere('patient_id', 'like', '%' . $search . '%');
+            })
+            ->orWhere('image', 'like', '%' . $search . '%')
+            ->orWhere('patient_id', 'like', '%' . $search . '%')
+            ->orWhere('procedure_type', 'like', '%' . $search . '%');
         });
     }
     
-    
     $requests = $query->paginate(10);
+    
+    // Append both search and procedure type to the pagination links
+    $requests->appends(['search' => $search, 'procedure' => $procedureType]);
     
     return view('medtech.results', compact('requests', 'procedureType', 'search'));
 }
 
-    
+
     public function viewRequest($patientId, $requestId)
     {
         // Fetch the requested patient and request details
