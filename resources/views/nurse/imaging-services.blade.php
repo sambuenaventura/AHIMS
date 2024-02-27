@@ -135,6 +135,12 @@ html {
                                 <th scope="col">Date Completed</th>
                                 <th scope="col">Actions</th>
                             @endif
+                            @if($status == 'declined')
+                                <th scope="col">Date Declined</th>
+                            @endif
+                            @if($status == 'declined')
+                                <th scope="col">Reason</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -153,6 +159,13 @@ html {
                                         <a href="{{ route('nurse.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}" class="btn btn-success">View</a>
                                     </td>
                                 @endif
+                                @if($status == 'declined')
+                                <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
+
+                                @endif                                
+                                @if($status == 'declined')
+                                <td style="min-width: 140px;">{{ $request->message }}</td>
+                                @endif   
                             </tr>
                         @endforeach
                     </tbody>

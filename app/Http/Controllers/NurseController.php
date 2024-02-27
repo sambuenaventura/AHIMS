@@ -1651,7 +1651,7 @@ public function requestImaging($id)
         $userId = auth()->id();
     
         // Define the procedure types based on service type
-        $procedureTypes = ($serviceType === 'lab') ? ['chemistry', 'hematology', 'Bbis', 'parasitology', 'microbiology', 'microscopy'] : ['x_ray', 'ultrasound', 'ct_scan'];
+        $procedureTypes = ($serviceType === 'lab') ? ['chemistry', 'hematology', 'Bbis', 'parasitology', 'microbiology', 'microscopy'] : ['xray', 'ultrasound', 'ctscan'];
     
         // Query based on request status and procedure types
         $query = ServiceRequest::query()->where('sender_id', $userId);
