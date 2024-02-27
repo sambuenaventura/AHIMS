@@ -1483,46 +1483,111 @@ public function requestService($id)
 
 }
 
-public function requestLaboratory($id)
-{
+// public function requestLaboratory($id)
+// {
 
+//     $patient = Patients::findOrFail($id);
+//     // Fetch completed service requests for the selected patient handled by medtech
+//     $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
+//                                         ->where('status', 'completed')
+//                                         ->whereHas('receiver', function ($query) {
+//                                             $query->where('role', 'medtech');
+//                                         })
+//                                         ->get();
+
+//     // Fetch physical examinations from the physical_examinations table
+//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+
+//     return view('nurse.request-lab', compact('patient', 'medtechCompletedResults', 'physicalExaminations'));
+
+// }
+
+
+public function requestLaboratory(Request $request, $id)
+{
     $patient = Patients::findOrFail($id);
-    // Fetch completed service requests for the selected patient handled by medtech
-    $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
-                                        ->where('status', 'completed')
-                                        ->whereHas('receiver', function ($query) {
-                                            $query->where('role', 'medtech');
-                                        })
-                                        ->get();
+    
+    // Query to fetch completed service requests for the selected patient handled by medtech
+    $medtechCompletedResultsQuery = ServiceRequest::where('patient_id', $id)
+        ->where('status', 'completed')
+        ->whereHas('receiver', function ($query) {
+            $query->where('role', 'medtech');
+        });
+
+    // Check if there is a search query
+    if ($request->has('search')) {
+        $search = $request->search;
+        $medtechCompletedResultsQuery->where(function ($query) use ($search) {
+            $query->where('image', 'LIKE', "%$search%");
+        });
+    }
+
+    // Check if there is a procedure filter
+    if ($request->has('procedure')) {
+        $procedure = $request->procedure;
+        $medtechCompletedResultsQuery->where('procedure_type', $procedure);
+    }
+
+    // Paginate the results
+    $medtechCompletedResults = $medtechCompletedResultsQuery->paginate(10); // Adjust 10 to the desired number of results per page
 
     // Fetch physical examinations from the physical_examinations table
     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
 
-
     return view('nurse.request-lab', compact('patient', 'medtechCompletedResults', 'physicalExaminations'));
-
 }
 
-public function requestImaging($id)
-{
 
+// public function requestImaging($id)
+// {
+
+//     $patient = Patients::findOrFail($id);
+//     // Fetch completed service requests for the selected patient handled by medtech
+
+//     // Fetch completed service requests for the selected patient handled by radtech
+//     $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
+//                                         ->where('status', 'completed')
+//                                         ->whereHas('receiver', function ($query) {
+//                                             $query->where('role', 'radtech');
+//                                         })
+//                                         ->get();
+
+//     // Fetch physical examinations from the physical_examinations table
+//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+//     return view('nurse.request-image', compact('patient', 'radtechCompletedResults', 'physicalExaminations'));
+
+// }
+
+public function requestImaging(Request $request, $id)
+{
     $patient = Patients::findOrFail($id);
-    // Fetch completed service requests for the selected patient handled by medtech
+    
+    // Query to fetch completed service requests for the selected patient handled by radtech
+    $radtechCompletedResultsQuery = ServiceRequest::where('patient_id', $id)
+        ->where('status', 'completed')
+        ->whereHas('receiver', function ($query) {
+            $query->where('role', 'radtech');
+        });
+
+    // Check if there is a search query
+    if ($request->has('search')) {
+        $search = $request->search;
+        $radtechCompletedResultsQuery->where(function ($query) use ($search) {
+            $query->where('image', 'LIKE', "%$search%");
+        });
+    }
 
     // Fetch completed service requests for the selected patient handled by radtech
-    $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
-                                        ->where('status', 'completed')
-                                        ->whereHas('receiver', function ($query) {
-                                            $query->where('role', 'radtech');
-                                        })
-                                        ->get();
+    $radtechCompletedResults = $radtechCompletedResultsQuery->paginate(10); // Adjust 10 to the desired number of results per page
 
     // Fetch physical examinations from the physical_examinations table
     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
 
     return view('nurse.request-image', compact('patient', 'radtechCompletedResults', 'physicalExaminations'));
-
 }
+
 
 
 

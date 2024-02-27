@@ -810,7 +810,7 @@ html {
 
 
         {{-- MEDTECH REQUEST --}}
-        <div class="card pe-0 mb-4 shadow-md">
+        {{-- <div class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Request Laboratory Services</h4>
@@ -838,9 +838,10 @@ html {
                     <button type="submit" class="btn btn-success">Submit</button>
                 </form>
             </div>
-        </div>
+        </div> --}}
+        
         {{-- MEDTECH RESULTS --}}
-        @if ($medtechCompletedResults->isNotEmpty())
+        {{-- @if ($medtechCompletedResults->isNotEmpty())
         <div class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
@@ -867,10 +868,10 @@ html {
                 </table>
             </div>
         </div>
-        @endif
+        @endif --}}
 
          {{-- RADTECH --}}
-         <div class="card pe-0 mb-4 shadow-md">
+         {{-- <div class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Request Imaging Services</h4>
@@ -898,9 +899,9 @@ html {
                     <button type="submit" class="btn btn-success">Submit</button>
                 </form>
             </div>
-        </div>
+        </div> --}}
 
-        @if ($radtechCompletedResults->isNotEmpty())       
+        {{-- @if ($radtechCompletedResults->isNotEmpty())       
         <div class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
@@ -928,7 +929,7 @@ html {
                 </table>
             </div>
         </div>
-        @endif
+        @endif --}}
 
       </div>
     
