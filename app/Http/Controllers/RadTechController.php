@@ -104,7 +104,7 @@ class RadTechController extends Controller
     
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('message', 'Incorrect password. Please try again.'); // Redirect back with an error message
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }
     
         $request = ServiceRequest::where('request_id', $request_id)->firstOrFail();
@@ -146,7 +146,7 @@ class RadTechController extends Controller
     
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('message', 'Incorrect password. Please try again.');
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }
     
         $requestModel = ServiceRequest::where('request_id', $request_id)->firstOrFail();

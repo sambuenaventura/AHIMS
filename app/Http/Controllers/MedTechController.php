@@ -137,27 +137,7 @@ class MedTechController extends Controller
 
 
 
-    public function acceptRequest(Request $request, $request_id)
-    {
-        // Validate the request data
-        $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
-    
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('message', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }
-    
-        $request = ServiceRequest::where('request_id', $request_id)->firstOrFail();
-        $request->status = 'accepted';
-        $request->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
-        $request->save();
-    
-        return redirect()->back()->with('message', 'Request accepted successfully');
-    }
-    
-    // public function declineRequest(Request $request, $request_id)
+    // public function acceptRequest(Request $request, $request_id)
     // {
     //     // Validate the request data
     //     $request->validate([
@@ -170,12 +150,34 @@ class MedTechController extends Controller
     //     }
     
     //     $request = ServiceRequest::where('request_id', $request_id)->firstOrFail();
-    //     $request->status = 'declined';
+    //     $request->status = 'accepted';
     //     $request->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
     //     $request->save();
     
-    //     return redirect()->back()->with('message', 'Request declined successfully');
+    //     return redirect()->back()->with('message', 'Request accepted successfully');
     // }
+
+
+    public function acceptRequest(Request $request, $request_id)
+    {
+        // Validate the request data
+        $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
+        ]);
+    
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+    
+        $serviceRequest = ServiceRequest::findOrFail($request_id);
+        $serviceRequest->status = 'accepted';
+        $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
+        $serviceRequest->save();
+    
+        return redirect()->back()->with('message', 'Request accepted successfully');
+    }
+    
 
     public function declineRequest(Request $request, $request_id)
 {
@@ -187,7 +189,7 @@ class MedTechController extends Controller
 
     // Check if the password matches the user's password
     if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('message', 'Incorrect password. Please try again.');
+        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
     }
 
     $requestModel = ServiceRequest::where('request_id', $request_id)->firstOrFail();
