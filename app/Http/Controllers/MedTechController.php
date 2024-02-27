@@ -12,6 +12,7 @@ use App\Models\ArchivedPatients;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Facades\Image;
 use App\Models\Patients;
+use App\Models\PhysicalExamination;
 use App\Models\ServiceRequest;
 
 class MedTechController extends Controller
@@ -430,8 +431,9 @@ public function viewResults(Request $request)
     public function show($id, $request_id)
     {
         $patient = Patients::findOrFail($id);
+        $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
         $request = ServiceRequest::findOrFail($request_id);
-        return view('medtech.view', ['patient' => $patient, 'request' => $request]);
+        return view('medtech.send-result', ['patient' => $patient, 'request' => $request, 'physicalExaminations' => $physicalExaminations]);
     }
     
 }
