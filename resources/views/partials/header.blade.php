@@ -134,6 +134,12 @@ td {
     width: 50px;
     height: 50px;
 }
+td {
+    vertical-align: middle;
+}
+/* .vertical-center {
+    vertical-align: middle;
+} */
 </style>
 <body class="{{ isset($bgColor) ? $bgColor : 'bg-custom-500' }} min-h-screen background-with-image"> 
     {{-- pt-12 pb-6 px-2 --}}

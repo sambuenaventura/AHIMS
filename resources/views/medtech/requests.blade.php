@@ -129,6 +129,9 @@ html {
                             @if($status == 'declined')
                                 <th scope="col">Date Declined</th>
                             @endif
+                            @if($status == 'declined')
+                                <th scope="col">Reason</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -147,6 +150,9 @@ html {
                                 @if($status == 'declined')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
 
+                                @endif                                
+                                @if($status == 'declined')
+                                <td style="min-width: 140px;">{{ $request->message }}</td>
                                 @endif                                
                                 @if($status == 'accepted')
                                     <td>

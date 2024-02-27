@@ -288,28 +288,80 @@ text-align: center;
 
                     {{-- <form id="archivePatientForm_{{ $patient->patient_id }}" action="{{ route('archive.patient', ['patient_id' => $patient->patient_id]) }}" method="POST" onsubmit="return validatePassword('{{ $patient->patient_id }}')"> --}}
                     <!-- Button to trigger the modal for accepting request -->
-                    <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmAcceptModal{{ $request->request_id }}">✓</a>
-                    <!-- Modal for accepting request -->
-                    <div class="modal fade" id="confirmAcceptModal{{ $request->request_id }}" tabindex="-1" aria-labelledby="confirmAcceptModalLabel{{ $request->request_id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmAcceptModalLabel{{ $request->request_id }}">Confirm Accept</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                
-                                <div class="modal-body">
-                                    <label for="password{{ $request->request_id }}">Password:</label>
-                                    <input type="password" id="password{{ $request->request_id }}" name="password" class="form-control">
-                                    <div id="passwordAcceptError{{ $request->request_id }}" class="text-danger" style="display: none;">Please enter a password.</div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="submitFormAccept('{{ $request->request_id }}')">Confirm</button>
+                    <div class="d-flex justify-content-center">
+                      <button type="button" class="" onclick="showConfirmationModalForAccept()">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7.6 10.4L5.45 8.25C5.26667 8.06667 5.03333 7.975 4.75 7.975C4.46667 7.975 4.23333 8.06667 4.05 8.25C3.86667 8.43333 3.775 8.66667 3.775 8.95C3.775 9.23333 3.86667 9.46667 4.05 9.65L6.9 12.5C7.1 12.7 7.33333 12.8 7.6 12.8C7.86667 12.8 8.1 12.7 8.3 12.5L13.95 6.85C14.1333 6.66667 14.225 6.43333 14.225 6.15C14.225 5.86667 14.1333 5.63333 13.95 5.45C13.7667 5.26667 13.5333 5.175 13.25 5.175C12.9667 5.175 12.7333 5.26667 12.55 5.45L7.6 10.4ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V2H2V16Z" fill="#418363"/>
+                          </svg>
+                                                    </button>
+                  </div>
+                  
+                  {{-- </div> --}}
+
+
+                  <div class="modal fade" id="acceptModal" tabindex="-1" aria-labelledby="acceptModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body m-3">
+                                <div class="modalContent">
+                                    <h1 class="text-center text-success">
+                                        <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12.75 2.25098C12.75 1.65424 12.9871 1.08194 13.409 0.659986C13.831 0.238029 14.4033 0.000976563 15 0.000976563L21 0.000976562C21.7956 0.000976563 22.5587 0.317047 23.1213 0.879656C23.6839 1.44227 24 2.20533 24 3.00098V21.001C24 21.7966 23.6839 22.5597 23.1213 23.1223C22.5587 23.6849 21.7956 24.001 21 24.001H3C2.20435 24.001 1.44129 23.6849 0.87868 23.1223C0.316071 22.5597 0 21.7966 0 21.001V3.00098C0 2.20533 0.316071 1.44227 0.87868 0.879656C1.44129 0.317047 2.20435 0.000976563 3 0.000976563L12 0.000976562C11.529 0.627977 11.25 1.40648 11.25 2.25098V11.251H8.25C8.10147 11.2507 7.9562 11.2946 7.83262 11.3769C7.70904 11.4593 7.6127 11.5766 7.55582 11.7138C7.49895 11.851 7.48409 12.002 7.51314 12.1477C7.54219 12.2933 7.61384 12.4271 7.719 12.532L11.469 16.282C11.5387 16.3518 11.6214 16.4072 11.7125 16.445C11.8037 16.4829 11.9013 16.5023 12 16.5023C12.0987 16.5023 12.1963 16.4829 12.2874 16.445C12.3786 16.4072 12.4613 16.3518 12.531 16.282L16.281 12.532C16.3862 12.4271 16.4578 12.2933 16.4869 12.1477C16.5159 12.002 16.5011 11.851 16.4442 11.7138C16.3873 11.5766 16.291 11.4593 16.1674 11.3769C16.0438 11.2946 15.8985 11.2507 15.75 11.251H12.75V2.25098Z" fill="white"/>
+                                            </svg>
+                                            
+                                            
+                                        </span>
+                                    </h1>
+                                    <div class="text-center mt-4">
+                                      <h4 class="font-bold">Confirm Acceptance</h4>
+                                      <p class="mb-4">By accepting this request, you are confirming that you will proceed with the necessary procedure. <br> Are you sure you want to accept this request?</p>
+                                  </div>
+                                  
+                                    <div class="d-flex justify-content-evenly mt-5">
+                                        <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#acceptModal2">Accept</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            
+                                <!-- Second Modal - Password Entry -->
+                <div class="modal fade" id="acceptModal2" tabindex="-1" aria-labelledby="acceptModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body m-3">
+                                <div class="modalContent">
+                                    <h1 class="text-center text-success">
+                                        <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                                <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" fill="white"/>
+                                              </svg>
+                                              
+                                        </span>
+                                    </h1>
+                                    <div class="text-center mt-4">
+                                        <h4 class="font-bold">Enter Password</h4>
+                                        <p class="mb-4">Password is required to proceed.</p>
+                                    </div>
+                                    <div class="d-flex justify-content-evenly mt-5">
+                                        <form id="passwordForm">
+                                            <div class="col-auto">
+                                                <label for="inputPassword2" class="visually-hidden">Password</label>
+                                                <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                   </form>
                 </td>
                 <td>
@@ -317,29 +369,78 @@ text-align: center;
                     @csrf
                     {{-- <form id="archivePatientForm_{{ $patient->patient_id }}" action="{{ route('archive.patient', ['patient_id' => $patient->patient_id]) }}" method="POST" onsubmit="return validatePassword('{{ $patient->patient_id }}')"> --}}
                     <!-- Button to trigger the modal for accepting request -->
-                    <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeclineModal{{ $request->request_id }}">X</a>
-                    <!-- Modal for accepting request -->
-                    <div class="modal fade" id="confirmDeclineModal{{ $request->request_id }}" tabindex="-1" aria-labelledby="confirmDeclineModalLabel{{ $request->request_id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmDeclineModalLabel{{ $request->request_id }}">Confirm Decline</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                
-                                <div class="modal-body">
-                                  <label for="passwordDecline{{ $request->request_id }}">Password:</label>
-                                  <input type="password" id="passwordDecline{{ $request->request_id }}" name="password" class="form-control">
-                                  <div id="passwordDeclineError{{ $request->request_id }}" class="text-danger" style="display: none;">Please enter a password.</div>
-                                  
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="submitFormDecline('{{ $request->request_id }}')">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="d-flex justify-content-center">
+
+                      <button type="button" class="" onclick="showConfirmationModalForDecline()"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 10.4L11.9 13.3C12.0833 13.4833 12.3167 13.575 12.6 13.575C12.8833 13.575 13.1167 13.4833 13.3 13.3C13.4833 13.1167 13.575 12.8833 13.575 12.6C13.575 12.3167 13.4833 12.0833 13.3 11.9L10.4 9L13.3 6.1C13.4833 5.91667 13.575 5.68333 13.575 5.4C13.575 5.11667 13.4833 4.88333 13.3 4.7C13.1167 4.51667 12.8833 4.425 12.6 4.425C12.3167 4.425 12.0833 4.51667 11.9 4.7L9 7.6L6.1 4.7C5.91667 4.51667 5.68333 4.425 5.4 4.425C5.11667 4.425 4.88333 4.51667 4.7 4.7C4.51667 4.88333 4.425 5.11667 4.425 5.4C4.425 5.68333 4.51667 5.91667 4.7 6.1L7.6 9L4.7 11.9C4.51667 12.0833 4.425 12.3167 4.425 12.6C4.425 12.8833 4.51667 13.1167 4.7 13.3C4.88333 13.4833 5.11667 13.575 5.4 13.575C5.68333 13.575 5.91667 13.4833 6.1 13.3L9 10.4ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V2H2V16Z" fill="#A7A7A7"/>
+                        </svg>
+                        </button>
+                      </div>
+                  {{-- </div> --}}
+                    <div class="modal fade" id="declineModal" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                              <div class="modal-body m-3">
+                                  <div class="modalContent">
+                                      <h1 class="text-center text-success">
+                                          <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                  <path d="M12.75 2.25098C12.75 1.65424 12.9871 1.08194 13.409 0.659986C13.831 0.238029 14.4033 0.000976563 15 0.000976563L21 0.000976562C21.7956 0.000976563 22.5587 0.317047 23.1213 0.879656C23.6839 1.44227 24 2.20533 24 3.00098V21.001C24 21.7966 23.6839 22.5597 23.1213 23.1223C22.5587 23.6849 21.7956 24.001 21 24.001H3C2.20435 24.001 1.44129 23.6849 0.87868 23.1223C0.316071 22.5597 0 21.7966 0 21.001V3.00098C0 2.20533 0.316071 1.44227 0.87868 0.879656C1.44129 0.317047 2.20435 0.000976563 3 0.000976563L12 0.000976562C11.529 0.627977 11.25 1.40648 11.25 2.25098V11.251H8.25C8.10147 11.2507 7.9562 11.2946 7.83262 11.3769C7.70904 11.4593 7.6127 11.5766 7.55582 11.7138C7.49895 11.851 7.48409 12.002 7.51314 12.1477C7.54219 12.2933 7.61384 12.4271 7.719 12.532L11.469 16.282C11.5387 16.3518 11.6214 16.4072 11.7125 16.445C11.8037 16.4829 11.9013 16.5023 12 16.5023C12.0987 16.5023 12.1963 16.4829 12.2874 16.445C12.3786 16.4072 12.4613 16.3518 12.531 16.282L16.281 12.532C16.3862 12.4271 16.4578 12.2933 16.4869 12.1477C16.5159 12.002 16.5011 11.851 16.4442 11.7138C16.3873 11.5766 16.291 11.4593 16.1674 11.3769C16.0438 11.2946 15.8985 11.2507 15.75 11.251H12.75V2.25098Z" fill="white"/>
+                                              </svg>
+                                              
+                                              
+                                          </span>
+                                      </h1>
+                                      <div class="text-center mt-4">
+                                        <h4 class="font-bold">Confirm Decline</h4>
+                                        <p class="mb-4">By declining this request, you are confirming that you will not proceed with the necessary procedure. <br> Are you sure you want to decline this request?</p>
+                                    </div>
+                                    
+                                      <div class="d-flex justify-content-evenly mt-5">
+                                          <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                          <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#declineModal2">Decline</button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              
+                                  <!-- Second Modal - Password Entry -->
+                                  <div class="modal fade" id="declineModal2" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-body m-3">
+                                                <div class="modalContent">
+                                                    <h1 class="text-center text-success">
+                                                        <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                                                <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" fill="white"/>
+                                                            </svg>
+                                                        </span>
+                                                    </h1>
+                                                    <div class="text-center mt-4">
+                                                        <h4 class="font-bold">Enter Password</h4>
+                                                        <p class="mb-4">Password and reason for declining is required to proceed.</p>
+                                                      </div>
+                                                    <div class="col-auto">
+                                                      <label for="inputReason" class="visually-hidden">Reason for Decline</label>
+                                                      <textarea class="form-control text-success" id="inputReason" name="reason" placeholder="Reason for Decline" rows="3" required></textarea>
+                                                  </div>
+                                                    <div class="d-flex justify-content-evenly mt-5">
+
+                                                        <div class="col-auto">
+                                                            <label for="inputPassword2" class="visually-hidden">Password</label>
+                                                            <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                   </form>
                 </td>
             </tr>
@@ -428,6 +529,51 @@ text-align: center;
           document.getElementById('declineForm_' + requestId).submit();
       }
   }
+
+
+  function showConfirmationModalForAccept() {
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('acceptModal'), {
+            keyboard: false
+        });
+        myModal.show();
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('myForm').addEventListener('submit', function () {
+        // Disable the submit button to prevent multiple form submissions
+        document.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+    });
+});
+
+document.getElementById('submitButton').addEventListener('click', function() {
+    // Trigger the modal
+    var myModal = new bootstrap.Modal(document.getElementById('acceptModal'), {
+        keyboard: false
+    });
+    myModal.show();
+});
+
+function showConfirmationModalForDecline() {
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('declineModal'), {
+            keyboard: false
+        });
+        myModal.show();
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('myForm').addEventListener('submit', function () {
+        // Disable the submit button to prevent multiple form submissions
+        document.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+    });
+});
+
+document.getElementById('submitButton').addEventListener('click', function() {
+    // Trigger the modal
+    var myModal = new bootstrap.Modal(document.getElementById('declineModal'), {
+        keyboard: false
+    });
+    myModal.show();
+});
 </script>
 
 @include('partials.footer')
