@@ -328,6 +328,18 @@ class MedTechController extends Controller
 
     public function processLabResult(Request $request)
     {
+
+        // Validate the request data
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+
+        
         // Validate the request data
         $validatedData = $request->validate([
             'message' => ['required', 'string'],
@@ -466,9 +478,19 @@ public function viewResults(Request $request)
         // Fetch the requested patient and request details
         $patient = Patients::findOrFail($patientId);
         $request = ServiceRequest::findOrFail($requestId);
+        
+        // Determine the procedure type from the request
+        $procedureType = $request->procedure_type;
+
+        // Define arrays of imaging and laboratory services
+        $imagingServices = ['Xray', 'Ultrasound', 'Ctscan'];
+        $laboratoryServices = ['Chemistry', 'Hematology', 'Bbis', 'Parasitology', 'Microbiology', 'Microscopy'];
     
+        // Check if the procedure type is in the imaging services array
+        $isImagingService = in_array($procedureType, $imagingServices);
+        
         // Pass the patient and request details to the view
-        return view('medtech.view-result', compact('patient', 'request'));
+        return view('medtech.view-result', compact('patient', 'request', 'isImagingService'));
     }
 
 
