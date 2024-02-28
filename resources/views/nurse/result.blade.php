@@ -14,11 +14,7 @@
     align-items: center; /* Center the content vertically */
 }
 
-.image-wrapper {
-    width: auto; /* Set the desired width */
-    height: 600px; /* Set the desired height */
-    overflow: auto;
-}
+
 
 .image-wrapper img {
     max-width: 100%;
@@ -196,20 +192,27 @@ html {
       <div class="right">
    
         <div class="card pe-0">
-            <div class="card-body m-1 ">
+            <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Laboratory Result</h4>
+                    <h4 class="font-bold">{{ $isImagingService ? 'Imaging' : 'Laboratory' }} Result</h4>
                 </div>
-                <p><strong>File name:</strong> {{ basename($request->image) }}</p>                
+                <p><strong>File name:</strong></p>
+                <ul>
+                    @php
+                        $images = json_decode($request->image);
+                    @endphp
+                    @foreach ($images as $image)
+                        <li>{{ basename($image) }}</li>
+                    @endforeach
+                </ul>
+                
                 <p><strong>Message:</strong> {{ $request->message }}</p>
-                <div class="image-container bg-light px-24 py-12 rounded">
-                    {{-- <div class="image-wrapper"> --}}
-                        @if ($request->image)
-                            <img src="{{ asset('storage/' . $request->image) }}" alt="Image">
-                        @else
-                            <p>No image available</p>
-                        @endif
-                    {{-- </div> --}}
+                <div class="image-container bg-dark px-24 py-12 rounded d-flex flex-wrap">
+                    @foreach ($images as $image)
+                        <div class="image-wrapper mb-16">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Image" style="max-width: 100%; height: auto;">
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -9,10 +9,14 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ArchivedPatients;
+use App\Models\CurrentMedication;
+use App\Models\MedicalHistory;
+use App\Models\NeurologicalExamination;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Facades\Image;
 use App\Models\Patients;
 use App\Models\PhysicalExamination;
+use App\Models\ReviewOfSystems;
 use App\Models\ServiceRequest;
 
 class RadTechController extends Controller
@@ -208,31 +212,70 @@ class RadTechController extends Controller
     
 
 
+    // public function processResult(Request $request)
+    // {
+    //     // Validate the request data
+    //     $validatedData = $request->validate([
+    //         'message' => ['required', 'string'],
+    //         'image' => ['required', 'image', 'max:2048'], // Max size 2MB, adjust as needed
+    //         'request_id' => ['required', 'exists:requests,request_id'],
+    //     ]);
+
+    //     // Find the request by request ID
+    //     $requestEntry = ServiceRequest::findOrFail($validatedData['request_id']);
+
+    //     // Store the uploaded image
+    //     // $imagePath = $request->file('image')->store('request_images', 'public');
+    //     $imagePath = $request->file('image')->storeAs('request_images', $request->file('image')->getClientOriginalName(), 'public');
+    //     // Update the request information
+    //     $requestEntry->message = $validatedData['message'];
+    //     $requestEntry->status = 'completed';
+    //     $requestEntry->image = $imagePath; // Save the image path
+    //     $requestEntry->save();
+
+    //     // Redirect back to the previous page after processing the result
+    //     return redirect()->route('radtech.requests', ['status' => 'accepted'])
+    //                     ->with('message', 'Result sent successfully');
+    // }
+
+
     public function processResult(Request $request)
     {
         // Validate the request data
         $validatedData = $request->validate([
             'message' => ['required', 'string'],
-            'image' => ['required', 'image', 'max:2048'], // Max size 2MB, adjust as needed
+            'image.*' => ['required', 'image', 'max:2048'], // Max size 2MB for each image, adjust as needed
             'request_id' => ['required', 'exists:requests,request_id'],
         ]);
-
+    
         // Find the request by request ID
         $requestEntry = ServiceRequest::findOrFail($validatedData['request_id']);
-
-        // Store the uploaded image
-        // $imagePath = $request->file('image')->store('request_images', 'public');
-        $imagePath = $request->file('image')->storeAs('request_images', $request->file('image')->getClientOriginalName(), 'public');
-        // Update the request information
-        $requestEntry->message = $validatedData['message'];
-        $requestEntry->status = 'completed';
-        $requestEntry->image = $imagePath; // Save the image path
-        $requestEntry->save();
-
-        // Redirect back to the previous page after processing the result
-        return redirect()->route('radtech.requests', ['status' => 'accepted'])
-                        ->with('message', 'Result sent successfully');
+    
+        // Check if images are uploaded
+        if ($request->hasFile('image')) {
+            // Store the uploaded images with original file names
+            $imagePaths = [];
+            foreach ($request->file('image') as $image) {
+                $imagePaths[] = $image->storeAs('request_images', $image->getClientOriginalName(), 'public');
+            }
+    
+            // Update the request information
+            $requestEntry->message = $validatedData['message'];
+            $requestEntry->status = 'completed';
+            $requestEntry->image = json_encode($imagePaths); // Save the image paths as JSON array
+            $requestEntry->save();
+    
+            // Redirect back to the previous page after processing the result
+            return redirect()->route('radtech.requests', ['status' => 'accepted'])
+                            ->with('message', 'Results sent successfully');
+        } else {
+            // Handle case where no images are uploaded
+            return redirect()->back()->with('error', 'No images uploaded');
+        }
     }
+    
+
+
 
     // public function viewResults(Request $request)
     // {
@@ -308,10 +351,80 @@ class RadTechController extends Controller
     {
         $patient = Patients::findOrFail($id);
         $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+        // Fetch complete history from the medical_histories table
+        $medicalHistory = MedicalHistory::where('patient_id', $id)->first();
+
+        // Fetch review of systems from the review_of_systems table
+        $reviewOfSystems = ReviewOfSystems::where('patient_id', $id)->first();
+
+        // Fetch physical examinations from the physical_examinations table
+        $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+        // Fetch physical examinations from the physical_examinations table
+        $neurologicalExaminations = NeurologicalExamination::where('patient_id', $id)->first();
+
+        // Fetch physical examinations from the physical_examinations table
+        $currentMedication = CurrentMedication::where('patient_id', $id)->first();
+
+        // Fetch complete history from the medical_histories table
+        $medicalHistory = MedicalHistory::where('patient_id', $id)->first();
         $request = ServiceRequest::findOrFail($request_id);
-        return view('radtech.send-result', ['patient' => $patient, 'request' => $request, 'physicalExaminations' => $physicalExaminations]);
+
+
+
+
+        return view('radtech.send-result', ['patient' => $patient, 
+                                            'request' => $request, 
+                                            'reviewOfSystems' => $reviewOfSystems, 
+                                            'physicalExaminations' => $physicalExaminations, 
+                                            'neurologicalExaminations' => $neurologicalExaminations, 
+                                            'medicalHistory' => $medicalHistory, 
+                                            'currentMedication' => $currentMedication],);
     }
-    
+    public function showMedicalHistory()
+    {
+        // Fetch all medical histories from the database
+        $medicalHistories = MedicalHistory::all();
+        
+        // Return the medical histories data
+        return $medicalHistories;
+    }
+
+    public function showReviewOfSystems()
+    {
+        // Fetch all medical histories from the database
+        $reviewOfSystems = ReviewOfSystems::all();
+        
+        // Return the medical histories data
+        return $reviewOfSystems;
+    }
+    public function showPhysicalExaminations()
+    {
+        // Fetch all medical histories from the database
+        $physicalExaminations = PhysicalExamination::all();
+        
+        // Return the medical histories data
+        return $physicalExaminations;
+    }
+
+    public function showNeurologicalExaminations()
+    {
+        // Fetch all medical histories from the database
+        $neurologicalExaminations = NeurologicalExamination::all();
+        
+        // Return the medical histories data
+        return $neurologicalExaminations;
+    }
+
+    public function showCurrentMedications()
+    {
+        // Fetch all medical histories from the database
+        $currentMedication = CurrentMedication::all();
+        
+        // Return the medical histories data
+        return $currentMedication;
+    }
     
 }
 
