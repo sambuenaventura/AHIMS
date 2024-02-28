@@ -279,7 +279,22 @@ html {
                     @csrf
                     <input type="hidden" name="patient_id" value="{{ $patient->patient_id }}">
                     <input type="hidden" name="sender_message" id="sender_message_2">
-
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date_needed" class="form-label">Date Needed</label>
+                            <input type="date" id="date_needed" name="date_needed" class="form-control">
+                            @error('date_needed')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="time_needed" class="form-label">Time Needed</label>
+                            <input type="time" id="time_needed" name="time_needed" class="form-control">
+                            @error('time_needed')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
                     <div class="form-group mb-3">
                         <label for="procedure_type" class="form-label">Procedure Type</label>                        
                         <select id="procedure_type_2" name="procedure_type" class="form-select">
@@ -590,11 +605,11 @@ html {
                                     <label class="form-check-label" for="SellaTurcica">Sella turcica AP/PA axial & lateral</label>
                                 </div>                        
                                 <div class="form-check bg-light rounded-2 py-1">
-                                    <input class="form-check-input" type="checkbox" value="Others" id="XrayOthers" name="xray_tests[]" onchange="updateSenderMessage(); toggleOthersInput('xray')">
+                                    <input class="form-check-input" type="checkbox" value="Others" id="XrayOthers" name="xray_tests[]" onchange="updateSenderMessage2(); toggleOthersInput('xray')">
                                     <label class="form-check-label" for="XrayOthers">Others: </label>
                                 </div>    
                             </div>
-                            <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="xrayInput" name="xrayInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                            <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="xrayInput" name="xrayInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
 
 
                         </div>
@@ -681,12 +696,12 @@ html {
                                         <label class="form-check-label" for="BiliaryTree">Biliary tree</label>
                                     </div>
                                     <div class="form-check bg-light rounded-2 py-1">
-                                        <input class="form-check-input" type="checkbox" value="Others" id="UltrasoundOthers" name="ultrasound_tests[]" onchange="updateSenderMessage(); toggleOthersInput('ultrasound')">
+                                        <input class="form-check-input" type="checkbox" value="Others" id="UltrasoundOthers" name="ultrasound_tests[]" onchange="updateSenderMessage2(); toggleOthersInput('ultrasound')">
                                         <label class="form-check-label" for="UltrasoundOthers">Others: </label>
                                     </div>
                                     <!-- Add more checkboxes for other ultrasound tests -->
                                 </div>
-                                <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="ultrasoundInput" name="ultrasoundInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                                <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="ultrasoundInput" name="ultrasoundInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
 
                             </div>
                     </div>
@@ -831,11 +846,11 @@ html {
                                         <label class="form-check-label" for="Oronasopharynx">Oronasopharynx</label>
                                     </div>
                                     <div class="form-check bg-light rounded-2 py-1">
-                                        <input class="form-check-input" type="checkbox" value="Others" id="CtscanOthers" name="ctscan_tests[]" onchange="updateSenderMessage(); toggleOthersInput('ctscan')">
+                                        <input class="form-check-input" type="checkbox" value="Others" id="CtscanOthers" name="ctscan_tests[]" onchange="updateSenderMessage2(); toggleOthersInput('ctscan')">
                                         <label class="form-check-label" for="CtscanOthers">Others: </label>
                                     </div>   
                                 </div>
-                                <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="ctscanInput" name="ctscanInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                                <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="ctscanInput" name="ctscanInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
                             </div>
                     </div>
                     
@@ -938,7 +953,9 @@ html {
                     <tbody>
                         @forelse ($radtechCompletedResults as $result)
                             <tr>
-                                <td><a class="d-flex flex-row-only gap-2 text-success font-bold" href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <td>
+                                    <a class="d-flex flex-row-only gap-2 text-success font-bold" href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">                                    
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <mask id="mask0_1387_10854" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
                                         <rect width="24" height="24" fill="#D9D9D9"/>
                                     </mask>
@@ -1092,6 +1109,16 @@ document.getElementById('procedure_type_2').addEventListener('change', function(
         ctscanOptions.style.display = 'none';
     }
 });
+
+// Function to toggle display of the input field for "Others" based on section
+function toggleOthersInput(sectionId) {
+    var othersInput = document.getElementById(sectionId + 'Input');
+    if (othersInput.style.display === 'none') {
+        othersInput.style.display = 'block';
+    } else {
+        othersInput.style.display = 'none';
+    }
+}
 
 function updateSenderMessage2() {
     var selectedTests = [];

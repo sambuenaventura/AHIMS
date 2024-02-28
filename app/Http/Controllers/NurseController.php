@@ -1332,34 +1332,75 @@ public function archivePatient(Request $request, $patient_id)
     
 
 
+    // public function requestLaboratoryServices(Request $request)
+    // {
+    //     // Validate the request data
+    //     $request->validate([
+    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //     ]);
+
+    //     // Check if the password matches the user's password
+    //     if (!Hash::check($request->password, Auth::user()->password)) {
+    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     }   
+        
+    //     // Validate the form input
+    //     $validatedData = $request->validate([
+    //         'patient_id' => 'required|exists:patients,patient_id',
+    //         'procedure_type' => 'required',
+    //         'sender_message' => 'required',
+    //         // Add more validation rules as needed
+    //     ]);
+    
+    //     // Create a new laboratory service request
+    //     $serviceRequest = new ServiceRequest();
+    //     $serviceRequest->patient_id = $validatedData['patient_id'];
+    //     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+    //     $serviceRequest->procedure_type = $validatedData['procedure_type'];
+    //     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+
+    //     // Set other attributes as needed
+    
+    //     // Save the laboratory service request
+    //     $serviceRequest->save();
+    
+    //     // Optionally, you can redirect the user after submitting the form
+    //     return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
+    // }
+
+
     public function requestLaboratoryServices(Request $request)
     {
         // Validate the request data
-        $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
-
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }   
-        
-        // Validate the form input
         $validatedData = $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
             'patient_id' => 'required|exists:patients,patient_id',
             'procedure_type' => 'required',
             'sender_message' => 'required',
+            'date_needed' => 'required|date', // Validation rule for the date_needed field
+            'time_needed' => 'required|date_format:H:i', // Validation rule for the time_needed field
             // Add more validation rules as needed
         ]);
     
+        // Check if the password matches the user's password
+        if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }   
+        
         // Create a new laboratory service request
         $serviceRequest = new ServiceRequest();
         $serviceRequest->patient_id = $validatedData['patient_id'];
         $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
         $serviceRequest->procedure_type = $validatedData['procedure_type'];
         $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
-
-        // Set other attributes as needed
+        
+        // Set date_needed and time_needed if provided
+        if ($request->filled('date_needed')) {
+            $serviceRequest->date_needed = $validatedData['date_needed'];
+        }
+        if ($request->filled('time_needed')) {
+            $serviceRequest->time_needed = $validatedData['time_needed'];
+        }
     
         // Save the laboratory service request
         $serviceRequest->save();
@@ -1368,41 +1409,6 @@ public function archivePatient(Request $request, $patient_id)
         return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
     }
     
-//     public function requestImagingServices(Request $request)
-// {
-
-//     // Validate the request data
-//     $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }   
-    
-//     // Validate the form input
-//     $validatedData = $request->validate([
-//         'patient_id' => 'required|exists:patients,patient_id',
-//         'procedure_type' => 'required',
-//         'sender_message' => 'required',
-//     ]);
-
-//     // Create a new imaging service request
-//     $serviceRequest = new ServiceRequest();
-//     $serviceRequest->patient_id = $validatedData['patient_id'];
-//     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
-//     $serviceRequest->procedure_type = $validatedData['procedure_type'];
-//     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
-
-//     // Set other attributes as needed
-
-//     // Save the imaging service request
-//     $serviceRequest->save();
-
-//     // Optionally, you can redirect the user after submitting the form
-//     return redirect()->back()->with('message', 'Imaging service request submitted successfully');
-// }
 
 
 public function requestImagingServices(Request $request)
@@ -1766,9 +1772,21 @@ public function requestImaging(Request $request, $id)
         $patient = Patients::findOrFail($patientId);
         $request = ServiceRequest::findOrFail($requestId);
     
-        // Pass the patient and request details to the view
-        return view('nurse.result', compact('patient', 'request'));
+        // Determine the procedure type from the request
+        $procedureType = $request->procedure_type;
+    
+        // Define arrays of imaging and laboratory services
+        $imagingServices = ['Xray', 'Ultrasound', 'Ctscan'];
+        $laboratoryServices = ['Chemistry', 'Hematology', 'Bbis', 'Parasitology', 'Microbiology', 'Microscopy'];
+    
+        // Check if the procedure type is in the imaging services array
+        $isImagingService = in_array($procedureType, $imagingServices);
+    
+        // Pass the patient, request, and procedure type details to the view
+        return view('nurse.result', compact('patient', 'request', 'isImagingService'));
     }
+    
+    
     
 
     
