@@ -211,7 +211,7 @@ html {
         </div>
         
       </div>
-      
+
       <div class="right">
         <div class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-2">
@@ -309,7 +309,7 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Patient Complete History</h4>
-                <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View/Edit</a>
+                {{-- <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View/Edit</a> --}}
             </div>  
 
                 <div class="header">

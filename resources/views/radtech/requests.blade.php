@@ -165,8 +165,8 @@ html {
                                 </td>
                                 @endif
                                 @if(!$status)
-                                <td>{{ ucfirst($request->status) }}</td>
-                            @endif
+                                    <td>{{ ucfirst($request->status) }}</td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

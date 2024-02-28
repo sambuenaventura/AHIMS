@@ -673,7 +673,7 @@ html {
 
         {{-- MEDTECH RESULTS --}}
         {{-- @if ($medtechCompletedResults->isNotEmpty()) --}}
-        <div id="medtechResults" class="card pe-0 mb-4 shadow-md">
+        {{-- <div id="medtechResults" class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Laboratory Results</h4>
@@ -704,7 +704,7 @@ html {
                     
                 </table>
             </div>
-        </div>
+        </div> --}}
         {{-- @endif --}}
 
          {{-- RADTECH --}}
@@ -1281,11 +1281,9 @@ html {
 
                     <div class="buttons my-4 d-flex justify-content-end">
                         <a href="{{ route('nurse.edit', ['id' => $patient->patient_id]) }}" class="btn btn-light ms-2 btn-custom-style btn-cancel">Back</a>
-                        {{-- <button type="button" onclick="nextStep()" class="btn btn-success">Submit</button> --}}
                         <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModalImage()">Submit</button>
                     </div>
                     
-                    <!-- First Modal - Confirmation -->
                     <div class="modal fade" id="imageRequestModal" tabindex="-1" aria-labelledby="imageRequestModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -1354,7 +1352,7 @@ html {
         
          {{-- RADTECH RESULTS--}}
         {{-- @if ($radtechCompletedResults->isNotEmpty())        --}}
-        <div id="radtechResults" class="card pe-0 mb-4 shadow-md">
+        {{-- <div id="radtechResults" class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Imaging Results</h4>
@@ -1385,7 +1383,7 @@ html {
                     
                 </table>
             </div>
-        </div>
+        </div> --}}
         {{-- @endif --}}
 
       </div>
