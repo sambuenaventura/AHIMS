@@ -719,8 +719,8 @@ html {
                                         <label class="form-check-label" for="ParanasalSinus">Paranasal sinus</label>
                                     </div>
                                     <div class="form-check bg-light rounded-2 py-1">
-                                        <input class="form-check-input" type="checkbox" value="Mastoids" id="Mastoids" name="ctscan_tests[]" onchange="updateSenderMessage2()">
-                                        <label class="form-check-label" for="Mastoids">Mastoids</label>
+                                        <input class="form-check-input" type="checkbox" value="Mastoids" id="MastoidsCT" name="ctscan_tests[]" onchange="updateSenderMessage2()">
+                                        <label class="form-check-label" for="MastoidsCT">Mastoids</label>
                                     </div>
                                     <div class="form-check bg-light rounded-2 py-1">
                                         <input class="form-check-input" type="checkbox" value="Brain" id="Brain" name="ctscan_tests[]" onchange="updateSenderMessage2()">
@@ -937,7 +937,7 @@ html {
                     <form action="{{ route('requestImaging', ['patientId' => $patient->patient_id]) }}" method="GET">
                         <div class="input-group mb-3">
                             <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request()->input('search') }}">
-                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            <button class="btn btn-outline-success" type="submit">Search</button>
                         </div>
                     </form>
                 </div>
@@ -954,8 +954,8 @@ html {
                         @forelse ($radtechCompletedResults as $result)
                             <tr>
                                 <td>
-                                    <a class="d-flex flex-row-only gap-2 text-success font-bold" href="{{ route('nurse.viewRequest', ['patientId' => $patient->patient_id, 'requestId' => $result->request_id]) }}">                                    
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <a class="d-flex flex-row-none gap-2 text-success font-bold" href="{{ route('nurse.viewRequest', ['patientId' => $result->patient_id, 'requestId' => $result->request_id]) }}">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <mask id="mask0_1387_10854" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
                                         <rect width="24" height="24" fill="#D9D9D9"/>
                                     </mask>
@@ -963,7 +963,18 @@ html {
                                         <path d="M9 18H15C15.2833 18 15.5208 17.9042 15.7125 17.7125C15.9042 17.5208 16 17.2833 16 17C16 16.7167 15.9042 16.4792 15.7125 16.2875C15.5208 16.0958 15.2833 16 15 16H9C8.71667 16 8.47917 16.0958 8.2875 16.2875C8.09583 16.4792 8 16.7167 8 17C8 17.2833 8.09583 17.5208 8.2875 17.7125C8.47917 17.9042 8.71667 18 9 18ZM9 14H15C15.2833 14 15.5208 13.9042 15.7125 13.7125C15.9042 13.5208 16 13.2833 16 13C16 12.7167 15.9042 12.4792 15.7125 12.2875C15.5208 12.0958 15.2833 12 15 12H9C8.71667 12 8.47917 12.0958 8.2875 12.2875C8.09583 12.4792 8 12.7167 8 13C8 13.2833 8.09583 13.5208 8.2875 13.7125C8.47917 13.9042 8.71667 14 9 14ZM6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V4C4 3.45 4.19583 2.97917 4.5875 2.5875C4.97917 2.19583 5.45 2 6 2H13.175C13.4417 2 13.6958 2.05 13.9375 2.15C14.1792 2.25 14.3917 2.39167 14.575 2.575L19.425 7.425C19.6083 7.60833 19.75 7.82083 19.85 8.0625C19.95 8.30417 20 8.55833 20 8.825V20C20 20.55 19.8042 21.0208 19.4125 21.4125C19.0208 21.8042 18.55 22 18 22H6ZM13 8C13 8.28333 13.0958 8.52083 13.2875 8.7125C13.4792 8.90417 13.7167 9 14 9H18L13 4V8Z" fill="#418363"/>
                                     </g>
                                 </svg>
-                                {{ basename($result->image) }}
+                                @if ($result->image)
+                                    @php
+                                        $images = json_decode($result->image);
+                                    @endphp
+                                    <ul>
+                                        @foreach ($images as $image)
+                                            <li>{{ basename($image) }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p>No images available</p>
+                                @endif
                             </a>
                         </td>        
                                 <td class="text-center">{{ $result->created_at->format('h:i A n/j/Y' ) }}</td>
