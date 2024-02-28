@@ -14,11 +14,7 @@
     align-items: center; /* Center the content vertically */
 }
 
-.image-wrapper {
-    width: auto; /* Set the desired width */
-    height: 600px; /* Set the desired height */
-    overflow: auto;
-}
+
 
 .image-wrapper img {
     max-width: 100%;
@@ -129,6 +125,10 @@ html {
     flex-direction: row;
     justify-content: space-between;
 }
+.flex-row-none {
+    display: flex;
+    flex-direction: row;
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -140,55 +140,69 @@ html {
 <section id="admission">
     <div class="admission-content">
       <div class="left">
-        <div class="boxes">
-            <div class="box box1 flex-col bg-custom-101">
-                <div class="left-top-1">
-                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
-                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+        <div class="card pe-0 mb-4 shadow-md" style="border: none;">
+            <div class="boxes">
+                <div class="box box1 flex-col bg-custom-101">
+                    <div class="left-top-1">
+                        <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                        <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    </div>
+                    <div class="left-top-2 flex-row-none gap-16">
+                        <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                        <p class="font-bold">{{ optional($patient)->gender }}</p>
+                    </div>
                 </div>
-                <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
-                    <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
-                    <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
+                <div class="box box1 flex-col bg-white" style="font-size: 0.9em;">
+                    <p class="font-bold">Request Information (ID: {{ $request->request_id }})</p>
+                    <div class="left-top-1 flex-row">
+                        <p class="">Date:</p>
+                        <p class="">{{ \Carbon\Carbon::parse($request->date_needed)->format('n/j/Y') }}</p>               
+                    </div>
+                    <div class="left-top-1 flex-row">
+                        <p class="">Time:</p>
+                        <p class="">{{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}</p>               
+                    </div>
+                    <div class="left-top-1 flex-row">
+                        <p class="">Type of Service:</p>
+                        <p class="">{{ $request->procedure_type }}</p>
+                    </div>
+                    <div class="left-top-1">
+                        <p class="">Type of Test:</p>
+                        <p class="">{{ $request->sender_message }}</p>
+                    </div>
+                    {{-- <div class="left-top-1 row">
+                        <div class="col-md-4">
+                            <p class="" style="min-width: 100px;">Type of Test:</p>
+                        </div>
+                        <div class="col-md-8 overflow-wrap d-flex flex-column">
+                            @php
+                                $senderMessageArray = explode(',', $request->sender_message);
+                            @endphp
+                            @foreach($senderMessageArray as $message)
+                                <p class="text-md-end">{{ trim($message) }}</p>
+                            @endforeach
+                        </div>
+                    </div> --}}
+                </div>            
+                <div class="card-footer flex-col">
+                    <div class="flex-row">
+                        <small class="text-muted">Requested by:</small>
+                        @if ($request->sender_id)
+                            @if ($request->sender)
+                                <small class="text-muted">{{ $request->sender->first_name }} {{ $request->sender->last_name }}</small>
+                            @else
+                                <small class="text-muted">Unknown Sender</small>
+                            @endif
+                        @else
+                            <small class="text-muted">Unknown Sender</small>
+                        @endif
+                    </div>
+                    <div class="flex-row">
+                        <small class="text-muted">Date & Time:</small>
+                        <small class="text-muted">{{ optional($request)->created_at ? \Carbon\Carbon::parse($request->created_at)->format('g:i A n/j/Y') : '' }}</small>
+                    </div>
                 </div>
-            </div>
-            <div class="box box1 flex-col bg-white">
-                <p class="font-bold">Patient Information</p>
-                <div class="left-top-1 flex-row">
-                    <p class="">Name:</p>
-                    <p class="">{{  $patient->first_name }} {{  $patient->last_name }}</p>
-                </div>
-                <div class="left-top-1 flex-row">
-                    <p class="">Birth Date:</p>
-                    <p class="">{{  $patient->date_of_birth }}</p>
-                </div>
-                <div class="left-top-1 flex-row">
-                    <p class="">Gender:</p>
-                    <p class="">{{  $patient->gender }}</p>
-                </div>
-                <div class="left-top-1 flex-row">
-                    <p class="">Contact Number:</p>
-                    <p class="">{{  $patient->contact_number }}</p>
-                </div>
-                <div class="left-top-1 flexi text-right">
-                    <p class="">Address:</p>
-                    <p class="">{{  $patient->address }}</p>
-                </div>
-            </div>
-            <div class="box box1 flex-col bg-white">
-                <p class="font-bold">Person In-charge Information</p>
-                <div class="left-top-1 flex-row">
-                    <p class="">Name:</p>
-                    <p class="">{{  $patient->pic_first_name }} {{  $patient->pic_last_name }}</p>
-                </div>
-                <div class="left-top-1 flex-row">
-                    <p class="">Relation to Patient:</p>
-                    <p class="">{{  $patient->pic_relation }}</p>
-                </div>
-                <div class="left-top-1 flex-row">
-                    <p class="">Contact Number:</p>
-                    <p class="">{{  $patient->pic_contact_number }}</p>
-                </div>
+                
             </div>
         </div>
       </div>
@@ -196,21 +210,27 @@ html {
       <div class="right">
         
         <div class="card pe-0">
-            <div class="card-body m-1 ">
+            <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Laboratory Result</h4>
+                    <h4 class="font-bold">{{ $isImagingService ? 'Imaging' : 'Laboratory' }} Result</h4>
                 </div>
-                <p><strong>File name:</strong> {{ basename($request->image) }}</p>
+                <p><strong>File name:</strong></p>
+                <ul>
+                    @php
+                        $images = json_decode($request->image);
+                    @endphp
+                    @foreach ($images as $image)
+                        <li>{{ basename($image) }}</li>
+                    @endforeach
+                </ul>
+                
                 <p><strong>Message:</strong> {{ $request->message }}</p>
-                <!-- Display the image if available -->
-                <div class="image-container bg-light px-24 py-12 rounded">
-                    {{-- <div class="image-wrapper"> --}}
-                        @if ($request->image)
-                            <img src="{{ asset('storage/' . $request->image) }}" alt="Image">
-                        @else
-                            <p>No image available</p>
-                        @endif
-                    {{-- </div> --}}
+                <div class="image-container bg-[#DCEDDD] px-24 py-12 rounded d-flex flex-wrap">
+                    @foreach ($images as $image)
+                        <div class="image-wrapper mb-16">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Image" style="max-width: 100%; height: auto;">
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
