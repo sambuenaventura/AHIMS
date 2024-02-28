@@ -116,9 +116,10 @@ html {
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
                             <th scope="col">Service</th>
+                            <th scope="col">Test</th>
                             <th scope="col">Date Requested</th>
                             @if($status == 'accepted')
-                                <th scope="col">Action</th>
+                                <th scope="col"></th>
                             @endif
                             @if(!$status)
                                 <th scope="col">Status</th>
@@ -140,24 +141,30 @@ html {
                                 <td>{{ $request->request_id }}</td> <!-- Display the request ID -->
                                 <td>{{ $request->patient_id }}</td>
                                 <td>{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
-                                <td>{{ ucfirst($request->procedure_type) }}</td>
-                                <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>                            
+                                <td style="max-width: 80px;">{{ ucfirst($request->procedure_type) }}</td>
+                               <td style="min-width: 180px;">{{ $request->sender_message }}</td>
+                                <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>                            
 
                                 @if($status == 'completed')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
 
                                 @endif                                
                                 @if($status == 'declined')
-                                <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
+                                <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
 
                                 @endif                                
                                 @if($status == 'declined')
                                 <td style="min-width: 140px;">{{ $request->message }}</td>
                                 @endif                                
                                 @if($status == 'accepted')
-                                    <td>
-                                        <a href="/medtech-patients/{{ $request->patient_id }}/requests/{{ $request->request_id }}" class="btn btn-success">View</a>
-                                    </td>
+                                <td>                                        
+                                    <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <a href="/medtech-patients/{{ $request->patient_id }}/requests/{{ $request->request_id }}" style="text-decoration: none;">
+                                            <path d="M1.65 15.4252C1.31667 15.5585 1 15.5294 0.7 15.3377C0.4 15.146 0.25 14.8669 0.25 14.5002V10.0002L8.25 8.00022L0.25 6.00022V1.50022C0.25 1.13355 0.4 0.854382 0.7 0.662715C1 0.471049 1.31667 0.441882 1.65 0.575215L17.05 7.07522C17.4667 7.25855 17.675 7.56688 17.675 8.00022C17.675 8.43355 17.4667 8.74188 17.05 8.92522L1.65 15.4252Z" fill="#418363"/>
+                                        </a>                                        
+                                    </svg>
+                                </td>
+                                
                                 @endif
                                 @if(!$status)
                                     <td>{{ ucfirst($request->status) }}</td>
