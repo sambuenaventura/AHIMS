@@ -1712,53 +1712,109 @@ public function requestImaging(Request $request, $id)
     // }
     
 
+    // public function viewRequests(Request $request, $serviceType)
+    // {
+    //     // Retrieve the search query and request status from the request
+    //     $search = $request->input('search');
+    //     $status = $request->input('status');
+    
+    //     // Get the authenticated user's ID
+    //     $userId = auth()->id();
+    
+    //     // Define the procedure types based on service type
+    //     $procedureTypes = ($serviceType === 'lab') ? ['chemistry', 'hematology', 'Bbis', 'parasitology', 'microbiology', 'microscopy'] : ['xray', 'ultrasound', 'ctscan'];
+    
+    //     // Query based on request status and procedure types
+    //     $query = ServiceRequest::query()->where('sender_id', $userId);
+    //     switch ($status) {
+    //         case 'accepted':
+    //             $query->where('status', 'accepted');
+    //             break;
+    //         case 'completed':
+    //             $query->where('status', 'completed');
+    //             break;
+    //         case 'declined':
+    //             $query->where('status', 'declined');
+    //             break;
+    //         default:
+    //             // Default to pending requests
+    //             $query->where('status', 'pending');
+    //             break;
+    //     }
+    
+    //     // Apply search query if it exists
+    //     if ($search) {
+    //         $query->where(function ($q) use ($search) {
+    //             $q->where('patient_id', 'like', '%' . $search . '%')
+    //                 ->orWhere('procedure_type', 'like', '%' . $search . '%');
+    //         });
+    //     }
+    
+    //     // Filter by procedure types
+    //     $query->whereIn('procedure_type', $procedureTypes);
+    
+    //     // Retrieve requests and paginate the results
+    //     $requests = $query->paginate(10); // Adjust pagination limit as needed
+    
+    //     // Pass request status to the view to maintain consistency
+    //     return view('nurse.' . $serviceType . '-services', compact('requests', 'status'));
+    // }
+
     public function viewRequests(Request $request, $serviceType)
-    {
-        // Retrieve the search query and request status from the request
-        $search = $request->input('search');
-        $status = $request->input('status');
-    
-        // Get the authenticated user's ID
-        $userId = auth()->id();
-    
-        // Define the procedure types based on service type
-        $procedureTypes = ($serviceType === 'lab') ? ['chemistry', 'hematology', 'Bbis', 'parasitology', 'microbiology', 'microscopy'] : ['xray', 'ultrasound', 'ctscan'];
-    
-        // Query based on request status and procedure types
-        $query = ServiceRequest::query()->where('sender_id', $userId);
-        switch ($status) {
-            case 'accepted':
-                $query->where('status', 'accepted');
-                break;
-            case 'completed':
-                $query->where('status', 'completed');
-                break;
-            case 'declined':
-                $query->where('status', 'declined');
-                break;
-            default:
-                // Default to pending requests
-                $query->where('status', 'pending');
-                break;
-        }
-    
-        // Apply search query if it exists
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('patient_id', 'like', '%' . $search . '%')
-                    ->orWhere('procedure_type', 'like', '%' . $search . '%');
-            });
-        }
-    
-        // Filter by procedure types
-        $query->whereIn('procedure_type', $procedureTypes);
-    
-        // Retrieve requests and paginate the results
-        $requests = $query->paginate(10); // Adjust pagination limit as needed
-    
-        // Pass request status to the view to maintain consistency
-        return view('nurse.' . $serviceType . '-services', compact('requests', 'status'));
+{
+    // Retrieve the search query and request status from the request
+    $search = $request->input('search');
+    $status = $request->input('status');
+
+    // Define the procedure types based on service type
+    $procedureTypes = ($serviceType === 'lab') ? ['chemistry', 'hematology', 'Bbis', 'parasitology', 'microbiology', 'microscopy'] : ['xray', 'ultrasound', 'ctscan'];
+
+    // Query based on request status and procedure types
+    $query = ServiceRequest::query()->where('sender_id', auth()->id());
+    switch ($status) {
+        case 'pending':
+            $query->where('status', 'pending');
+            break;
+        case 'accepted':
+            $query->where('status', 'accepted');
+            break;
+        case 'completed':
+            $query->where('status', 'completed');
+            break;
+        case 'declined':
+            $query->where('status', 'declined');
+            break;
+        default:
+            // Default to pending requests
+            // $query->where('status', 'pending'); COMMENTED TO SHOW ALL INSTEAD OF JUST PENDING
+            break;
     }
+
+    // Apply search query if it exists
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('patient_id', 'like', '%' . $search . '%')
+                ->orWhere('procedure_type', 'like', '%' . $search . '%')
+                ->orWhereHas('patient', function ($query) use ($search) {
+                    $query->where('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%');
+                })
+                ->orWhere('message', 'like', '%' . $search . '%')
+                ->orWhere('status', 'like', '%' . $search . '%')
+                ->orWhere('request_id', 'like', '%' . $search . '%');
+        });
+    }
+
+    // Filter by procedure types
+    $query->whereIn('procedure_type', $procedureTypes);
+
+    // Retrieve requests and paginate the results
+    $requests = $query->paginate(10); // Adjust pagination limit as needed
+
+    // Pass request status to the view to maintain consistency
+    return view('nurse.' . $serviceType . '-services', compact('requests', 'status'));
+}
+
     
 
 
