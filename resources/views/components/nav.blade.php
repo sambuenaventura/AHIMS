@@ -21,18 +21,11 @@ span {
         {{-- <a href="/add/patient" class="btn btn-success btn-custom-style btn-submit ">+ Add Patient</a> --}}
           {{-- <a href="/add/patient" class="btn btn-success btn-submit mr-4">+ Add Patient</a> --}}
           
-          <a class="btn btn-success ms-2 btn-custom-style btn-submit mr-4" style="width: auto;" href="{{ 
-            auth()->user()->role === 'admission' ? '/add/patient' : 
-            (auth()->user()->role === 'nurse' ? '/request-service' : 
-            (auth()->user()->role === 'medtech' ? '/medtech-requests' : 
-            (auth()->user()->role === 'radtech' ? '/radtech-requests' : '#'))) 
-        }}">
-            {{ auth()->user()->role === 'admission' ? '+ Add Patient' : 
-               (auth()->user()->role === 'nurse' ? 'Request Service' : 
-               (auth()->user()->role === 'medtech' ? 'Request Service' : 
-               (auth()->user()->role === 'radtech' ? 'Send Result' : ''))) 
-            }}
+          <a class="btn btn-success ms-2 btn-custom-style btn-submit mr-4{{ auth()->user()->role !== 'admission' ? ' d-none' : '' }}" style="width: auto;" href="{{ auth()->user()->role === 'admission' ? '/add/patient' : '#' }}">
+            {{ auth()->user()->role === 'admission' ? '+ Add Patient' : ''}}
         </a>
+        
+
         
 
 
