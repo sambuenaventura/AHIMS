@@ -105,6 +105,13 @@ html {
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Imaging Requests</h4>
+                    <form action="{{ route('nurse.viewRequestImaging', ['status' => request('status')]) }}" method="GET">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="search" placeholder="Search" value="{{ request('search') }}">
+                            <input type="hidden" name="status" value="{{ request('status') }}">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
+                    </form>
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
@@ -128,12 +135,15 @@ html {
                             <th scope="col">Patient Name</th>
                             <th scope="col">Type of Service</th>
                             <th scope="col">Date Requested</th>
+                            @if(!$status)
+                                <th scope="col">Status</th>
+                            @endif
                             @if(request('status') === 'accepted')
                                 <th scope="col">MedTech on Duty</th>
                             @endif
                             @if(request('status') === 'completed')
                                 <th scope="col">Date Completed</th>
-                                <th scope="col">Actions</th>
+                                <th scope="col"></th>
                             @endif
                             @if($status == 'declined')
                                 <th scope="col">Date Declined</th>
@@ -155,9 +165,15 @@ html {
                                 @endif
                                 @if(request('status') === 'completed')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>
-                                    <td>
-                                        <a href="{{ route('nurse.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}" class="btn btn-success">View</a>
+
+                                    <td style="text-align: center;">
+                                        <a href="{{ route('nurse.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}" style="display: inline-block;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="vertical-align: middle;">
+                                                <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" fill="#418363"/>
+                                            </svg>
+                                        </a>
                                     </td>
+
                                 @endif
                                 @if($status == 'declined')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
@@ -166,13 +182,16 @@ html {
                                 @if($status == 'declined')
                                 <td style="min-width: 140px;">{{ $request->message }}</td>
                                 @endif   
+                                @if(!$status)
+                                <td>{{ ucfirst($request->status) }}</td>
+                            @endif
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
                 <div class="mt-4">
                     {{-- {{ $requests->appends(['requestType' => request('requestType')])->links() }} --}}
-                    {{ $requests->appends(['status' => request('status')])->links() }}
+                    {{ $requests->appends(['status' => request('status'), 'search' => request('search')])->links() }}
                 </div>
             </div>
         </div>
