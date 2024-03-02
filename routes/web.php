@@ -64,6 +64,8 @@ Route::controller(NurseController::class)->group(function() {
         Route::put('/nurse-patients/update-medication-remark/{patient}', 'updateMedicationRemark')->name('nurse.updateMedication');
         
         Route::get('/nurse-patients/show-remarks/{id}', 'viewRemarks')->name('nurse.viewRemarks');
+        Route::get('/nurse-patients/show-medications/{id}', 'viewMedications')->name('nurse.viewMedications');
+        Route::get('/nurse-patients/show-notes/{id}', 'viewNotes')->name('nurse.viewNotes');
 
 
 
