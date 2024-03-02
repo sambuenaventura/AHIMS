@@ -202,12 +202,19 @@ html {
             @if ($patient->admission_type === 'Inpatient')
             <div class="box box1 flex-col bg-custom-101 mt-10 shadow-md">
                 <p class="font-bold">Set Discharge Date</p>
-                <form action="{{ route('patients.updateDischargeDate', ['patient_id' => $patient->patient_id]) }}" method="POST" class="flex gap-4">
+                <form action="{{ route('patients.updateDischargeDate', ['patient_id' => $patient->patient_id]) }}" method="POST" >
                     @csrf 
-                    <input type="date" class="form-control rounded-4 m-0" placeholder="Date" id="discharge_date" name="discharge_date" value="{{ $patient->discharge_date ?? '' }}"/>
-                    <button type="submit" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Discharge</button>
+                    <div class="flex gap-4 mb-2">
+                        <input type="date" class="form-control rounded-4 m-0" placeholder="Date" id="discharge_date" name="discharge_date" value="{{ $patient->discharge_date ?? ''}}"/>
+
+                        <button type="submit" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Discharge</button>
+                    </div>
+                    @error('discharge_date')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </form>
             </div>
+            
         @endif
         
             
@@ -510,12 +517,19 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Nurse Remarks</h4>
-                <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">Add Remark</a>
+                <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
                 </div>  
 
                 <div class="table-header">
                     <hr>
-                    <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p>
+                    {{-- <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p> --}}
+                    <p class="font-bold">
+                        <a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
+                            <span class="p-1 rounded">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                            </span>
+                        <span class="p-1 rounded">Vital Signs</span>
+                    </a></p>
 
                 </div>
 
@@ -655,13 +669,19 @@ html {
                 @endif
                 </div>
                 
-                
+                    
 
 
             <div class="table-header">
                 <hr>
-                <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p>
-                <p class="font-bold">Medications, Treatment & etc.</p>
+                {{-- <p class="font-bold"><a href="{{ route('nurse.viewMedications', ['id' => $patient->patient_id]) }}">Medications, Treatment & etc.</a></p> --}}
+                <p class="font-bold">
+                    <a href="{{ route('nurse.viewMedications', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
+                    <span class="p-1 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                    </span>
+                    <span class="p-1 rounded">Medications</span>
+                </a></p>            
             </div>
             <div class="accordion mt-2 mb-2" id="medicationRemarksAccordion">
                 @foreach ($patient->medicationRemarks->take(3) as $index => $medicationRemark)
@@ -752,11 +772,18 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Progress Notes</h4>
-                <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">Add Progress Note</a>
+                <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Progress Note</a>
             </div>  
             <div class="table-header">
                 <hr>
                 {{-- <p class="font-bold">Medications, Treatment & etc.</p> --}}
+                <p class="font-bold">
+                    <a href="{{ route('nurse.viewNotes', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
+                    <span class="p-1 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                    </span>
+                    <span class="p-1 rounded">Notes</span>
+                </a></p>
             </div>
             <div class="accordion mt-2 mb-2" id="progressNotesAccordion">
                 @foreach ($patient->progressNotes->take(3) as $index => $progressNote)

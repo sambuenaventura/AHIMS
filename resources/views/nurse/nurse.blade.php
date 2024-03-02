@@ -168,6 +168,7 @@ html {
                           <th scope="col">Attending Physician</th>
                           @if(!$admissionType)
                             <th scope="col">Admission Type</th>
+                            <th scope="col"></th>
                         @endif
                           @if(request('admissionType') == 'inpatient')
                               <th scope="col">Room Number</th>
@@ -202,6 +203,18 @@ html {
                         @if(!$admissionType)
 
                         <td>{{ ucfirst($patient->admission_type) }}</td>
+                        <td style="text-align: center; max-width: 80px;">
+                            <div class="">
+                              <a href="/nurse-patients/{{$patient->patient_id}}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
+                                  <span class="p-1 rounded">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                          <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" fill="#ffff"/>
+                                      </svg>
+                                  </span>
+                                  <span class="p-1 rounded">View</span>
+                              </a>
+                            </div>
+                        </td>                        
                         @endif
                         @if(request('admissionType') == 'inpatient')
                             <td>{{  $patient->room_number }}</td>
