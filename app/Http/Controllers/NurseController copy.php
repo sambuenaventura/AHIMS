@@ -18,10 +18,8 @@ use App\Models\ProgressNotes;
 use App\Models\ReviewOfSystems;
 use App\Models\VitalSigns;
 use Carbon\Carbon;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 
 class NurseController extends Controller
 {
@@ -1080,8 +1078,10 @@ public function updateDischargeDate(Request $request, $id)
         $vitalSign->nurse_user_id = $nurseId;
         $patient->vitalSigns()->save($vitalSign);
     
-        return Redirect::route('nurse.edit', ['id' => $patient->patient_id])->with('message', 'Vital signs were successfully updated');
+        return back()->with('message', 'Vital signs were successfully updated');
     }
+
+
 
 
     public function updateMedicationRemark(Request $request, Patients $patient)
@@ -1142,7 +1142,7 @@ public function updateDischargeDate(Request $request, $id)
     }
 
     
-    return redirect()->route('nurse.edit', ['id' => $patient->patient_id])->with('message', $message);
+    return redirect()->route('viewAddRemarkPatient', ['id' => $patient->patient_id])->with('message', $message);
 
 }
 
@@ -1200,42 +1200,6 @@ public function updateProgressNotes(Request $request, Patients $patient)
     }
 
 }
-
-
-public function viewRemarks($id)
-{
-    $patient = Patients::findOrFail($id);
-    $vitalSigns = $patient->vitalSigns()->paginate(10);
-    
-    // Fetch medication remarks for the patient
-    $medicationRemarks = $patient->medicationRemarks;
-
-    // Group medication remarks by date
-    $medicationRemarksByDate = $medicationRemarks->groupBy(function ($item) {
-        return Carbon::parse($item->medication_date)->format('n/j/Y');
-    });
-
-    // Paginate the grouped medication remarks
-    $perPage = 5; // Number of items per page
-    $currentPage = request()->query('page', 1); // Get the current page from the query string
-    $pagedData = new LengthAwarePaginator(
-        $medicationRemarksByDate->forPage($currentPage, $perPage),
-        $medicationRemarksByDate->count(),
-        $perPage,
-        $currentPage,
-        ['path' => request()->url(), 'query' => request()->query()]
-    );
-
-    return view('nurse.show-remarks', compact('patient', 'vitalSigns', 'pagedData'));
-}
-
-
-
-
-
-
-
-
 
 
 // public function archivePatient(Request $request, $patient_id)
@@ -1349,16 +1313,14 @@ public function archivePatient(Request $request, $patient_id)
     // Retrieve the patient from the 'patients' table
     $patient = Patients::findOrFail($patient_id);
 
-    // Update the patient's admission_type to 'archived', set the archived_at timestamp, and clear the room_number
+    // Update the patient's admission_type to 'archived' and set the archived_at timestamp
     $patient->update([
         'admission_type' => 'archived',
         'archived_at' => now(),
-        'room_number' => null,
     ]);
 
     return redirect()->back()->with('message', 'Patient archived successfully.');
 }
-
 
 
 

@@ -35,6 +35,10 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(Patients::class, 'patient_id');
     }
+    public function nurse()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
     public function medtech()
     {
         return $this->belongsTo(User::class, 'receiver_id');

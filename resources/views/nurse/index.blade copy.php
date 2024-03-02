@@ -142,9 +142,7 @@ html {
           <span class="badge bg-success position-absolute top-0 end-0">Available</span>
           <div class="flexi">
               <div>
-                <img src="{{ asset('storage/image/imaging.png') }}" alt="Imaging Image" class="w-24 h-auto mr-4"> 
-  <!-- <img src="/storage/image/imaging.png" alt="Imaging Image" class="w-24 h-auto mr-4">-->
-
+                  <img src="{{ asset('storage/image/imaging.png') }}" alt="Imaging Image" class="w-24 h-auto mr-4">
               </div>
               <div class="flex-col">
                   <h3 class="font-bold text-black text-big">Imaging</h3>
@@ -165,11 +163,13 @@ html {
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Today's Patients</h4>
                 <form class="d-flex" action="{{ route('nurse.index') }}" method="GET">
-            <div class="input-group mb-3">
+                  <div class="input-group mb-3">
                     <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
-                    </div>
+                  </div>
+
                 </form>
+
             </div>
                     
     <hr>
