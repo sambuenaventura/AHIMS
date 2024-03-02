@@ -205,9 +205,9 @@ html {
         <div class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-2">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Nurse Remarks</h4>
-                    <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">Add Remark</a>
-                    </div>   
+                    <h4 class="font-bold">Progress Notes</h4>
+                    <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Progress Note</a>
+                </div>   
                 
                 
                 
@@ -215,24 +215,23 @@ html {
 
             <div class="table-header">
                 <hr>
-                <p class="font-bold">Medications, Treatment & etc.</p>
+                <p class="font-bold">Notes</p>
             </div>
             
-            <div class="accordion mt-2 mb-2" id="medicationRemarksAccordion">
+            <div class="accordion mt-2 mb-2" id="progressNotesAccordion">
                 @php $collapseIndex = 0; @endphp
-                @foreach ($pagedData as $date => $remarks)
-                <div class="d-flex justify-content-end">
-                    <p class="font-bold"><span class="badge badge-primary" style="background-color: #418363;">{{ $date }}</span></p>
-                </div>
-                
-                               
-                 @foreach ($remarks as $index => $medicationRemark)
-                        @if (is_object($medicationRemark))
+                @foreach ($pagedData as $date => $notes)
+                    <div class="d-flex justify-content-end">
+                        <p class="font-bold"><span class="badge badge-primary" style="background-color: #418363;">{{ $date }}</span></p>
+                    </div>
+            
+                    @foreach ($notes as $index => $progressNote)
+                        @if (is_object($progressNote))
                             <div class="card mb-3">
                                 <div class="card-header" id="heading{{ $collapseIndex }}" onclick="toggleCollapse({{ $collapseIndex }})">
                                     <div class="mb-0 d-flex justify-content-between align-items-center">
                                         <p class="mb-0 d-flex justify-content-between align-items-center">
-                                            {{ $medicationRemark->shift ?? 'N/A' }} shift
+                                            {{ $progressNote->shift ?? 'N/A' }} shift
                                             @if ($loop->parent->first && $loop->first)
                                                 <span class="ml-2 badge btn-submit" style="font-size: 0.65em; padding: 4px;">NEW</span>
                                             @endif
@@ -249,41 +248,33 @@ html {
                                     <div class="card-body">
                                         <div class="flex-col">
                                             <p class="font-bold">Date</p>
-                                            <p>{{ \Carbon\Carbon::parse($medicationRemark->medication_date)->format('n/j/Y') }}</p>
+                                            <p>{{ \Carbon\Carbon::parse($progressNote->progress_date)->format('n/j/Y') }}</p>
                                         </div>
                                         <div class="flex-col">
-                                            <p class="font-bold">Medications</p>
-                                            <p>{!! nl2br(e($medicationRemark->medication ?? 'N/A')) !!}</p>
+                                            <p class="font-bold">Shift</p>
+                                            <p>{{ $progressNote->shift ?? 'N/A' }}</p>
                                         </div>
                                         <div class="flex-col">
-                                            <p class="font-bold">Dosage</p>
-                                            <p>{!! nl2br(e($medicationRemark->medication_dosage ?? 'N/A')) !!}</p>
+                                            <p class="font-bold">Focus</p>
+                                            <p>{!! nl2br(e($progressNote->focus ?? 'N/A')) !!}</p>
                                         </div>
                                         <div class="flex-col">
-                                            <p class="font-bold">Dietary Information</p>
-                                            <p>{!! nl2br(e($medicationRemark->dietary_information ?? 'N/A')) !!}</p>
-                                        </div>
-                                        <div class="flex-col">
-                                            <p class="font-bold">Treatment</p>
-                                            <p>{!! nl2br(e($medicationRemark->treatment ?? 'N/A')) !!}</p>
-                                        </div>
-                                        <div class="flex-col">
-                                            <p class="font-bold">Remarks</p>
-                                            <p>{!! nl2br(e($medicationRemark->remarks_notes ?? 'N/A')) !!}</p>
+                                            <p class="font-bold">Progress Notes</p>
+                                            <p>{!! nl2br(e($progressNote->prog_notes ?? 'N/A')) !!}</p>
                                         </div>
                                     </div>
                                     <div class="card-footer">
                                         <div class="flex-row">
                                             <small class="text-muted">Submitted By:</small>
-                                            @if ($medicationRemark->nurse_user)
-                                                <small class="text-muted">{{ $medicationRemark->nurse_user->first_name }} {{ $medicationRemark->nurse_user->last_name }}</small>
+                                            @if ($progressNote->prog_nurse_user)
+                                                <small class="text-muted">{{ $progressNote->prog_nurse_user->first_name }} {{ $progressNote->prog_nurse_user->last_name }}</small>
                                             @else
                                                 <small class="text-muted">Unknown Nurse</small>
                                             @endif
                                         </div>
                                         <div class="flex-row">
                                             <small class="text-muted">Date & Time:</small>
-                                            <small class="text-muted">{{ \Carbon\Carbon::parse($medicationRemark->updated_at)->format('g:i A n/j/Y') }}</small>
+                                            <small class="text-muted">{{ \Carbon\Carbon::parse($progressNote->updated_at)->format('g:i A n/j/Y') }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -293,6 +284,7 @@ html {
                     @endforeach
                 @endforeach
             </div>
+            
             
             <div class="mt-4 mb-4">
                 {{ $pagedData->links() }}

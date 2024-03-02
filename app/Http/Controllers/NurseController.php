@@ -439,7 +439,7 @@ public function updateDischargeDate(Request $request, $id)
     $patient = Patients::findOrFail($id);
     
     $request->validate([
-        'discharge_date' => 'nullable|date',
+        'discharge_date' => 'required|date',
     ]);
 
     $patient->update([
@@ -1202,11 +1202,47 @@ public function updateProgressNotes(Request $request, Patients $patient)
 }
 
 
+// public function viewRemarks($id)
+// {
+//     $patient = Patients::findOrFail($id);
+//     $vitalSigns = $patient->vitalSigns()->paginate(10);
+    
+//     // Fetch medication remarks for the patient
+//     $medicationRemarks = $patient->medicationRemarks;
+
+//     // Group medication remarks by date
+//     $medicationRemarksByDate = $medicationRemarks->groupBy(function ($item) {
+//         return Carbon::parse($item->medication_date)->format('n/j/Y');
+//     });
+
+//     // Paginate the grouped medication remarks
+//     $perPage = 5; // Number of items per page
+//     $currentPage = request()->query('page', 1); // Get the current page from the query string
+//     $pagedData = new LengthAwarePaginator(
+//         $medicationRemarksByDate->forPage($currentPage, $perPage),
+//         $medicationRemarksByDate->count(),
+//         $perPage,
+//         $currentPage,
+//         ['path' => request()->url(), 'query' => request()->query()]
+//     );
+
+//     return view('nurse.show-remarks', compact('patient', 'vitalSigns', 'pagedData'));
+// }
+
+
+
 public function viewRemarks($id)
 {
     $patient = Patients::findOrFail($id);
     $vitalSigns = $patient->vitalSigns()->paginate(10);
-    
+
+    return view('nurse.show-remarks', compact('patient', 'vitalSigns'));
+}
+
+public function viewMedications($id)
+{
+    $patient = Patients::findOrFail($id);
+
     // Fetch medication remarks for the patient
     $medicationRemarks = $patient->medicationRemarks;
 
@@ -1226,13 +1262,35 @@ public function viewRemarks($id)
         ['path' => request()->url(), 'query' => request()->query()]
     );
 
-    return view('nurse.show-remarks', compact('patient', 'vitalSigns', 'pagedData'));
+    return view('nurse.show-medications', compact('patient', 'pagedData'));
 }
 
 
+public function viewNotes($id)
+{
+    $patient = Patients::findOrFail($id);
 
+    // Fetch progress notes for the patient
+    $progressNotes = $patient->progressNotes;
 
+    // Group progress notes by date
+    $progressNotesByDate = $progressNotes->groupBy(function ($item) {
+        return Carbon::parse($item->progress_date)->format('n/j/Y');
+    });
 
+    // Paginate the grouped progress notes
+    $perPage = 5; // Number of items per page
+    $currentPage = request()->query('page', 1); // Get the current page from the query string
+    $pagedData = new LengthAwarePaginator(
+        $progressNotesByDate->forPage($currentPage, $perPage),
+        $progressNotesByDate->count(),
+        $perPage,
+        $currentPage,
+        ['path' => request()->url(), 'query' => request()->query()]
+    );
+
+    return view('nurse.show-notes', compact('patient', 'pagedData'));
+}
 
 
 
