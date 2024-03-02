@@ -394,10 +394,13 @@
                                     <input type="text" id="room_number" name="room_number" value="{{ old('room_number') }}" class="form-control bg-light py-3" placeholder="Room Number" aria-label="Room Number">
                                     <label for="room_number">Room Number</label>
                                 </div> --}}
+                                @if($patient->admission_type != 'archived')
                                 <div class="form-floating">
                                     <input type="text" id="room_number" name="room_number" value="{{$patient->room_number}}" class="form-control bg-light mb-3" disabled placeholder="Room Number" aria-label="Room Number">
                                     <label for="room_number">Room Number</label>
-                                </div>           
+                                </div>
+                                @endif
+                                   
                                 <div class="input-group">
                                     @error('room_number')
                                     <div class="ml-2">

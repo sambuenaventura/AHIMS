@@ -3,7 +3,7 @@
   integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <style>
     /* Default styles */
-.container-fluid {
+    .container-fluid {
     height: 100vh;
 }
 
@@ -172,7 +172,6 @@ button {
 }
 
 }
-
 </style>
 
     <main class="bg-white">
@@ -186,8 +185,7 @@ button {
                         <div class="card-body p-3">
                           <div class="row">
                             <div class="col-6">
-                        <img src="{{ asset('storage/image/login-bg.png') }}" alt="Imaging Image" class="img-fluid">
-
+                              <img src="{{ asset('storage/image/login-bg.png') }}" alt="Imaging Image" class="img-fluid">
                 
                             </div>
                             <div class="col-6">

@@ -183,8 +183,9 @@
                             
                         </div>
                         <div class="buttons my-4 float-end">
-                            <button type="button" onclick="prevStep()" class="btn btn-light me-2">Back</button>
-                            <button type="button" onclick="nextStep()" class="btn btn-success">Next</button>
+                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" onclick="prevStep()" class="btn btn-light me-2">Back</button>
+                            <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="nextStep()" class="btn btn-success">Next</button>
+                           
                         </div>
                     </div>
                 </div>

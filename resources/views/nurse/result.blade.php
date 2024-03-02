@@ -129,6 +129,9 @@ html {
     display: flex;
     flex-direction: row;
 }
+.filename {
+    text-align: center; color: #333; font-weight: bold; font-size: 14px;
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -214,24 +217,32 @@ html {
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">{{ $isImagingService ? 'Imaging' : 'Laboratory' }} Result</h4>
                 </div>
-                <p><strong>File name:</strong></p>
-                <ul>
-                    @php
-                        $images = json_decode($request->image);
-                    @endphp
-                    @foreach ($images as $image)
-                        <li>{{ basename($image) }}</li>
-                    @endforeach
-                </ul>
-                
+                <hr>
+                <div class="mt-2">
+                    <p><strong>MedTech on Duty:</strong> {{ $request->medtech->first_name }} {{ $request->medtech->last_name }}</p>
+                    <p><strong>Date Completed:</strong> {{ $request->updated_at->format('h:i A n/j/Y') }}</p>
+                </div>
+                {{-- <p><strong>File name:</strong> --}}
+                    {{-- <ul> --}}
+                        @php
+                            $images = json_decode($request->image);
+                        @endphp
+                        {{-- @foreach ($images as $image)
+                            <li>{{ basename($image) }}</li>
+                        @endforeach
+                    </ul> --}}
+     
                 <p><strong>Message:</strong> {{ $request->message }}</p>
                 <div class="image-container bg-[#DCEDDD] px-24 py-12 rounded d-flex flex-wrap">
                     @foreach ($images as $image)
                         <div class="image-wrapper mb-16">
                             <img src="{{ asset('storage/' . $image) }}" alt="Image" style="max-width: 100%; height: auto;">
+                            <p class="filename">{{ basename($image) }}</p>
                         </div>
                     @endforeach
                 </div>
+                
+                
             </div>
         </div>
       

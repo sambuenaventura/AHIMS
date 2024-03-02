@@ -196,15 +196,16 @@ html {
             <div class="box box1 flex-col bg-white shadow-md" style="margin-top: -20px;">
                 <p class="font-bold">Laboratory/Imaging Services</p>
                 <a href="{{ route('requestService', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Request a Service</a>
+                <a href="{{ route('showResults', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit mt-2" style="width:auto;">View Results</a>
             </div>
 
             @if ($patient->admission_type === 'Inpatient')
             <div class="box box1 flex-col bg-custom-101 mt-10 shadow-md">
-                <p class="font-bold">Discharge Date</p>
+                <p class="font-bold">Set Discharge Date</p>
                 <form action="{{ route('patients.updateDischargeDate', ['patient_id' => $patient->patient_id]) }}" method="POST" class="flex gap-4">
                     @csrf 
                     <input type="date" class="form-control rounded-4 m-0" placeholder="Date" id="discharge_date" name="discharge_date" value="{{ $patient->discharge_date ?? '' }}"/>
-                    <button type="submit" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Set</button>
+                    <button type="submit" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Discharge</button>
                 </form>
             </div>
         @endif
@@ -514,10 +515,16 @@ html {
 
                 <div class="table-header">
                     <hr>
-                    <p class="font-bold">Vital Signs</p>
+                    <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p>
+
                 </div>
 
                 <div class="row row-cols-2 g-4">
+                    @if($patient->vitalSigns->isEmpty())
+                    <div class="col-12 text-center">
+                        <p>No vital signs recorded</p>
+                    </div>
+                @else
                     @foreach ($patient->vitalSigns->take(2) as $key => $vitalSign)
                         <!-- 'take(2)' limits the number of records to two initially -->
                         <div class="col">
@@ -641,11 +648,11 @@ html {
                 
                     <!-- Button to show more vital sign cards -->
                     @if(count($patient->vitalSigns) > 2)
-                        <div class="col-12 text-center mt-4">
+                        <div class="col-12 text-center mt-4 mb-4">
                             <button id="showMoreButton" class="badge btn-submit" onclick="toggleSecondRow()">Show more</button>
                         </div>
                     @endif
-                
+                @endif
                 </div>
                 
                 
@@ -653,6 +660,7 @@ html {
 
             <div class="table-header">
                 <hr>
+                <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p>
                 <p class="font-bold">Medications, Treatment & etc.</p>
             </div>
             <div class="accordion mt-2 mb-2" id="medicationRemarksAccordion">

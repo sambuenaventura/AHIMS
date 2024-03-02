@@ -369,7 +369,7 @@ html {
                             </div>
                             
                         </div>
-                        <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="chemistryInput" name="chemistryInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                        <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="chemistryInput" name="chemistryInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
 
                     </div>
 
@@ -418,7 +418,7 @@ html {
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="hematologyInput" name="hematologyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                        <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="hematologyInput" name="hematologyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
 
                     </div>
 
@@ -463,7 +463,7 @@ html {
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="bbisInput" name="bbisInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                        <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="bbisInput" name="bbisInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
 
                     </div>
 
@@ -492,7 +492,7 @@ html {
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="parasitologyInput" name="parasitologyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                        <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="parasitologyInput" name="parasitologyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
 
                     </div>
         
@@ -531,7 +531,7 @@ html {
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="microbiologyInput" name="microbiologyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                        <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="microbiologyInput" name="microbiologyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
 
                     </div>
 
@@ -566,7 +566,7 @@ html {
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="microscopyInput" name="microscopyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
+                        <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="microscopyInput" name="microscopyInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage()">
 
                     </div>
 
@@ -648,7 +648,7 @@ html {
 
         {{-- MEDTECH RESULTS --}}
         {{-- @if ($medtechCompletedResults->isNotEmpty()) --}}
-        <div id="medtechResults" class="card pe-0 mb-4 shadow-md">
+        {{-- <div id="medtechResults" class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Laboratory Results</h4>
@@ -733,7 +733,7 @@ html {
                     {{ $medtechCompletedResults->links() }}
                 </div>
             </div>
-        </div>
+        </div> --}}
         {{-- @endif --}}
 
 

@@ -609,7 +609,7 @@ html {
                                     <label class="form-check-label" for="XrayOthers">Others: </label>
                                 </div>    
                             </div>
-                            <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="xrayInput" name="xrayInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
+                            <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="xrayInput" name="xrayInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
 
 
                         </div>
@@ -701,7 +701,7 @@ html {
                                     </div>
                                     <!-- Add more checkboxes for other ultrasound tests -->
                                 </div>
-                                <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="ultrasoundInput" name="ultrasoundInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
+                                <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="ultrasoundInput" name="ultrasoundInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
 
                             </div>
                     </div>
@@ -850,7 +850,7 @@ html {
                                         <label class="form-check-label" for="CtscanOthers">Others: </label>
                                     </div>   
                                 </div>
-                                <input type="text" class="form-control form-control-sm border-light rounded-2 mt-2" id="ctscanInput" name="ctscanInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
+                                <input type="text" class="form-control mt-2 bg-light rounded-2 py-1" id="ctscanInput" name="ctscanInput" placeholder="Others" style="display: none;" onchange="updateSenderMessage2()">
                             </div>
                     </div>
                     
@@ -930,7 +930,7 @@ html {
         
          {{-- RADTECH RESULTS--}}
         {{-- @if ($radtechCompletedResults->isNotEmpty())        --}}
-        <div id="radtechResults" class="card pe-0 mb-4 shadow-md">
+        {{-- <div id="radtechResults" class="card pe-0 mb-4 shadow-md">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Imaging Results</h4>
@@ -993,7 +993,7 @@ html {
                     {{ $radtechCompletedResults->links() }}
                 </div>
             </div>
-        </div>
+        </div> --}}
         {{-- @endif --}}
 
       </div>

@@ -138,6 +138,9 @@ html {
                             @if(!$status)
                                 <th scope="col">Status</th>
                             @endif
+                            @if(request('status') === 'pending')
+                                <th scope="col">Nurse on Duty</th>
+                            @endif
                             @if(request('status') === 'accepted')
                                 <th scope="col">MedTech on Duty</th>
                             @endif
@@ -160,6 +163,9 @@ html {
                                 <td>{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
                                 <td>{{ $request->procedure_type }}</td>
                                 <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>
+                                @if(request('status') === 'pending')
+                                <td>{{ optional($request->nurse)->first_name }} {{ optional($request->nurse)->last_name }}</td>
+                                @endif      
                                 @if(request('status') === 'accepted')
                                 <td>{{ optional($request->medtech)->first_name }} {{ optional($request->medtech)->last_name }}</td>
                                 @endif
@@ -183,8 +189,12 @@ html {
                                 <td style="min-width: 140px;">{{ $request->message }}</td>
                                 @endif   
                                 @if(!$status)
-                                <td>{{ ucfirst($request->status) }}</td>
-                            @endif
+                                <td>
+                                    <span class="badge @if($request->status == 'completed') bg-success @elseif($request->status == 'declined') bg-danger @elseif($request->status == 'accepted') bg-primary @elseif($request->status == 'pending') bg-secondary @endif">
+                                        {{ ucfirst($request->status) }}
+                                    </span>
+                                </td>                    
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
@@ -220,5 +230,9 @@ html {
             document.getElementById('archivePatientForm_' + patientId).submit();
         }
     }
+
+    
 </script>
+
+
 @include('partials.footer')

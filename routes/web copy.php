@@ -63,10 +63,6 @@ Route::controller(NurseController::class)->group(function() {
         Route::put('/nurse-patients/update-vital-signs/{patient}', 'updateVitalSigns');
         Route::put('/nurse-patients/update-medication-remark/{patient}', 'updateMedicationRemark')->name('nurse.updateMedication');
         
-        Route::get('/nurse-patients/show-remarks/{id}', 'viewRemarks')->name('nurse.viewRemarks');
-
-
-
         Route::get('/nurse-patients/add-progress-note/{id}', 'viewProgressNotesPatient');
         Route::put('/nurse-patients/update-progress-notes/{patient}', 'updateProgressNotes')->name('nurse.updateProgressNotes');
         

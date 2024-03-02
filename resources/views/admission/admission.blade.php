@@ -85,28 +85,36 @@
                     <h4 class="font-bold">Patients</h4>
                     @if(request('admissionType') == 'inpatient')
                     <form class="d-flex" action="{{ route('admission.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
-                      <input class="form-control me-2" type="search" placeholder="Search Inpatient Patients" aria-label="Search" name="inpatientSearch">
-                      <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                      <button class="btn btn-outline-success" type="submit">Search</button>
+                      <div class="input-group mb-3">
+                        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="inpatientSearch">
+                        <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                      </div>
                   </form>
                 @elseif(request('admissionType') == 'outpatient')
                 <form class="d-flex" action="{{ route('admission.searchOutpatient', ['admissionType' => 'outpatient']) }}" method="GET">
-                  <input class="form-control me-2" type="search" placeholder="Search Outpatient Patients" aria-label="Search" name="outpatientSearch">
-                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  <div class="input-group mb-3">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="outpatientSearch">
+                    <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                  </div>
               </form>
                 @elseif(request('admissionType') == 'archived')
                 <form class="d-flex" action="{{ route('admission.searchArchived', ['admissionType' => 'archived']) }}" method="GET">
-                  <input class="form-control me-2" type="search" placeholder="Search Archived Patients" aria-label="Search" name="archivedSearch">
-                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  <div class="input-group mb-3">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="archivedSearch">
+                    <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                  </div>
               </form>
               
                 @else
                 <form class="d-flex" action="{{ route('admission.view', ['admissionType' => request('admissionType')]) }}" method="GET">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
-                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  <div class="input-group mb-3">  
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
+                    <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                  </div>
               </form>
                 @endif
                 
@@ -179,13 +187,16 @@
                           @endif
                           <!-- Actions for all patients -->
                           <td style="text-align: center;">
-                            <a href="/patient/{{$patient->patient_id}}" style="display: inline-block;">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" fill="#418363"/>
-                              </svg>
-                              
+                            <a href="/patient/{{$patient->patient_id}}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
+                                <span class="p-1 rounded">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                        <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" fill="#ffff"/>
+                                    </svg>
+                                </span>
+                                <span class="p-1 rounded">View</span>
                             </a>
-                          </td>
+                        </td>
+                        
                       </tr>
                       @endforeach
                   </tbody>

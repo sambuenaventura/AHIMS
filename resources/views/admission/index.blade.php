@@ -135,7 +135,7 @@ text-align: center;
                 </div>
                 <div class="flex-col">
                   <h1 class="font-bold text-black">{{ $inpatientCount }}</h1>
-                  <p class="mb-1">Outpatient</p>
+                  <p class="mb-1">Inpatient</p>
                 </div>
           </div>
 
@@ -158,12 +158,15 @@ text-align: center;
         <div class="card pe-0 shadow">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4>Doctors</h4>
+                    <h4 class="font-bold">Doctors</h4>
                     <form class="d-flex" action="{{ route('admission.index') }}" method="GET">
-                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+                      <div class="input-group mb-3">
+
+                      <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
                       <!-- Hidden input field for the specialty -->
                       <input type="hidden" name="specialty" value="{{ request('specialty') }}">
                       <button class="btn btn-outline-success" type="submit">Search</button>
+                      </div>
                   </form>
                   
                   
@@ -240,7 +243,7 @@ text-align: center;
                         <td>{{ $physician->physician_id }}</td>
                         <td>{{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
                         <td>{{ $physician->patients()->count() }}</td> <!-- Display the number of patients -->
-                        <td>Availability status here</td> <!-- You can add availability status here -->
+                        <td><span style="color:green; font-size: 1.25em;">•</span> Available</td> <!-- You can add availability status here -->
                     </tr>
                     @endforeach
                 </tbody>

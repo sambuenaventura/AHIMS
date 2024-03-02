@@ -14,9 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-     <script src="https://cdn.tailwindcss.com"></script>
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
-
 </head>
 
 <style> 
@@ -53,37 +50,13 @@
 
 
 
-        /* Extend Theme Configuration */
-        .bg-custom-50 { background-color: #418363; }
-        .bg-custom-51 { background-color: #F9F8F5; }
-        .bg-custom-52 { background-color: #F6F6F6; }
-        .bg-custom-100 { background-color: #5DA07F; }
-        .bg-custom-101 { background-color: #DCEDDD; }
-        .bg-custom-102 { background-color: #9CCA9E; }
-        .bg-custom-103 { background-color: #D8DFD8; }
-        .bg-custom-150 { background-color: #A4DEC4; }
-        .bg-custom-200 { background-color: #418363; }
-        .bg-custom-300 { background-color: #E7E7E7; }
-        .bg-custom-400 { background-color: #5C9F7F; }
-        .bg-custom-500 { background-color: #91C794; }
-        .bg-custom-600 { background-color: #00AB98; }
-        .bg-custom-700 { background-color: #F9F8F5; }
-        .bg-custom-800 { background-color: #1f2937; }
-        .bg-custom-900 { background-color: #111827; }
-        .bg-custom-901 { background-color: #D8DFD8; }
-        /* Define Custom Colors */
-        .text-custom { color: #418363; }
+
 
 
 
 body,h1,h2,h3,h4,h5,p, span  {
     font-family: "Inter", sans-serif !important;
     
-}
-
-/* Target only the <h4> elements inside .card-body */
-.card-body h4 {
-    font-size: 1.5rem !important; /* Adjust the font size as needed */
 }
 
 a,
@@ -95,9 +68,6 @@ h5,
 span {
     text-decoration: none;
 }
-
-
-
 /* Override Bootstrap's default checkbox styles for checked state */
 .form-check-input:checked {
     background-color: #418363;
@@ -107,16 +77,14 @@ span {
 .modal-backdrop {
     background-color: #043c20 !important;
 }
-h1,h2,h3,h4,h5,h6,p, ul {
-    margin-bottom: 1rem !important;
-}
+
 .btn-custom-style {
     width: 102.95px;
     height: 38.67px;
 }
 .btn-submit {
-    background: #418363 !important;
-    color: #FFFFFF !important;
+    background: #418363;
+    color: #FFFFFF;
 
 }
 .btn-cancel {
@@ -162,36 +130,12 @@ h1,h2,h3,h4,h5,h6,p, ul {
 
 }
 
-
-/* Style for the datePlaceholder */
-#datePlaceholder {
-  color: grey; /* Set text color to grey */
-  font-size: 0.75em !important; /* Adjust font size as needed */
-}
-hr {
-    margin-bottom: 2rem !important;
-}
-/* Style for the timePlaceholder */
-#timePlaceholder {
-  font-size: 1.9em !important; /* Adjust font size as needed */
-}
-
-.flex-col h1 {
-    font-size: 2rem;
-}
-
 td {
     width: 50px;
     height: 50px;
 }
 td {
     vertical-align: middle;
-}
-.left-top-1 h4 {
-    font-size: 1.5em;
-}
-.small, small {
-    font-size: .875em !important;
 }
 /* .vertical-center {
     vertical-align: middle;
