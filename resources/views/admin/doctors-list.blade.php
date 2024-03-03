@@ -82,7 +82,7 @@
         <div class="card pe-0">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Doctors</h4>
+                    <h4 class="font-bold">Physicians</h4>
                     <form class="d-flex" action="{{ route('admin.doctorsView') }}" method="GET">
                       <div class="input-group mb-3">
 
@@ -134,8 +134,8 @@
                 <table class="table table-striped mt-3 Add">
                   <thead>
                       <tr>
-                          <th scope="col">Patient ID</th>
-                          <th scope="col">Patient Name</th>
+                          <th scope="col">ID</th>
+                          <th scope="col">Name</th>
                           <th scope="col">Specialty</th>
                           <th scope="col">No. of Patients</th>
                           <th scope="col">Availability</th>
@@ -145,10 +145,11 @@
                     @foreach ($physicians as $physician)
                     <tr>
                         <td>{{ $physician->physician_id }}</td>
-                        <td>{{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
+                        <td>Dr. {{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
                         <td>{{ str_replace('_', ' ', $physician->specialty) }}</td>
                         <td>{{ $physician->patients()->count() }}</td> <!-- Display the number of patients -->
-                        <td><span style="color:green; font-size: 1.25em;">•</span> Available</td> <!-- You can add availability status here -->
+                        <td>{{ $physician->availability }}</td>
+                        {{-- <td><span style="color:green; font-size: 1.25em;">•</span> Available</td> <!-- You can add availability status here --> --}}
                         {{-- <td>{{ $physician->phy_contact_number }}</td> --}}
                         <!-- Add more columns if needed -->
                     </tr>

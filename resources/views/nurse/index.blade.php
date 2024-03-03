@@ -163,7 +163,7 @@ html {
         <div class="card pe-0 shadow">
             <div class="card-body m-1">
               <div class="d-flex justify-content-between mb-4">
-                <h4 class="font-bold">Today's Patients</h4>
+                <h4 class="font-bold">Patients</h4>
                 <form class="d-flex" action="{{ route('nurse.index') }}" method="GET">
             <div class="input-group mb-3">
                     <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">

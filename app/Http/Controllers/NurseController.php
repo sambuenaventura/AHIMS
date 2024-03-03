@@ -1392,6 +1392,31 @@ public function viewNotes($id)
 // }
 
 
+// public function archivePatient(Request $request, $patient_id)
+// {
+//     // Validate the request data
+//     $request->validate([
+//         'password' => 'required|string', // Add any additional validation rules for the password
+//     ]);
+
+//     // Check if the password matches the user's password
+//     if (!Hash::check($request->password, Auth::user()->password)) {
+//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+//     }
+
+//     // Retrieve the patient from the 'patients' table
+//     $patient = Patients::findOrFail($patient_id);
+
+//     // Update the patient's admission_type to 'archived', set the archived_at timestamp, and clear the room_number
+//     $patient->update([
+//         'admission_type' => 'archived',
+//         'archived_at' => now(),
+//         'room_number' => null,
+//     ]);
+
+//     return redirect()->back()->with('message', 'Patient archived successfully.');
+// }
+
 public function archivePatient(Request $request, $patient_id)
 {
     // Validate the request data
@@ -1412,11 +1437,11 @@ public function archivePatient(Request $request, $patient_id)
         'admission_type' => 'archived',
         'archived_at' => now(),
         'room_number' => null,
+        'delete_after' => now()->addMinutes(2), // Schedule deletion after 2 minutes
     ]);
 
     return redirect()->back()->with('message', 'Patient archived successfully.');
 }
-
 
 
 

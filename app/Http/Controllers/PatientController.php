@@ -288,8 +288,9 @@ public function store(Request $request)
         "ap_first_name" => ['required', 'min:1'],
         "ap_last_name" => ['required', 'min:1'],
         "ap_contact_number" => ['required'],
+        "physician_id" => ['required'],
         "admission_type" => ['required'],
-        "room_number" => [], // No need to enforce required here
+        "room_number" => [''], // No need to enforce required here
     ]);
 
     // If admission type is Outpatient, set the room number to "For ER"

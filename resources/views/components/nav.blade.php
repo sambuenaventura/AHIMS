@@ -21,14 +21,14 @@
           {{-- <a href="/add/patient" class="btn btn-success btn-custom-style btn-submit ">+ Add Patient</a> --}}
             {{-- <a href="/add/patient" class="btn btn-success btn-submit mr-4">+ Add Patient</a> --}}
             
-            <a class="btn btn-success ms-2 btn-custom-style btn-submit mr-4{{ auth()->user()->role !== 'admission' && auth()->user()->role !== 'admin' ? ' d-none' : '' }}" style="width: auto;" href="{{ auth()->user()->role === 'admission' || auth()->user()->role === 'admin' ? '/add/specialist' : '#' }}">
-              {{ auth()->user()->role === 'admission' || auth()->user()->role === 'admin' ? '+ Add Specialist' : ''}}
+            <a class="btn btn-success ms-2 btn-custom-style btn-submit mr-4{{ auth()->user()->role !== 'admission' ? ' d-none' : '' }}" style="width: auto;" href="{{ auth()->user()->role === 'admission' ? '/add/patient' : '#' }}">
+              {{ auth()->user()->role === 'admission' ? '+ Add Patient' : ''}}
           </a>
           
+          <a class="btn btn-success ms-2 btn-custom-style btn-submit mr-4{{ auth()->user()->role !== 'admin' ? ' d-none' : '' }}" style="width: auto;" href="{{ auth()->user()->role === 'admin' ? '/add/specialist' : '#' }}">
+            {{ auth()->user()->role === 'admin' ? '+ Add Specialist' : ''}}
+        </a>
           
-  
-          
-  
   
   
       <a href="#" class="text-gray-800 hover:text-gray-600">
@@ -160,7 +160,7 @@
               <a class="btn bg-light p-2 text-dark bg-opacity-25 material-symbols-outlined text-white" href="{{ auth()->user()->role === 'admission' ? '/admission-dashboard' : 
               (auth()->user()->role === 'nurse' ? '/nurse-patients' : 
               (auth()->user()->role === 'medtech' ? '/medtech-dashboard' : 
-              (auth()->user()->role === 'radtech' ? '/radtech-list' : '#'))) }}">
+              (auth()->user()->role === 'radtech' ? '/radtech-dashboard' : '#'))) }}">
                   event_available
               </a>
           </li>

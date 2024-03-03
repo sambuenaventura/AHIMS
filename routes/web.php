@@ -54,8 +54,28 @@ Route::controller(AdminController::class)->group(function() {
         Route::get('/medtechs-list', 'medtechsView')->name('admin.medtechsView');
         Route::get('/radtechs-list', 'radtechsView')->name('admin.radtechsView');
 
-        Route::get('/add/specialist', 'create')->name('admin.create');
-    });
+
+
+        // Handle the registration form submission
+        Route::get('/add/specialist', 'register')->name('register');
+
+        Route::get('/add/specialist/doctor', 'addDoctor')->name('addDoctor');
+        Route::post('/add/specialist/doctor', 'storeDoctor')->name('storeDoctor');
+
+        Route::get('/add/specialist/nurse', 'addNurse')->name('addNurse');
+        Route::post('/store/nurse', 'storeNurse')->name('storeNurse');
+
+
+        Route::get('/add/specialist/medtech', 'addMedtech')->name('addMedtech');
+        Route::post('/store/medtech', 'storeMedtech')->name('storeMedtech');
+
+
+        Route::get('/add/specialist/radtech', 'addRadtech')->name('addRadtech');
+        Route::post('/store/radtech', 'storeRadtech')->name('storeRadtech');
+
+
+
+        Route::post('/add/specialist', 'store')->name('store');    });
 });
 
 
@@ -158,11 +178,6 @@ Route::controller(RadTechController::class)->group(function() {
         Route::post('/process-imaging', 'processResult')->name('process.imaging');
         
         Route::get('/radtech-patients/{patientId}/request/{requestId}', 'viewRequest')->name('radtech.viewRequest');
-        
-        // Add a route for user registration
-        Route::get('/register', 'register')->name('register');
 
-        // Handle the registration form submission
-        Route::post('/register', 'store')->name('store');
     });
 });

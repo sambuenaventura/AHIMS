@@ -43,7 +43,7 @@ gap: 3rem;
   /* Add styling for the boxes as needed */
   padding: 20px;
   height: 11rem;
-  width: 20rem;
+  max-width: 30rem;
 }
 
 
@@ -121,25 +121,44 @@ text-align: center;
           </div>
           <div class="box flexi flex-row bg-custom-101 shadow">
                 <div>
-                    <img src="{{ asset('storage/image/inpatient.png') }}" alt="Inpatient Image" class="w-24 h-auto mr-4">
+                    <img src="{{ asset('storage/image/physician-b.png') }}" alt="Physician Image" class="w-24 h-auto mr-4">
                 </div>
                 <div class="flex-col">
-                  <h1 class="font-bold text-black">{{ $inpatientCount }}</h1>
-                  <p class="mb-1">Inpatient</p>
+                  <h1 class="font-bold text-black">{{ $physicianCount }}</h1>
+                  <p class="mb-1">Physicians</p>
                 </div>
           </div>
 
 
           <div class="box flexi flex-row bg-custom-101 shadow">
               <div>
-                  <img src="{{ asset('storage/image/outpatient.png') }}" alt="Outpatient Image" class="w-24 h-auto mr-4">
+                <img src="{{ asset('storage/image/nurse-b.png') }}" alt="Nurse Image" class="w-24 h-auto mr-4 invert">
+            </div>
+              <div class="flex-col">
+                <h1 class="font-bold text-black">{{ $nurseCount }}</h1>
+                <p class="mb-1">Nurses</p>
+              </div>
+          </div>
+          
+          <div class="box flexi flex-row bg-custom-101 shadow">
+              <div>
+                  <img src="{{ asset('storage/image/medtech-b.png') }}" alt="medtech Image" class="w-24 h-auto mr-4">
               </div>
               <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $outpatientCount }}</h1>
-                <p class="mb-1">Outpatient</p>
+                <h1 class="font-bold text-black">{{ $medtechCount }}</h1>
+                <p class="mb-1">Medical Technologists</p>
               </div>
           </div>
           <div class="box flexi flex-row bg-custom-101 shadow">
+              <div>
+                  <img src="{{ asset('storage/image/radtech-b.png') }}" alt="Radtech Image" class="w-24 h-auto mr-4">
+              </div>
+              <div class="flex-col">
+                <h1 class="font-bold text-black">{{ $radtechCount }}</h1>
+                <p class="mb-1">Radiologic Technologist</p>
+              </div>
+          </div>
+          {{-- <div class="box flexi flex-row bg-custom-101 shadow">
               <div>
                   <img src="{{ asset('storage/image/outpatient.png') }}" alt="Outpatient Image" class="w-24 h-auto mr-4">
               </div>
@@ -147,25 +166,7 @@ text-align: center;
                 <h1 class="font-bold text-black">{{ $outpatientCount }}</h1>
                 <p class="mb-1">Outpatient</p>
               </div>
-          </div>
-          <div class="box flexi flex-row bg-custom-101 shadow">
-              <div>
-                  <img src="{{ asset('storage/image/outpatient.png') }}" alt="Outpatient Image" class="w-24 h-auto mr-4">
-              </div>
-              <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $outpatientCount }}</h1>
-                <p class="mb-1">Outpatient</p>
-              </div>
-          </div>
-          <div class="box flexi flex-row bg-custom-101 shadow">
-              <div>
-                  <img src="{{ asset('storage/image/outpatient.png') }}" alt="Outpatient Image" class="w-24 h-auto mr-4">
-              </div>
-              <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $outpatientCount }}</h1>
-                <p class="mb-1">Outpatient</p>
-              </div>
-          </div>
+          </div> --}}
 
           <!-- Remove one box -->
         </div>

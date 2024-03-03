@@ -266,8 +266,8 @@ html {
                                     <div class="card-footer">
                                         <div class="flex-row">
                                             <small class="text-muted">Submitted By:</small>
-                                            @if ($progressNote->prog_nurse_user)
-                                                <small class="text-muted">{{ $progressNote->prog_nurse_user->first_name }} {{ $progressNote->prog_nurse_user->last_name }}</small>
+                                            @if ($progressNote->nurse_user)
+                                                <small class="text-muted">{{ $progressNote->nurse_user->first_name }} {{ $progressNote->nurse_user->last_name }}</small>
                                             @else
                                                 <small class="text-muted">Unknown Nurse</small>
                                             @endif

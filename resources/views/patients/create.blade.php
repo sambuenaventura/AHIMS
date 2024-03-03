@@ -310,21 +310,21 @@
                                 <h6 class="text-success">IV. Attending Physician</h6>
                                 <div class="form-floating">
                                     <select id="specialist" name="specialist" class="form-select bg-light py-3">
-                                        <option value="">Select Specialist</option>
+                                        <option value="" disabled>Select Specialist</option>
                                         @foreach ($physicians as $physician)
                                             <option value="{{ $physician->physician_id }}">Dr. {{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</option>
                                         @endforeach
                                     </select>
-                                    
                                 </div>
                                 
                                 <div class="input-group">
-                                    @error('specialist')
+                                    @error('physician_id')
                                     <div class="mr-40">
-                                        <p class="text-red-500 text-xs p-1">{{ $message }}</p>
+                                        <p class="text-red-500 text-xs p-1">Specialist field is required</p>
                                     </div>
                                     @enderror
                                 </div>
+                                
                             </div>
                             <div class="col">
                                 <h6 class="text-success">ㅤ</h6>
@@ -541,6 +541,37 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// function submitForm() {
+//     var inpatientChecked = document.querySelector('input[name="admission_type"][value="Inpatient"]');
+//     var outpatientChecked = document.querySelector('input[name="admission_type"][value="Outpatient"]');
+//     var roomNumberSelect = document.getElementById("room_number");
+
+//     if (!inpatientChecked.checked && !outpatientChecked.checked) {
+//         document.getElementById("error-message").style.display = "block";
+//         return;
+//     }
+
+//     // Change background color of the selected radio button
+//     if (inpatientChecked.checked) {
+//         inpatientChecked.parentElement.style.backgroundColor = "#9CCA9E"; // Green color for Inpatient
+//         outpatientChecked.disabled = true; // Disable the outpatient option
+//         roomNumberSelect.querySelector('option[value="For ER"]').disabled = true; // Disable the "For ER" option
+//     } else {
+//         outpatientChecked.parentElement.style.backgroundColor = "#9CCA9E"; // Green color for Outpatient
+//         inpatientChecked.disabled = true; // Disable the inpatient option
+//         roomNumberSelect.value = "For ER"; // Set default value to "For ER"
+//         roomNumberSelect.disabled = true; // Disable the dropdown selection
+//     }
+
+//     // Add a delay of 0.5 seconds before hiding the modal and submitting the form
+//     setTimeout(function() {
+//         document.getElementById("patientOptionsOverlay").style.display = "none"; // Hide the modal
+//         document.getElementById("patientForm").submit(); // Submit the form
+//     }, 300); // 300 milliseconds = 0.3 seconds
+//     document.getElementById("patientForm").submit(); // Submit the form
+// }
+
+
 function submitForm() {
     var inpatientChecked = document.querySelector('input[name="admission_type"][value="Inpatient"]');
     var outpatientChecked = document.querySelector('input[name="admission_type"][value="Outpatient"]');
@@ -555,12 +586,31 @@ function submitForm() {
     if (inpatientChecked.checked) {
         inpatientChecked.parentElement.style.backgroundColor = "#9CCA9E"; // Green color for Inpatient
         outpatientChecked.disabled = true; // Disable the outpatient option
-        roomNumberSelect.querySelector('option[value="For ER"]').disabled = true; // Disable the "For ER" option
+        roomNumberSelect.value = ""; // Reset the room number to empty value
+        roomNumberSelect.disabled = false; // Enable the dropdown selection
+
+        // Show only available rooms for inpatients
+        roomNumberSelect.querySelectorAll('option').forEach(function(option) {
+            if (option.value === "For ER") {
+                option.style.display = "none"; // Hide "For ER" option
+            } else {
+                option.style.display = "block"; // Show other available rooms
+            }
+        });
     } else {
         outpatientChecked.parentElement.style.backgroundColor = "#9CCA9E"; // Green color for Outpatient
         inpatientChecked.disabled = true; // Disable the inpatient option
         roomNumberSelect.value = "For ER"; // Set default value to "For ER"
         roomNumberSelect.disabled = true; // Disable the dropdown selection
+
+        // Show only "For ER" option for outpatients
+        roomNumberSelect.querySelectorAll('option').forEach(function(option) {
+            if (option.value === "For ER") {
+                option.style.display = "block"; // Show "For ER" option
+            } else {
+                option.style.display = "none"; // Hide other available rooms
+            }
+        });
     }
 
     // Add a delay of 0.5 seconds before hiding the modal and submitting the form
@@ -568,8 +618,12 @@ function submitForm() {
         document.getElementById("patientOptionsOverlay").style.display = "none"; // Hide the modal
         document.getElementById("patientForm").submit(); // Submit the form
     }, 300); // 300 milliseconds = 0.3 seconds
-    document.getElementById("patientForm").submit(); // Submit the form
 }
+
+    // Clear the value of the select element on page load/refresh
+    window.onload = function() {
+        document.getElementById("specialist").value = "";
+    };
 
 
 function showConfirmationModal() {

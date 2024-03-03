@@ -96,8 +96,8 @@
                 <table class="table table-striped mt-3 Add">
                   <thead>
                       <tr>
-                          <th scope="col">Admission Officer ID</th>
-                          <th scope="col">Admission Officer Name</th>
+                          <th scope="col">ID</th>
+                          <th scope="col">Name</th>
                       </tr>
                   </thead>
                   <tbody>

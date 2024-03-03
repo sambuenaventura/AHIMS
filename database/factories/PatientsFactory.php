@@ -30,8 +30,8 @@ class PatientsFactory extends Factory
             'ap_first_name' => fake()->firstName(),
             'ap_last_name' => fake()->lastName(),
             'ap_contact_number' => '09' . fake()->numerify('#########'), // Generates a random contact number starting with '09'
-            'room_number' => fake()->numberBetween(1, 90), // Generates a random room number between 100 and 999
-            'specialist' => fake()->name(), // Generates a random name
+            // 'room_number' => 'For ER',
+            // 'specialist' => fake()->name(), // Generates a random name
             'admission_type' => fake()->randomElement(['Inpatient', 'Outpatient']), // Generates a random admission type
         ];
         

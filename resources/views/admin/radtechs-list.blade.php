@@ -97,8 +97,8 @@
                 <table class="table table-striped mt-3 Add">
                   <thead>
                       <tr>
-                          <th scope="col">Radiologic Technologist ID</th>
-                          <th scope="col">Radiologic Technologist Name</th>
+                          <th scope="col">ID</th>
+                          <th scope="col">Name</th>
                           <th scope="col">Student Number</th>
                           <th scope="col">HAU Email</th>
                       </tr>
@@ -109,7 +109,7 @@
                           <td>{{ $radtech->id }}</td>
                           <td>{{ $radtech->first_name }} {{ $radtech->last_name }}</td> 
                           {{-- <td>{{ $radtech->student_number }}</td> <!-- Student Number --> --}}
-                          <td>xxxx</td> 
+                          <td>{{ $radtech->student_number }}</td>
                           <td>{{ $radtech->email }}</td>
                       </tr>
                       @endforeach

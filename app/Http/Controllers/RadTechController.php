@@ -257,9 +257,12 @@ class RadTechController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'message' => ['required', 'string'],
-            'image.*' => ['required', 'image', 'max:2048'], // Max size 2MB for each image, adjust as needed
+            'image.*' => ['required', 'image', 'max:12288'], // Max size 12MB for each image
             'request_id' => ['required', 'exists:requests,request_id'],
+        ], [
+            'image.*.max' => 'The file size must not exceed 12MB.', // Error message for file size validation
         ]);
+        
     
         // Find the request by request ID
         $requestEntry = ServiceRequest::findOrFail($validatedData['request_id']);

@@ -29,12 +29,19 @@ class AdminController extends Controller
 
 {
     public function index(Request $request) {
-        $allPatients = $this->getAllPatients();
-        $inpatientCount = $this->getInpatientCount($allPatients);
-        $outpatientCount = $this->getOutpatientCount($allPatients);
-        $physicians = $this->getPhysicians($request);
+        // Count the number of physicians
+        $physicianCount = Physicians::count();
     
-        return view('admin.index', compact('allPatients', 'inpatientCount', 'outpatientCount', 'physicians'));
+        // Count the number of nurses
+        $nurseCount = User::where('role', 'nurse')->count();
+    
+        // Count the number of medical technologists
+        $medtechCount = User::where('role', 'medtech')->count();
+    
+        // Count the number of radiologic technologists
+        $radtechCount = User::where('role', 'radtech')->count();
+    
+        return view('admin.index', compact('physicianCount', 'nurseCount', 'medtechCount', 'radtechCount'));
     }
     
     private function getAllPatients() {
@@ -202,6 +209,12 @@ class AdminController extends Controller
     }
 
 
+    public function register() {
+        return view('admin.admin-create');
+    }
+
+
+
     public function store(Request $request) {
         $validated = $request->validate([
             //"name" => ['required', 'min:1', 'max:255'],
@@ -225,6 +238,145 @@ class AdminController extends Controller
 
     }
 
+
+    public function addDoctor() {
+        return view('admin.create-doctor');
+    }
+
+    public function storeDoctor(Request $request)
+    {
+
+       // Validate the request data
+       $request->validate([
+        'password' => 'required|string', // Add any additional validation rules for the password
+        ]);
+
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+
+
+        $validatedData = $request->validate([
+            'phy_first_name' => 'required|string|max:255',
+            'phy_last_name' => 'required|string|max:255',
+            'availability' => 'required|string|max:255',
+            'specialty' => 'required|string|in:Internal_Medicine,Gastroenterology,Neurology,Cardiology,Pulmonology,Pediatrics,Endocrinology,Otolaryngology', // Validate against the provided specialties
+            // Add validation rules for other fields as needed
+        ]);
+
+        // Create a new physician instance
+        $physician = new Physicians(); // Use Physicians instead of Doctor
+        $physician->phy_first_name = $validatedData['phy_first_name'];
+        $physician->phy_last_name = $validatedData['phy_last_name'];
+        $physician->availability = $validatedData['availability'];
+        $physician->specialty = $validatedData['specialty']; // Assign selected specialty
+        // Set other fields as needed
+        $physician->save();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'Physician registered successfully!');
+    }
+
+    public function addNurse() {
+        return view('admin.create-nurse');
+    }
+
+    public function storeNurse(Request $request) {
+        // Validate the request data
+        $request->validate([
+            'admin_password' => 'required|string', // Validate the admin's password
+            "first_name" => ['required', 'min:1', 'max:255'],
+            "last_name" => ['required', 'min:1', 'max:255'],
+            "student_number" => ['required', 'min:1', 'max:255'],
+            "email" => ['required', 'email', Rule::unique('users', 'email')],
+            'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
+        ]);
+        
+        // Check if the admin password matches the user's password
+        if (!Hash::check($request->admin_password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect admin password. Please try again.');
+        }
+    
+        // Create a new nurse instance
+        $nurse = new User();
+        $nurse->role = 'nurse'; // Set the role to 'nurse'
+        $nurse->first_name = $request->first_name;
+        $nurse->last_name = $request->last_name;
+        $nurse->student_number = $request->student_number;
+        $nurse->email = $request->email;
+        $nurse->password = Hash::make($request->password); // Hash and store the nurse's password
+        $nurse->save();
+    
+        return redirect()->back()->with('message', 'Nurse registered successfully!');
+    }
+
+
+    public function addMedtech() {
+        return view('admin.create-medtech');
+    }
+
+    public function storeMedtech(Request $request) {
+        // Validate the request data
+        $request->validate([
+            'admin_password' => 'required|string', // Validate the admin's password
+            "first_name" => ['required', 'min:1', 'max:255'],
+            "last_name" => ['required', 'min:1', 'max:255'],
+            "student_number" => ['required', 'min:1', 'max:255'],
+            "email" => ['required', 'email', Rule::unique('users', 'email')],
+            'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
+        ]);
+        
+        // Check if the admin password matches the user's password
+        if (!Hash::check($request->admin_password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect admin password. Please try again.');
+        }
+    
+        // Create a new nurse instance
+        $medtech = new User();
+        $medtech->role = 'medtech'; // Set the role to 'medtech'
+        $medtech->first_name = $request->first_name;
+        $medtech->last_name = $request->last_name;
+        $medtech->student_number = $request->student_number;
+        $medtech->email = $request->email;
+        $medtech->password = Hash::make($request->password); // Hash and store the medtech's password
+        $medtech->save();
+    
+        return redirect()->back()->with('message', 'Medical Technologist registered successfully!');
+    }
+
+    public function addRadtech() {
+        return view('admin.create-radtech');
+    }
+
+    public function storeRadtech(Request $request) {
+        // Validate the request data
+        $request->validate([
+            'admin_password' => 'required|string', // Validate the admin's password
+            "first_name" => ['required', 'min:1', 'max:255'],
+            "last_name" => ['required', 'min:1', 'max:255'],
+            "student_number" => ['required', 'min:1', 'max:255'],
+            "email" => ['required', 'email', Rule::unique('users', 'email')],
+            'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
+        ]);
+        
+        // Check if the admin password matches the user's password
+        if (!Hash::check($request->admin_password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect admin password. Please try again.');
+        }
+    
+        // Create a new nurse instance
+        $radtech = new User();
+        $radtech->role = 'radtech'; // Set the role to 'radtech'
+        $radtech->first_name = $request->first_name;
+        $radtech->last_name = $request->last_name;
+        $radtech->student_number = $request->student_number;
+        $radtech->email = $request->email;
+        $radtech->password = Hash::make($request->password); // Hash and store the radtech's password
+        $radtech->save();
+    
+        return redirect()->back()->with('message', 'Radiologic Technologist registered successfully!');
+    }
 
 
 

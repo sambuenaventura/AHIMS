@@ -229,9 +229,13 @@ html {
                         <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="image" class="form-label">Images</label>
+                        <label for="image" class="form-label">Images <span>(Maximum of 12 MB for file size)</span></label>
                         <input type="file" class="form-control" id="image" name="image[]" accept="image/*" multiple required>
+                        @error('image.*')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     
                     {{-- <button type="submit" class="btn btn-primary">Send Result</button> --}}
                     <div class="buttons mt-4 flex justify-content-end">
