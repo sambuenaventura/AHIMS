@@ -54,6 +54,7 @@
                         <option value="nurse" {{old('role') == "nurse" ? 'selected' : ''}}>Nurse</option>
                         <option value="medtech" {{old('role') == "medtech" ? 'selected' : ''}}>Medical Technologist</option>
                         <option value="radtech" {{old('role') == "radtech" ? 'selected' : ''}}>Radiologic Technologist</option>
+                        <option value="admin" {{old('role') == "admin" ? 'selected' : ''}}>Admin</option>
                     </select>                    
                     @error('role')
                         <p class="text-red-500 text-xs p-1">
@@ -94,7 +95,7 @@
                         </p>
                     @enderror
                 </div>
-                <button class="bg-custom-600 hover:bg-custom-600-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200" type="submit">Register</button>
+                <button class="bg-success hover:bg-success text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200" type="submit">Register</button>
             </form>
         </section>
     </main>

@@ -73,13 +73,20 @@ class UserController extends Controller
         $user = auth()->user();
         if ($user->hasRole('admission')) {
             return redirect('/admission-dashboard')->with('message', 'Welcome back!');
-        } elseif ($user->hasRole('nurse')) {
+        } 
+        elseif ($user->hasRole('nurse')) {
             return redirect('/nurse-dashboard')->with('message', 'Welcome back!');
-        } elseif ($user->hasRole('medtech')) {
+        } 
+        elseif ($user->hasRole('medtech')) {
             return redirect('/medtech-dashboard')->with('message', 'Welcome back!');
-        } elseif ($user->hasRole('radtech')) {
+        } 
+        elseif ($user->hasRole('radtech')) {
             return redirect('/radtech-dashboard')->with('message', 'Welcome back!');
-        } else {
+        } 
+        elseif ($user->hasRole('admin')) {
+            return redirect('/admin-dashboard')->with('message', 'Welcome back!');
+        } 
+        else {
             return redirect('/')->with('message', 'Welcome back!');
         }
     }
@@ -106,7 +113,7 @@ class UserController extends Controller
             //"name" => ['required', 'min:1', 'max:255'],
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
-            'role' => 'required|string|in:admission,nurse,radtech,medtech',
+            'role' => 'required|string|in:admission,nurse,radtech,medtech,admin',
             "email" => ['required', 'email', Rule::unique('users', 'email')],
             "password" => 'required|confirmed|min:6|max:255'
         ]);

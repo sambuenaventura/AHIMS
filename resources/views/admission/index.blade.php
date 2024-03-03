@@ -205,7 +205,7 @@ text-align: center;
                   <li class="nav-item">
                       <a class="nav-link {{ request('specialty') == 'Otolaryngology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Otolaryngology']) }}">Otolaryngologist</a>
                   </li>
-              </ul>
+                </ul>
               
     
               {{-- <table class="table table-striped mt-3 Add">

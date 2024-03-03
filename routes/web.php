@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MedTechController;
 use App\Http\Controllers\NurseController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,23 @@ Route::controller(PatientController::class)->group(function () {
 
     });
 });
+Route::controller(AdminController::class)->group(function() {
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::get('/admin-dashboard', 'index')->name('admin.index');
+        Route::get('/doctors-list', 'doctorsView')->name('admin.doctorsView');
+        Route::get('/admissions-list', 'admissionsView')->name('admin.admissionsView');
+        Route::get('/nurses-list', 'nursesView')->name('admin.nursesView');
+        Route::get('/medtechs-list', 'medtechsView')->name('admin.medtechsView');
+        Route::get('/radtechs-list', 'radtechsView')->name('admin.radtechsView');
+
+        Route::get('/add/specialist', 'create')->name('admin.create');
+    });
+});
+
+
+
+
+
 
 Route::controller(NurseController::class)->group(function() {
     Route::middleware(['auth', 'role:nurse'])->group(function () {
@@ -140,6 +158,11 @@ Route::controller(RadTechController::class)->group(function() {
         Route::post('/process-imaging', 'processResult')->name('process.imaging');
         
         Route::get('/radtech-patients/{patientId}/request/{requestId}', 'viewRequest')->name('radtech.viewRequest');
+        
+        // Add a route for user registration
+        Route::get('/register', 'register')->name('register');
 
+        // Handle the registration form submission
+        Route::post('/register', 'store')->name('store');
     });
 });
