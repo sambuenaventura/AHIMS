@@ -136,7 +136,7 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($requests as $request)
+                        @forelse ($requests as $request)
                             <tr>
                                 <td>{{ $request->request_id }}</td> <!-- Display the request ID -->
                                 <td>{{ $request->patient_id }}</td>
@@ -174,7 +174,11 @@ html {
                                     <td>{{ ucfirst($request->status) }}</td>
                                 @endif
                             </tr>
-                        @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center">No imaging requests</td>
+                            </tr>
+                        @endforelse  
                     </tbody>
                 </table>
                 

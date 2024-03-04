@@ -136,11 +136,11 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($requests as $request)
+                        @forelse ($requests as $request)
                             <tr>
                                 <td>{{ $request->request_id }}</td> <!-- Display the request ID -->
                                 <td>{{ $request->patient_id }}</td>
-                                <td>{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
+                                <td style="min-width: 120px;">{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
                                 <td style="max-width: 80px;">{{ ucfirst($request->procedure_type) }}</td>
                                <td style="min-width: 180px;">{{ $request->sender_message }}</td>
                                 <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>                            
@@ -174,7 +174,11 @@ html {
                                     <td>{{ ucfirst($request->status) }}</td>
                                 @endif
                             </tr>
-                        @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center">No laboratory requests</td>
+                            </tr>
+                        @endforelse                          
                     </tbody>
                 </table>
                 

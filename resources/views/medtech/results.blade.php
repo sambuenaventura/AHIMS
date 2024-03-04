@@ -128,7 +128,7 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($requests as $request)
+                        @forelse($requests as $request)
                         <tr>
                             <td>
                                 <a class="d-flex flex-row gap-2 text-success font-bold" href="{{ route('medtech.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}">
@@ -162,8 +162,12 @@ html {
                         <td>{{ $request->created_at->format('n/j/Y') }}</td>
                             <td>{{ $request->created_at->format('h:i A') }}</td>
                         </tr>
-                        @endforeach
-                    </tbody>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No laboratory results</td>
+                        </tr>
+                    @endforelse                      
+                </tbody>
                 </table>
                 
                 

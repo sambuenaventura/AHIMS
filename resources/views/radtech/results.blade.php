@@ -117,7 +117,7 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($requests as $request)
+                        @forelse($requests as $request)
                         <tr>
                             <td>
                                 <a class="d-flex flex-row gap-2 text-success font-bold" href="{{ route('radtech.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}">
@@ -152,7 +152,11 @@ html {
                             <td>{{ $request->created_at->format('n/j/Y') }}</td>
                             <td>{{ $request->created_at->format('h:i A') }}</td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No imaging results</td>
+                        </tr>
+                    @endforelse  
                     </tbody>
                 </table>
                 
