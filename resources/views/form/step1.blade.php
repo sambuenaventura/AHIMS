@@ -2,7 +2,7 @@
     {{-- <form action="/nurse-patients/edit/{{$patient->patient_id}}" method="POST" class="flex flex-col" enctype="multipart/form-data"> --}}
         <div class="">
             <div class="card-body m-1">
-            <h4 class="font-bold">Edit Patient Complete History</h4>
+            <h4 class="font-bold" style="color:black;   ">Edit Patient Complete History</h4>
         <div class="card pe-0">
                 <!-- BAR -->
                 <div class="bar mt-5">
@@ -492,7 +492,7 @@
                                     </div>
                                 </div>
         
-                                <div class="upload mt-3">
+                                {{-- <div class="upload mt-3">
                                     <div class="card-body py-4 text-success" style="border: 2px dotted #198754; padding: 3rem; border-radius: 10px;">
                                         <div class="d-flex justify-content-center align-items-center">
                                             <span class="plus-icon">
@@ -507,7 +507,7 @@
                                         </div>
                                         <p class="fs-4 text-center mt-2">Add Pregnancy</p>
                                     </div>
-                                </div>
+                                </div> --}}
                                 
                                 
         

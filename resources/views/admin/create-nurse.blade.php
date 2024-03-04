@@ -252,7 +252,7 @@
                             
                             <div class="buttons mt-4 flex justify-content-end">
                                 <div class="a-btn">
-                                    <a href="{{ route('admission.index') }}" class="btn btn-light btn-custom-style btn-cancel">Cancel</a>
+                                    <a href="{{ route('admin.index') }}" class="btn btn-light btn-custom-style btn-cancel">Cancel</a>
                                 </div>
                                 <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Submit</button>
                             </div>

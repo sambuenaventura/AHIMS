@@ -35,9 +35,17 @@ class NurseController extends Controller
         if ($search) {
             $patients->where(function ($query) use ($search) {
                 $query->where('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%');
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
+                    ->orWhere('patient_id', 'like', '%' . $search . '%')
+                    ->orWhere('gender', 'like', '%' . $search . '%')
+                    ->orWhere('room_number', 'like', '%' . $search . '%')
+                    ->orWhereHas('physician', function ($subquery) use ($search) {
+                        $subquery->where('phy_first_name', 'like', '%' . $search . '%')
+                                 ->orWhere('phy_last_name', 'like', '%' . $search . '%');
+                    });
             });
         }
+        
         
         // Eager load the physician relationship
         $patients->with('physician');
@@ -152,7 +160,11 @@ public function nurseView(Request $request)
         $query->where(function ($q) use ($search) {
             $q->where('patient_id', 'like', '%' . $search . '%')
                 ->orWhere('first_name', 'like', '%' . $search . '%')
-                ->orWhere('last_name', 'like', '%' . $search . '%');
+                ->orWhere('last_name', 'like', '%' . $search . '%')
+                ->orWhereHas('physician', function ($subquery) use ($search) {
+                    $subquery->where('phy_first_name', 'like', '%' . $search . '%')
+                             ->orWhere('phy_last_name', 'like', '%' . $search . '%');
+                });
         });
     }
 
@@ -1437,11 +1449,12 @@ public function archivePatient(Request $request, $patient_id)
         'admission_type' => 'archived',
         'archived_at' => now(),
         'room_number' => null,
-        'delete_after' => now()->addMinutes(2), // Schedule deletion after 2 minutes
+        'delete_after' => now()->addYears(5), // Schedule deletion after 5 years
     ]);
 
     return redirect()->back()->with('message', 'Patient archived successfully.');
 }
+
 
 
 

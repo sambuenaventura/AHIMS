@@ -81,7 +81,7 @@ html {
         <div class="card pe-0">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4>Results</h4>
+                    <h4 class="font-bold">Laboratory Results</h4>
                     <form action="{{ route('medtech.results') }}" method="GET" class="d-flex">
                         <input type="hidden" name="procedure" value="{{ $procedureType }}">
                         <input type="text" name="search" class="form-control me-2" placeholder="Search..." value="{{ $search }}">

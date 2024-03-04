@@ -156,7 +156,7 @@
                               {{-- <th scope="col">Follow-up Date</th> --}}
                           @elseif(request('admissionType') == 'archived')
                               <th scope="col">Admission Date</th>
-                              <th scope="col">Archived Date</th>
+                              {{-- <th scope="col">Archived Date</th> --}}
                           @endif
                           <!-- Actions column should always be displayed -->
                           <th scope="col"></th>
@@ -183,7 +183,7 @@
                           {{-- <td>{{  $patient->follow_up_date }}</td> --}}
                           @elseif(request('admissionType') == 'archived')
                             <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
-                            <td>{{ \Carbon\Carbon::parse($patient->archived_at)->format('h:i A n/j/Y') }}</td>                        
+                            {{-- <td>{{ \Carbon\Carbon::parse($patient->archived_at)->format('h:i A n/j/Y') }}</td>                         --}}
                           @endif
                           <!-- Actions for all patients -->
                           <td style="text-align: center;">

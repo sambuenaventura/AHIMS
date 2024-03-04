@@ -113,10 +113,14 @@ h1,h2,h3,h4,h5,h6,p, ul {
 .btn-custom-style {
     width: 102.95px;
     height: 38.67px;
+    font-size: 0.8750em;
+
 }
 .btn-submit {
     background: #418363 !important;
     color: #FFFFFF !important;
+    font-weight: 700;
+    font-size: 0.8750em;
 
 }
 .btn-cancel {

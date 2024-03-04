@@ -186,7 +186,7 @@ html {
           </tr>
       </thead>
       <tbody>
-          @foreach ($patients as $patient)
+          @forelse ($patients as $patient)
           <tr>
               <td style="min-width: 100px;">{{ \Carbon\Carbon::parse($patient->created_at)->format('g:i A') }}</td>
               <td style="min-width: 100px;">{{ $patient->patient_id }}</td>
@@ -202,7 +202,11 @@ html {
                   @endif
               </td>
           </tr>
-          @endforeach
+          @empty
+          <tr>
+              <td colspan="7" class="text-center">No available patients</td>
+          </tr>
+      @endforelse  
       </tbody>
   </table>
   

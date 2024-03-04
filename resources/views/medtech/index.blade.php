@@ -153,7 +153,7 @@ text-align: center;
 /* Style for the datePlaceholder */
 #datePlaceholder {
   color: grey; /* Set text color to grey */
-  font-size: 0.90em; /* Adjust font size as needed */
+  font-size: 0.90em !important; /* Adjust font size as needed */
   margin-left: 50px;
 }
 
@@ -170,6 +170,7 @@ text-align: center;
   font-size: 0.70em;
   font-weight: 700;
 }
+
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -184,7 +185,7 @@ text-align: center;
               <h1 id="timePlaceholder" class="font-bold text-black"></h1>
             </div>
             <div id="box2" class="box flex-col flexi bg-white shadow">
-              <p id="datePlaceholder" class=""></p>
+              <p id="datePlaceholder" class="" style=""></p>
             </div>
           </div>
           
@@ -264,7 +265,7 @@ text-align: center;
         <div class="card pe-0">
             <div class="card-body m-1">
               <div class="d-flex justify-content-between mb-4">
-                <h4>New Request</h4>
+                <h4 class="font-bold">New Laboratory Requests</h4>
                 <form class="d-flex" action="{{ route('medtech.index') }}" method="GET">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
@@ -288,7 +289,7 @@ text-align: center;
           </tr>
       </thead>
       <tbody>
-          @foreach ($requests as $request)
+          @forelse ($requests as $request)
               <tr>
                   <td>{{ $request->patient_id }}</td>
                   <td style="min-width: 140px;">{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
@@ -298,10 +299,13 @@ text-align: center;
                     <form id="acceptForm{{ $request->request_id }}" action="{{ route('medtech.accept', ['request_id' => $request->request_id]) }}" method="POST">
                       @csrf
                       <div class="d-flex justify-content-center">
-                        <button type="button" onclick="showConfirmationModalForAccept({{ $request->request_id }})">                            
-                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M7.6 10.4L5.45 8.25C5.26667 8.06667 5.03333 7.975 4.75 7.975C4.46667 7.975 4.23333 8.06667 4.05 8.25C3.86667 8.43333 3.775 8.66667 3.775 8.95C3.775 9.23333 3.86667 9.46667 4.05 9.65L6.9 12.5C7.1 12.7 7.33333 12.8 7.6 12.8C7.86667 12.8 8.1 12.7 8.3 12.5L13.95 6.85C14.1333 6.66667 14.225 6.43333 14.225 6.15C14.225 5.86667 14.1333 5.63333 13.95 5.45C13.7667 5.26667 13.5333 5.175 13.25 5.175C12.9667 5.175 12.7333 5.26667 12.55 5.45L7.6 10.4ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V2H2V16Z" fill="#418363"/>
-                          </svg>
+                        <button type="button" onclick="showConfirmationModalForAccept({{ $request->request_id }})" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">                            
+                            <span class="p-1 rounded">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18">
+                                <path fill="#ffff" d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                              </svg>
+                            </span>
+                            <span class="p-1 rounded">Accept</span>
                         </button>
                       </div>
                     <div class="modal fade" id="acceptModal{{ $request->request_id }}" tabindex="-1" aria-labelledby="acceptModalLabel" aria-hidden="true">
@@ -311,9 +315,9 @@ text-align: center;
                                     <div class="modalContent">
                                         <h1 class="text-center text-success">
                                             <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                              <svg width="20" height="20" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M7.6 10.4L5.45 8.25C5.26667 8.06667 5.03333 7.975 4.75 7.975C4.46667 7.975 4.23333 8.06667 4.05 8.25C3.86667 8.43333 3.775 8.66667 3.775 8.95C3.775 9.23333 3.86667 9.46667 4.05 9.65L6.9 12.5C7.1 12.7 7.33333 12.8 7.6 12.8C7.86667 12.8 8.1 12.7 8.3 12.5L13.95 6.85C14.1333 6.66667 14.225 6.43333 14.225 6.15C14.225 5.86667 14.1333 5.63333 13.95 5.45C13.7667 5.26667 13.5333 5.175 13.25 5.175C12.9667 5.175 12.7333 5.26667 12.55 5.45L7.6 10.4ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V2H2V16Z" fill="white"/>
-                                                </svg>
+                                              <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20">
+                                                <path fill="#ffff" d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                                              </svg>
                                                 
                                                 
                                             </span>
@@ -374,10 +378,13 @@ text-align: center;
                     <form id="declineForm{{ $request->request_id }}" action="{{ route('medtech.decline', ['request_id' => $request->request_id]) }}" method="POST">
                         @csrf
                         <div class="d-flex justify-content-center">
-                          <button type="button" onclick="showConfirmationModalForDecline({{ $request->request_id }})">                        
-                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 10.4L11.9 13.3C12.0833 13.4833 12.3167 13.575 12.6 13.575C12.8833 13.575 13.1167 13.4833 13.3 13.3C13.4833 13.1167 13.575 12.8833 13.575 12.6C13.575 12.3167 13.4833 12.0833 13.3 11.9L10.4 9L13.3 6.1C13.4833 5.91667 13.575 5.68333 13.575 5.4C13.575 5.11667 13.4833 4.88333 13.3 4.7C13.1167 4.51667 12.8833 4.425 12.6 4.425C12.3167 4.425 12.0833 4.51667 11.9 4.7L9 7.6L6.1 4.7C5.91667 4.51667 5.68333 4.425 5.4 4.425C5.11667 4.425 4.88333 4.51667 4.7 4.7C4.51667 4.88333 4.425 5.11667 4.425 5.4C4.425 5.68333 4.51667 5.91667 4.7 6.1L7.6 9L4.7 11.9C4.51667 12.0833 4.425 12.3167 4.425 12.6C4.425 12.8833 4.51667 13.1167 4.7 13.3C4.88333 13.4833 5.11667 13.575 5.4 13.575C5.68333 13.575 5.91667 13.4833 6.1 13.3L9 10.4ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V2H2V16Z" fill="#A7A7A7"/>
-                            </svg>
+                          <button type="button" onclick="showConfirmationModalForDecline({{ $request->request_id }})" class="badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">                        
+                            <span class="p-1 rounded">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18">
+                                <path fill="#ffff" d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                              </svg>
+                            </span>
+                            <span class="p-1 rounded">Decline</span>
                           </button>
                         </div>
                         <div class="modal fade" id="declineModal{{ $request->request_id }}" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
@@ -387,9 +394,9 @@ text-align: center;
                                       <div class="modalContent">
                                           <h1 class="text-center text-success">
                                               <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <svg width="20" height="20" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M9 10.4L11.9 13.3C12.0833 13.4833 12.3167 13.575 12.6 13.575C12.8833 13.575 13.1167 13.4833 13.3 13.3C13.4833 13.1167 13.575 12.8833 13.575 12.6C13.575 12.3167 13.4833 12.0833 13.3 11.9L10.4 9L13.3 6.1C13.4833 5.91667 13.575 5.68333 13.575 5.4C13.575 5.11667 13.4833 4.88333 13.3 4.7C13.1167 4.51667 12.8833 4.425 12.6 4.425C12.3167 4.425 12.0833 4.51667 11.9 4.7L9 7.6L6.1 4.7C5.91667 4.51667 5.68333 4.425 5.4 4.425C5.11667 4.425 4.88333 4.51667 4.7 4.7C4.51667 4.88333 4.425 5.11667 4.425 5.4C4.425 5.68333 4.51667 5.91667 4.7 6.1L7.6 9L4.7 11.9C4.51667 12.0833 4.425 12.3167 4.425 12.6C4.425 12.8833 4.51667 13.1167 4.7 13.3C4.88333 13.4833 5.11667 13.575 5.4 13.575C5.68333 13.575 5.91667 13.4833 6.1 13.3L9 10.4ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V2H2V16Z" fill="white"/>
-                                                  </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20">
+                                                  <path fill="#ffff" d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                                                </svg>
                                                   
                                                   
                                               </span>
@@ -451,7 +458,11 @@ text-align: center;
 
                 </td>
               </tr>
-          @endforeach
+              @empty
+              <tr>
+                  <td colspan="7" class="text-center">No new requests</td>
+              </tr>
+          @endforelse  
       </tbody>
   </table>
   

@@ -81,7 +81,7 @@ html {
         <div class="card pe-0">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4>Requests</h4>
+                    <h4 class="font-bold">Imaging Requests</h4>
                     <form action="{{ route('radtech.requests') }}" method="GET" class="mb-3">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search" name="search" value="{{ request('search') }}">
@@ -156,13 +156,19 @@ html {
                                 <td style="min-width: 140px;">{{ $request->message }}</td>
                                 @endif  
                                 @if($status == 'accepted')
-                                <td>                                        
-                                    <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <a href="/radtech-patients/{{ $request->patient_id }}/requests/{{ $request->request_id }}" style="text-decoration: none;">
-                                            <path d="M1.65 15.4252C1.31667 15.5585 1 15.5294 0.7 15.3377C0.4 15.146 0.25 14.8669 0.25 14.5002V10.0002L8.25 8.00022L0.25 6.00022V1.50022C0.25 1.13355 0.4 0.854382 0.7 0.662715C1 0.471049 1.31667 0.441882 1.65 0.575215L17.05 7.07522C17.4667 7.25855 17.675 7.56688 17.675 8.00022C17.675 8.43355 17.4667 8.74188 17.05 8.92522L1.65 15.4252Z" fill="#418363"/>
-                                        </a>                                        
-                                    </svg>
-                                </td>
+
+                                <td style="text-align: center;">
+                                    <div class="">
+                                      <a href="/radtech-patients/{{ $request->patient_id }}/requests/{{ $request->request_id }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
+                                          <span class="p-1 rounded">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18">
+                                                <path fill="#ffff" d="M680-320q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM440-40v-116q0-21 10-39.5t28-29.5q32-19 67.5-31.5T618-275l62 75 62-75q37 6 72 18.5t67 31.5q18 11 28.5 29.5T920-156v116H440Zm-80-116v36H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v200q-31-39-70-59.5T680-640v-40H280v80h280q-20 16-36 36t-27 44H280v80h200q0 21 4.5 41t12.5 39H280v80h138q-27 23-42.5 55.5T360-156Z"/>
+                                            </svg>
+                                          </span>
+                                          <span class="p-1 rounded">Process Request</span>
+                                      </a>
+                                    </div>
+                                </td> 
                                 @endif
                                 @if(!$status)
                                     <td>{{ ucfirst($request->status) }}</td>

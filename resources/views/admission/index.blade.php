@@ -243,7 +243,14 @@ text-align: center;
                         <td>{{ $physician->physician_id }}</td>
                         <td>{{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
                         <td>{{ $physician->patients()->count() }}</td> <!-- Display the number of patients -->
-                        <td><span style="color:green; font-size: 1.25em;">•</span> Available</td> <!-- You can add availability status here -->
+                        <td>
+                          @if(empty($physician->availability))
+                              Availability not set
+                          @else
+                              {{ $physician->availability }}
+                          @endif
+                      </td>
+                                              {{-- <td><span style="color:green; font-size: 1.25em;">•</span> Available</td> <!-- You can add availability status here --> --}}
                     </tr>
                     @endforeach
                 </tbody>

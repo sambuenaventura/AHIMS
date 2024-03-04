@@ -166,10 +166,10 @@ html {
                           <th scope="col">Patient ID</th>
                           <th scope="col">Patient Name</th>
                           <th scope="col">Attending Physician</th>
-                          @if(!$admissionType)
+                          {{-- @if(!$admissionType)
                             <th scope="col">Admission Type</th>
                             <th scope="col"></th>
-                        @endif
+                        @endif --}}
                           @if(request('admissionType') == 'inpatient')
                               <th scope="col">Room Number</th>
                               <th scope="col">Admission Date</th>
@@ -178,7 +178,7 @@ html {
                           <th scope="col">Consultation Date</th>
                           @elseif(request('admissionType') == 'archived')
                               <th scope="col">Admission Date</th>
-                              <th scope="col">Archived Date</th>
+                              {{-- <th scope="col">Archived Date</th> --}}
                           @endif
                           <!-- Actions column should always be displayed -->
                           {{-- <th scope="col"></th> --}}
@@ -186,10 +186,13 @@ html {
                           @if(request('admissionType') == 'inpatient' || request('admissionType') == 'outpatient')
                           <th scope="col"></th>
                           @endif
+                          @if(request('admissionType') == 'archived')
+                          <th scope="col"></th>
+                      @endif
                       </tr>
                   </thead>
                   <tbody>
-                      @foreach ($patients as $patient)
+                      @forelse ($patients as $patient)
                       <tr class="" data-href="/nurse-patients/{{ $patient->patient_id }}">
                         <td>{{  $patient->patient_id }}</td>
                           <td>{{  $patient->first_name }} {{  $patient->last_name }}</td>
@@ -201,8 +204,7 @@ html {
                             @endif
                         </td>   
                         @if(!$admissionType)
-
-                        <td>{{ ucfirst($patient->admission_type) }}</td>
+                        {{-- <td>{{ ucfirst($patient->admission_type) }}</td> --}}
                         <td style="text-align: center; max-width: 80px;">
                             <div class="">
                               <a href="/nurse-patients/{{$patient->patient_id}}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
@@ -225,7 +227,19 @@ html {
                         <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
                         @elseif(request('admissionType') == 'archived')
                         <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
-                        <td>{{ \Carbon\Carbon::parse($patient->archived_at)->format('h:i A n/j/Y') }}</td>                        
+                        {{-- <td>{{ \Carbon\Carbon::parse($patient->archived_at)->format('h:i A n/j/Y') }}</td>   --}}
+                        <td style="text-align: center; max-width: 80px;">
+                            <div class="">
+                              <a href="/nurse-patients/{{$patient->patient_id}}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
+                                  <span class="p-1 rounded">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                          <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" fill="#ffff"/>
+                                      </svg>
+                                  </span>
+                                  <span class="p-1 rounded">View</span>
+                              </a>
+                            </div>
+                        </td>                          
                         @endif
                           <!-- Actions for all patients -->
                           {{-- <td style="text-align: center;">
@@ -348,8 +362,12 @@ html {
                               </td>
                           @endif
                       </tr>
-                      @endforeach
-                  </tbody>
+                      @empty
+                      <tr>
+                          <td colspan="7" class="text-center">No available patients</td>
+                      </tr>
+                  @endforelse                    
+                </tbody>
               </table>
               
               

@@ -193,12 +193,27 @@ html {
                 </div>
 
             </div>
+            @if ($patient->admission_type !== 'archived')
+
             <div class="box box1 flex-col bg-white shadow-md" style="margin-top: -20px;">
                 <p class="font-bold">Laboratory/Imaging Services</p>
-                <a href="{{ route('requestService', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Request a Service</a>
-                <a href="{{ route('showResults', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit mt-2" style="width:auto;">View Results</a>
-            </div>
+                <a href="{{ route('requestService', ['patientId' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center justify-content-center btn-submit" style="font-size: 1em; width:auto;">
+                    <span class="p-1 rounded">
 
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" height="24" viewBox="0 -960 960 960" width="24"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>                    </span>
+                    <span class="p-1 rounded">Request a Service</span>
+                </a>
+                <a href="{{ route('showResults', ['patientId' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center justify-content-center btn-submit mt-2" style="font-size: 1em; width:auto;">
+                    <span class="p-1 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                    </span>
+                    <span class="p-1 rounded">View Results</span>
+                </a>
+                
+                {{-- <a href="{{ route('requestService', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Request a Service</a> --}}
+                {{-- <a href="{{ route('showResults', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit mt-2" style="width:auto;">View Results</a> --}}
+            </div>
+        @endif
             @if ($patient->admission_type === 'Inpatient')
             <div class="box box1 flex-col bg-custom-101 mt-10 shadow-md">
                 <p class="font-bold">Set Discharge Date</p>
@@ -494,13 +509,13 @@ html {
                     @if ($medicalHistory && $medicalHistory->nurse_user)
                         <small class="text-muted">{{ optional($medicalHistory->nurse_user)->first_name }} {{ optional($medicalHistory->nurse_user)->last_name }}</small>
                     @else
-                        <small class="text-muted">Unknown Nurse</small>
+                        <small class="text-muted">N/A</small>
                     @endif
                 </div>
                             
                 <div class="flex-row">
                     <small class="text-muted">Date & Time:</small>
-                    <small class="text-muted">{{ optional($medicalHistory)->updated_at ? \Carbon\Carbon::parse($medicalHistory->updated_at)->format('g:i A n/j/Y') : '' }}</small>
+                    <small class="text-muted">{{ optional($medicalHistory)->updated_at ? \Carbon\Carbon::parse($medicalHistory->updated_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                 </div>
             </div>
             
@@ -524,12 +539,15 @@ html {
                     <hr>
                     {{-- <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p> --}}
                     <p class="font-bold">
-                        <a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
-                            <span class="p-1 rounded">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
-                            </span>
-                        <span class="p-1 rounded">Vital Signs</span>
-                    </a></p>
+                        @if(!$patient->vitalSigns->isEmpty())
+                            <a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
+                                    <span class="p-1 rounded">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                                    </span>
+                                <span class="p-1 rounded">Vital Signs</span>
+                            </a>
+                        @endif
+                    </p>
 
                 </div>
 
@@ -538,7 +556,7 @@ html {
                     <div class="col-12 text-center">
                         <p>No vital signs recorded</p>
                     </div>
-                @else
+                    @else
                     @foreach ($patient->vitalSigns->take(2) as $key => $vitalSign)
                         <!-- 'take(2)' limits the number of records to two initially -->
                         <div class="col">
@@ -676,15 +694,24 @@ html {
                 <hr>
                 {{-- <p class="font-bold"><a href="{{ route('nurse.viewMedications', ['id' => $patient->patient_id]) }}">Medications, Treatment & etc.</a></p> --}}
                 <p class="font-bold">
-                    <a href="{{ route('nurse.viewMedications', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
-                    <span class="p-1 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
-                    </span>
-                    <span class="p-1 rounded">Medications</span>
-                </a></p>            
+                    @if(!$patient->medicationRemarks->isEmpty())
+                        <a href="{{ route('nurse.viewMedications', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
+                            <span class="p-1 rounded">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                            </span>
+                            <span class="p-1 rounded">Medications</span>
+                        </a>
+                    @endif
+                </p>            
             </div>
             <div class="accordion mt-2 mb-2" id="medicationRemarksAccordion">
+                @if($patient->medicationRemarks->isEmpty())
+                <div class="col-12 text-center">
+                    <p>No medications recorded</p>
+                </div>
+                @endif
                 @foreach ($patient->medicationRemarks->take(3) as $index => $medicationRemark)
+
                 <div class="card mb-3">
                     <div class="card-header" id="heading{{ $index }}" onclick="toggleCollapse({{ $index }})" data-toggle="collapse" data-target="#collapse{{ $index }}">
                         <div class="mb-0 d-flex justify-content-between align-items-center">
@@ -778,14 +805,23 @@ html {
                 <hr>
                 {{-- <p class="font-bold">Medications, Treatment & etc.</p> --}}
                 <p class="font-bold">
+                    @if(!$patient->progressNotes->isEmpty())
+
                     <a href="{{ route('nurse.viewNotes', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
-                    <span class="p-1 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
-                    </span>
-                    <span class="p-1 rounded">Notes</span>
-                </a></p>
+                        <span class="p-1 rounded">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                        </span>
+                        <span class="p-1 rounded">Notes</span>
+                    </a>
+                    @endif
+                </p>
             </div>
             <div class="accordion mt-2 mb-2" id="progressNotesAccordion">
+                @if($patient->progressNotes->isEmpty())
+                <div class="col-12 text-center">
+                    <p>No progress notes recorded</p>
+                </div>
+                @endif
                 @foreach ($patient->progressNotes->take(3) as $index => $progressNote)
                 <div class="card mb-3">
                     <div class="card-header" id="progressHeading{{ $index }}" onclick="toggleProgressCollapse({{ $index }})" aria-expanded="false" aria-controls="progressCollapse{{ $index }}">

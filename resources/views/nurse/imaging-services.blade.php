@@ -146,7 +146,7 @@ html {
                             @endif
                             @if(request('status') === 'completed')
                                 <th scope="col">Date Completed</th>
-                                <th scope="col"></th>
+                                <th scope="col" style="text-align: center;">View Result</th>
                             @endif
                             @if($status == 'declined')
                                 <th scope="col">Date Declined</th>
@@ -157,7 +157,7 @@ html {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($requests as $request)
+                        @forelse ($requests as $request)
                             <tr>
                                 <td>{{ $request->patient_id }}</td>
                                 <td>{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
@@ -172,15 +172,20 @@ html {
                                 @if(request('status') === 'completed')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>
 
-                                    <td style="text-align: center;">
-                                        <a href="{{ route('nurse.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}" style="display: inline-block;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="vertical-align: middle;">
-                                                <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" fill="#418363"/>
-                                            </svg>
-                                        </a>
-                                    </td>
-
+                                    <td style="text-align: center; max-width: 80px;">
+                                        <div class="">
+                                          <a href="{{ route('nurse.viewRequest', ['patientId' => $request->patient_id, 'requestId' => $request->request_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
+                                              <span class="p-1 rounded">
+    
+                                                <svg fill="#ffff" xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520h200L520-800v200Z"/></svg>
+                                              
+                                            </span>
+                                              <span class="p-1 rounded">View</span>
+                                          </a>
+                                        </div>
+                                    </td>   
                                 @endif
+                                
                                 @if($status == 'declined')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
 
@@ -196,7 +201,13 @@ html {
                                 </td>                    
                                 @endif
                             </tr>
-                        @endforeach
+                            
+                            @empty
+                            
+                            <tr>
+                                <td colspan="6" class="text-center">No available laboratory requests</td>
+                            </tr>
+                        @endforelse                     
                     </tbody>
                 </table>
                 <div class="mt-4">
