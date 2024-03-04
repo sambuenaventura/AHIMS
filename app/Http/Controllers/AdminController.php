@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\MedtechImport;
+use App\Imports\NurseImport;
+use App\Imports\PhysicianImport;
 use Illuminate\Http\Request;
 use App\Models\ServiceRequest; // Import the Request model
 use App\Models\ArchivedPatients;
@@ -24,6 +27,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 
@@ -278,6 +282,32 @@ class AdminController extends Controller
         return redirect()->back()->with('message', 'Physician registered successfully!');
     }
 
+    public function importDoctor(Request $request)
+    {
+
+        // Validate the request data
+        $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
+        ]);
+
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+
+        $request->validate([
+            'import_file' => [
+                'required',
+                'file'
+            ]
+            ]);
+
+            Excel::import(new PhysicianImport, $request->file('import_file'));
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'Physicians imported successfully!');
+    }
+
     public function addNurse() {
         return view('admin.create-nurse');
     }
@@ -311,6 +341,31 @@ class AdminController extends Controller
         return redirect()->back()->with('message', 'Nurse registered successfully!');
     }
 
+    public function importNurse(Request $request)
+    {
+
+        // Validate the request data
+        $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
+        ]);
+
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+
+        $request->validate([
+            'import_file' => [
+                'required',
+                'file'
+            ]
+            ]);
+
+            Excel::import(new NurseImport, $request->file('import_file'));
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'Nurses imported successfully!');
+    }
 
     public function addMedtech() {
         return view('admin.create-medtech');
@@ -343,6 +398,32 @@ class AdminController extends Controller
         $medtech->save();
     
         return redirect()->back()->with('message', 'Medical Technologist registered successfully!');
+    }
+
+    public function importMedtech(Request $request)
+    {
+
+        // Validate the request data
+        $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
+        ]);
+
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+
+        $request->validate([
+            'import_file' => [
+                'required',
+                'file'
+            ]
+            ]);
+
+            Excel::import(new MedtechImport, $request->file('import_file'));
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'Medical Technologists imported successfully!');
     }
 
     public function addRadtech() {
@@ -378,7 +459,31 @@ class AdminController extends Controller
         return redirect()->back()->with('message', 'Radiologic Technologist registered successfully!');
     }
 
+    public function importRadtech(Request $request)
+    {
 
+        // Validate the request data
+        $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
+        ]);
+
+        // Check if the password matches the user's password
+        if (!Hash::check($request->password, Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }
+
+        $request->validate([
+            'import_file' => [
+                'required',
+                'file'
+            ]
+            ]);
+
+            Excel::import(new MedtechImport, $request->file('import_file'));
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', 'Radiologic Technologists imported successfully!');
+    }
 
 
 

@@ -16,6 +16,7 @@ class Physicians extends Model
         'phy_first_name', 
         'phy_last_name', 
         'specialty', 
+        'availability', 
         'phy_contact_number' // Add the 'phone_number' field to the fillable array
     ];
     

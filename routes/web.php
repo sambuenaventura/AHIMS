@@ -83,17 +83,23 @@ Route::controller(AdminController::class)->group(function() {
 
         Route::get('/add/specialist/doctor', 'addDoctor')->name('addDoctor');
         Route::post('/add/specialist/doctor', 'storeDoctor')->name('storeDoctor');
+        Route::post('/add/specialist/doctor/import', 'importDoctor')->name('importDoctor');
+
 
         Route::get('/add/specialist/nurse', 'addNurse')->name('addNurse');
         Route::post('/store/nurse', 'storeNurse')->name('storeNurse');
+        Route::post('/store/nurse/import', 'importNurse')->name('importNurse');
+        
 
 
         Route::get('/add/specialist/medtech', 'addMedtech')->name('addMedtech');
         Route::post('/store/medtech', 'storeMedtech')->name('storeMedtech');
+        Route::post('/store/medtech/import', 'importMedtech')->name('importMedtech');
 
 
         Route::get('/add/specialist/radtech', 'addRadtech')->name('addRadtech');
         Route::post('/store/radtech', 'storeRadtech')->name('storeRadtech');
+        Route::post('/store/radtech/import', 'importRadtech')->name('importRadtech');
 
 
 

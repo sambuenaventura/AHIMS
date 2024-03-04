@@ -129,7 +129,7 @@ a,button {
 
 }
 
-a:not(.d-flex, .flex-row, .gap-2, .text-success, .font-bold):hover {
+a:not(.btn-cancel, .d-flex, .flex-row, .gap-2, .text-success, .font-bold):hover {
     /* Add your hover styles here */
     background-color: #3b7057 !important; /* Hover background color */
     color: white; /* Hover text color */

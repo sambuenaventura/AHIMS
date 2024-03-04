@@ -157,11 +157,7 @@
         <div class="card pe-0">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Register Nurse</h4>
-              {{-- </form> --}}
-                                
-                
-                
+                    <h4 class="font-bold">Register Nurse</h4>                                
                 </div>
                 <form action="{{ route('storeNurse') }}" enctype="multipart/form-data" method="POST" class="flex flex-col">
                     @csrf
@@ -322,10 +318,110 @@
                         </div>
                     </div>
                 </form>
+        </div>
+
+        <div class="card pe-0 mt-4">
+            <div class="card-body m-1">
+                <div class="d-flex justify-content-between mb-4">
+                    <h4 class="font-bold">Import Nurses</h4>
+              {{-- </form> --}}
+                                
+                
+                
+                </div>
+                <form action="{{ route('importNurse') }}" enctype="multipart/form-data" method="POST" class="flex flex-col">
+                    @csrf
+                    <div class="hero-content">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="text-success"><span>Upload your .xls file here:</span></h6>
+                                <div class="row g-3 align-items-end mb-3">
+                                    <div class="col">
+                                        {{-- <input type="file" class="form-control" id="image" name="import_file" multiple required> --}}
+                                        <input type="file" class="form-control" id="image" name="import_file" required>
+                                    </div>
+       
+                            
+                            <div class="buttons mt-4 flex justify-content-end">
+                                <div class="a-btn">
+                                    <a href="{{ route('admin.index') }}" class="btn btn-light ms-2 btn-custom-style btn-cancel">Cancel</a>
+                                </div>
+                                <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationImportModal()">Import</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                                    <!-- First Modal - Confirmation -->
+                                    <div class="modal fade" id="modalForImport" tabindex="-1" aria-labelledby="modalForImportLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body m-3">
+                                                    <div class="modalContent">
+                                                        <h1 class="text-center text-success">
+                                                            <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" style="fill: white;">
+                                                                    <path d="M480-120q-33 0-56.5-23.5T400-200q0-33 23.5-56.5T480-280q33 0 56.5 23.5T560-200q0 33-23.5 56.5T480-120Zm-80-240v-480h160v480H400Z"/>
+                                                                </svg>
+                                                                
+                                                                
+                                                            </span>
+                                                        </h1>
+                                                        <div class="text-center mt-4">
+                                                            <h4 class="font-bold">Confirm Import</h4>
+                                                            <p class="mb-4">The data will be imported into the system. <br> Are you sure you want to proceed?</p>
+                                                        </div>                                                        
+                                                        <div class="d-flex justify-content-evenly mt-5">
+                                                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#modalForImport2">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                                    <!-- Second Modal - Password Entry -->
+                                    <div class="modal fade" id="modalForImport2" tabindex="-1" aria-labelledby="modalForImportLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body m-3">
+                                                    <div class="modalContent">
+                                                        <h1 class="text-center text-success">
+                                                            <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                                                    <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" fill="white"/>
+                                                                </svg>
+                                                                
+                                                            </span>
+                                                        </h1>
+                                                        <div class="text-center mt-4">
+                                                            <h4 class="font-bold">Enter Password</h4>
+                                                            <p class="mb-4">Password is required to proceed.</p>
+                                                        </div>
+                                                        <div class="d-flex justify-content-evenly mt-5">
+                                                            <form id="passwordForm">
+                                                                <div class="col-auto">
+                                                                    <label for="inputPassword2" class="visually-hidden">Password</label>
+                                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                                </div>
+                                                                <div class="col-auto">
+                                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                </form>
 
 
             </div>
         </div>
+
     </div>
 </section>
 {{-- #9CCA9E --}}
@@ -549,5 +645,28 @@ document.getElementById('submitButton').addEventListener('click', function() {
     myModal.show();
 });
     
+
+function showConfirmationImportModal() {
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('modalForImport'), {
+            keyboard: false
+        });
+        myModal.show();
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('myForm').addEventListener('submit', function () {
+        // Disable the submit button to prevent multiple form submissions
+        document.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+    });
+});
+
+document.getElementById('submitButton').addEventListener('click', function() {
+    // Trigger the modal
+    var myModal = new bootstrap.Modal(document.getElementById('modalForImport'), {
+        keyboard: false
+    });
+    myModal.show();
+});
+
 </script>
 @include('partials.footer ')
