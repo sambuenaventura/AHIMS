@@ -57,9 +57,10 @@
 
                         <div class="buttons my-4 d-flex justify-content-end">
                             <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" onclick="prevStep()">Back</button>
-                            {{-- <button type="button" onclick="nextStep()" class="btn btn-success">Submit</button> --}}
-                                    <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Submit</button>
-                                    
+                            @if ($patient->admission_type !== 'archived')
+                                <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Submit</button>
+                            @endif
+                            
                                 </div>
       
                                     <!-- First Modal - Confirmation -->

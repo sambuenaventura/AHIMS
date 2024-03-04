@@ -139,11 +139,19 @@ html {
     <div class="admission-content">
       <div class="left">
         <div class="boxes">
-            <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999;">
-                <div class="left-top-1">
-                    <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                    <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
-                </div>
+            <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999; position: relative;">
+                @if ($patient->admission_type === 'archived')
+                    <div class="left-top-1">
+                        <span class="badge bg-secondary position-absolute top-0 start-0">ARCHIVED</span>
+                        <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
+                        <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    </div>
+                @else
+                    <div class="left-top-1">
+                        <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
+                        <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    </div>
+                @endif
                 <div class="left-top-2 flexi">
                     <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
@@ -241,8 +249,12 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Patient Complete History</h4>
+                @if ($patient->admission_type !== 'archived')
                 <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View/Edit</a>
-            </div>  
+            @else
+                <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View</a>
+            @endif
+                        </div>  
 
                 <div class="header">
                     <hr>
@@ -532,8 +544,10 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Nurse Remarks</h4>
+                @if ($patient->admission_type !== 'archived')
                 <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
-                </div>  
+            @endif
+                            </div>  
 
                 <div class="table-header">
                     <hr>
@@ -799,8 +813,10 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Progress Notes</h4>
+                @if ($patient->admission_type !== 'archived')
                 <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Progress Note</a>
-            </div>  
+            @endif
+                        </div>  
             <div class="table-header">
                 <hr>
                 {{-- <p class="font-bold">Medications, Treatment & etc.</p> --}}
