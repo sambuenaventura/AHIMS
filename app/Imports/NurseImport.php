@@ -18,7 +18,7 @@ class NurseImport implements ToCollection, WithHeadingRow
         {
             // dd($row);
 
-            $user = User::where('email', $row['email']->first());
+            $user = User::where('email', $row['email'])->first();
             if($user) {
                 $user->update([
                     'first_name' => $row['first_name'],
