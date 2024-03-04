@@ -129,6 +129,9 @@ html {
     display: flex;
     flex-direction: row;
 }
+.filename {
+    text-align: center; color: #333; font-weight: bold; font-size: 14px;
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -229,6 +232,7 @@ html {
                     @foreach ($images as $image)
                         <div class="image-wrapper mb-16">
                             <img src="{{ asset('storage/' . $image) }}" alt="Image" style="max-width: 100%; height: auto;">
+                            <p class="filename">{{ basename($image) }}</p>
                         </div>
                     @endforeach
                 </div>

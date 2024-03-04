@@ -129,7 +129,9 @@ html {
 .nurse-remark p {
     font-size: 0.9em;
 }
-
+.card-header {
+    cursor: pointer;
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -206,7 +208,7 @@ html {
             <div class="card-body m-2">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Nurse Remarks</h4>
-                    <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">Add Remark</a>
+                    <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
                     </div>   
                 
                 

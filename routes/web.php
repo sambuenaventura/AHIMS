@@ -16,14 +16,36 @@ Route::get('/', function () {
 
 Route::controller(UserController::class)->group(function() {
     Route::get('/register', 'register');
-    Route::get('/login','login')->name('login');
+    
+    // Modify the login route to redirect authenticated users to their dashboard
+    Route::get('/login', function () {
+        if (auth()->check()) {
+            // Redirect authenticated users to their corresponding dashboard
+            switch (auth()->user()->role) {
+                case 'admin':
+                    return redirect('/admin-dashboard');
+                case 'admission':
+                    return redirect('/admission-dashboard');
+                case 'nurse':
+                    return redirect('/nurse-dashboard');
+                case 'medtech':
+                    return redirect('/medtech-dashboard');
+                case 'radtech':
+                    return redirect('/radtech-dashboard');
+                default:
+                    // If the user role is not recognized, redirect to a default route
+                    return redirect('/dashboard');
+            }
+        }
+        // Show the login page for non-authenticated users
+        return view('user.login');
+    })->name('login');
+    
     Route::post('/login/process', 'process');
-
     Route::post('/logout', 'logout');
-
     Route::post('/store', 'store');
-
 });
+
 
 Route::controller(PatientController::class)->group(function () {
     Route::middleware(['auth', 'role:admission'])->group(function () {

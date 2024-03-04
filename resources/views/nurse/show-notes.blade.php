@@ -129,7 +129,9 @@ html {
 .nurse-remark p {
     font-size: 0.9em;
 }
-
+.card-header {
+    cursor: pointer;
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>

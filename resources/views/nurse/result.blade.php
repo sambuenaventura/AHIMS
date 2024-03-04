@@ -227,6 +227,7 @@ html {
                         @php
                             $images = json_decode($request->image);
                         @endphp
+                        
                         {{-- @foreach ($images as $image)
                             <li>{{ basename($image) }}</li>
                         @endforeach

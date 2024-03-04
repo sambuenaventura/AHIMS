@@ -205,7 +205,7 @@ html {
                             @empty
                             
                             <tr>
-                                <td colspan="6" class="text-center">No available laboratory requests</td>
+                                <td colspan="6" class="text-center">No available imaging requests</td>
                             </tr>
                         @endforelse                     
                     </tbody>

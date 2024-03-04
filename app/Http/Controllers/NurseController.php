@@ -448,6 +448,19 @@ public function showCurrentMedications()
 
 public function updateDischargeDate(Request $request, $id)
 {
+
+    // Validate the request data
+    $request->validate([
+        'password' => 'required|string', // Add any additional validation rules for the password
+    ]);
+
+    // Check if the password matches the user's password
+    if (!Hash::check($request->password, Auth::user()->password)) {
+        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    }
+
+
+
     $patient = Patients::findOrFail($id);
     
     $request->validate([

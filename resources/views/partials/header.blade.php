@@ -123,6 +123,28 @@ h1,h2,h3,h4,h5,h6,p, ul {
     font-size: 0.8750em;
 
 }
+
+a,button {
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transition for background-color and color */
+
+}
+
+a:not(.d-flex, .flex-row, .gap-2, .text-success, .font-bold):hover {
+    /* Add your hover styles here */
+    background-color: #3b7057 !important; /* Hover background color */
+    color: white; /* Hover text color */
+}
+
+button:hover {
+    background-color:   #3b7057 !important; /* Hover background color */
+    color: white; /* Hover text color */
+}
+
+.decline:hover {
+    background-color:   #a32532 !important; /* Hover background color */
+
+}
+
 .btn-cancel {
     background: #E7E7E7;
     color: #717171;
@@ -132,6 +154,15 @@ h1,h2,h3,h4,h5,h6,p, ul {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.notif:hover {
+    background-color: #bdbdbd !important; /* Hover background color */
+
+}
+
+.btn-cancel:hover {
+    background-color: #bdbdbd !important; /* Hover background color */
+
 }
 
 .bg-custom-color {

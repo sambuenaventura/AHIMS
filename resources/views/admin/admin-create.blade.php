@@ -154,10 +154,8 @@
 
 <section id="admission">
     <div class="admission-content">
-        <div class="card pe-0">
-            <div class="card-body m-1">
+
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Add Specialist</h4>
               {{-- </form> --}}
                                 
                 
@@ -227,8 +225,8 @@
                 <!-- Overlay for patient options -->
                 <div id="patientOptionsOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; justify-content: center; align-items: center;">
                     <div id="patientOptions" style="padding: 30px; border-radius: 10px;">
-                        <h4 class="font-bold">Service Request</h4>
-                        <p class="mb-4">Select the service to request</p>
+                        <h4 class="font-bold">Add Specialist</h4>
+                        <p class="mb-4">Choose which specialist to add</p>
                         <div class="label">
                             {{-- <label class="label-opt bg-custom-100 rounded"> --}}
     
@@ -237,7 +235,7 @@
                                     <svg id="doctorSvg" xmlns="http://www.w3.org/2000/svg" height="80" viewBox="0 -960 960 960" width="70">
                                         <path d="M540-80q-108 0-184-76t-76-184v-23q-86-14-143-80.5T80-600v-240h120v-40h80v160h-80v-40h-40v160q0 66 47 113t113 47q66 0 113-47t47-113v-160h-40v40h-80v-160h80v40h120v240q0 90-57 156.5T360-363v23q0 75 52.5 127.5T540-160q75 0 127.5-52.5T720-340v-67q-35-12-57.5-43T640-520q0-50 35-85t85-35q50 0 85 35t35 85q0 39-22.5 70T800-407v67q0 108-76 184T540-80Zm220-400q17 0 28.5-11.5T800-520q0-17-11.5-28.5T760-560q-17 0-28.5 11.5T720-520q0 17 11.5 28.5T760-480Zm0-40Z" fill="white"/>
                                       </svg>                                                                                                        
-                                <p class="text-white m-0 font-bold">Doctor</p>
+                                <p class="text-white m-0 font-bold">Physician</p>
                                 <input type="radio" name="role" value="doctor" class="invisible" onclick="redirectToService('doctor')">
 
                             </label>
@@ -299,257 +297,6 @@
 
 
 
-                    
-                    <div class="hero-content">
-                        <div class="row">
-                            <div class="col">
-                                <h6 class="text-success">I. Patient Information</h6>
-                                <div class="row g-3 align-items-end mb-3">
-                                    <div class="col">
-                                        <div class="form-floating">
-                                            <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="first_name">First Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-floating">
-                                            <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="last_name">Last Name</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    @error('first_name')
-                                    <div class="mr-40">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                    @error('last_name')
-                                    <div class="">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <div class="form-floating">
-                                    <input type="text" id="contact_number" name="contact_number" value="{{ old('contact_number') }}" class="form-control bg-light my-3" placeholder="Contact Number" aria-label="First name">
-                                    <label for="contact_number">Contact Number</label>
-                                </div>
-                                <div class="input-group">
-                                    @error('contact_number')
-                                    <div class="">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <h6 class="text-success">II. Person In-charge Information</h6>
-                                <div class="row g-3 align-items-end mb-3">
-                                    <div class="col">
-                                        <div class="form-floating">
-                                            <input type="text" id="pic_first_name" name="pic_first_name" value="{{ old('pic_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="pic_first_name">First Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-floating">
-                                            <input type="text" id="pic_last_name" name="pic_last_name" value="{{ old('pic_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="pic_last_name">Last Name</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    @error('pic_first_name')
-                                    <div class="mr-40">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                    @error('pic_last_name')
-                                    <div class="">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <div class="form-floating">
-                                    <input type="text" id="pic_contact_number" name="pic_contact_number" value="{{ old('pic_contact_number') }}" class="form-control bg-light my-3" placeholder="Contact Number" aria-label="First name">
-                                    <label for="pic_contact_number">Contact Number</label>
-                                </div>
-                                <div class="input-group">
-                                    @error('pic_contact_number')
-                                    <div class="">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <h6 class="text-success">III. Admit Person Information</h6>
-                                <div class="row g-3 align-items-end mb-3">
-                                    <div class="col">
-                                        <div class="form-floating">
-                                            <input type="text" id="ap_first_name" name="ap_first_name" value="{{ old('ap_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="ap_first_name">First Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-floating">
-                                            <input type="text" id="ap_last_name" name="ap_last_name" value="{{ old('ap_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="ap_last_name">Last Name</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    @error('ap_first_name')
-                                    <div class="mr-40">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                    @error('ap_last_name')
-                                    <div class="">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <h6 class="text-success">IV. Attending Physician</h6>
-                                <div class="form-floating">
-                                    <select id="specialist" name="specialist" class="form-select bg-light py-3">
-                                        <option value="">Select Specialist</option>
-                                        {{-- @foreach ($physicians as $physician)
-                                            <option value="{{ $physician->physician_id }}">Dr. {{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</option>
-                                        @endforeach --}}
-                                    </select>
-                                    
-                                </div>
-                                
-                                <div class="input-group">
-                                    @error('specialist')
-                                    <div class="mr-40">
-                                        <p class="text-red-500 text-xs p-1">{{ $message }}</p>
-                                    </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h6 class="text-success">ㅤ</h6>
-                                <div class="row g-3 align-items-end">
-                                    <div class="col">
-                                        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="form-control bg-light py-3" placeholder="Birth Date" aria-label="Birth Date">
-                                    </div>
-                                    <div class="col">
-                                        <input type="number" id="age" name="age" class="form-control bg-light py-3" placeholder="Age" aria-label="Age" readonly>
-                                    </div>
-                                    <div class="col">
-                                        <select name="gender" class="form-control bg-light py-3" placeholder="Gender" aria-label="Age">
-                                            <option value="" {{old('gender') == "" ? 'selected' : ''}} disabled>Sex</option>
-                                            <option value="Male" {{old('gender') == "Male" ? 'selected' : ''}}>Male</option>
-                                            <option value="Female" {{old('gender') == "Female" ? 'selected' : ''}}>Female</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group">
-                                        @error('date_of_birth')
-                                        <div class="ml-2 mr-64">
-                                            <p class="text-red-500 text-xs p-1">
-                                                {{ $message }}
-                                            </p>
-                                        </div>
-                                        @enderror
-                                        @error('gender')
-                                        <div class="">
-                                            <p class="text-red-500 text-xs p-1">
-                                                {{ $message }}
-                                            </p>
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-floating">
-                                    <input type="text" id="address" name="address" value="{{ old('address') }}" class="form-control bg-light my-3" placeholder="Address" aria-label="Address">
-                                    <label for="address">Address</label>
-                                </div>
-                                <div class="input-group">
-                                    @error('address')
-                                    <div class="ml-2 mr-64">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <h6 class="text-success">ㅤ</h6>
-                                <div class="form-floating">
-                                    <input type="text" id="pic_relation" name="pic_relation" value="{{ old('pic_relation') }}" class="form-control bg-light mb-3" placeholder="Relation to Patient" aria-label="Relation to Patient">
-                                    <label for="pic_relation">Relation to Patient</label>
-                                </div>
-                                <div class="input-group">
-                                    @error('pic_relation')
-                                    <div class="ml-2">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <input type="text" class="form-control bg-light my-3 py-3 invisible" placeholder="pic_relation" aria-label="Address">
-                                <h6 class="text-success">ㅤ</h6>
-                                <div class="form-floating">
-                                    <input type="text" id="ap_contact_number" name="ap_contact_number" value="{{ old('ap_contact_number') }}" class="form-control bg-light mb-3" placeholder="Contact Number" aria-label="Contact Number">
-                                    <label for="ap_contact_number">Contact Number</label>
-                                </div>
-                                <div class="input-group">
-                                    @error('ap_contact_number')
-                                    <div class="ml-2">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-                                <h6 class="text-success">ㅤ</h6>
-                                <div class="form-floating">
-                                    <select id="room_number" name="room_number" class="form-select bg-light py-3" aria-label="Room Number">
-                                        <option value="" {{ old('room_number') == "" ? 'selected' : '' }} disabled>Select Room Number</option>
-                                        {{-- @foreach($availableRooms as $room)
-                                            <option value="{{ $room }}">{{ $room }}</option>
-                                        @endforeach --}}
-                                        <option value="For ER" {{ old('room_number') == "For ER" ? 'selected' : '' }}>For ER</option>
-                                    </select>
-                                </div>
-                                
-                                
-                                
-                                
-                                               
-                                <div class="input-group">
-                                    @error('room_number')
-                                    <div class="ml-2">
-                                        <p class="text-red-500 text-xs p-1">
-                                            {{ $message }}
-                                        </p>
-                                    </div>
-                                    @enderror
-                                </div>
-
-                            </div>
-                            <div class="buttons mt-4 flex justify-content-end">
-                                <div class="a-btn">
-                                    <a href="{{ route('admission.index') }}" class="btn btn-light btn-custom-style btn-cancel">Cancel</a>
-                                </div>
-                                <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Submit</button>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -616,8 +363,6 @@
                 </form>
 
 
-            </div>
-        </div>
     </div>
 </section>
 {{-- #9CCA9E --}}

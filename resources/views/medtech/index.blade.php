@@ -267,8 +267,10 @@ text-align: center;
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">New Laboratory Requests</h4>
                 <form class="d-flex" action="{{ route('medtech.index') }}" method="GET">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <div class="input-group mb-3">
+                      <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                    </div>
                 </form>
             </div>
             {{-- @if(session('message'))
@@ -378,7 +380,7 @@ text-align: center;
                     <form id="declineForm{{ $request->request_id }}" action="{{ route('medtech.decline', ['request_id' => $request->request_id]) }}" method="POST">
                         @csrf
                         <div class="d-flex justify-content-center">
-                          <button type="button" onclick="showConfirmationModalForDecline({{ $request->request_id }})" class="badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">                        
+                          <button type="button" onclick="showConfirmationModalForDecline({{ $request->request_id }})" class="decline badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">                        
                             <span class="p-1 rounded">
                               <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18">
                                 <path fill="#ffff" d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>

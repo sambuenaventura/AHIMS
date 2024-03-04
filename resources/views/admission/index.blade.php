@@ -107,6 +107,47 @@ font-size: 0.75em;
 text-align: center;
 }
 
+
+/* Media queries */
+@media all and (min-width: 1024px) and (max-width: 1280px) {
+
+}
+
+@media all and (min-width: 768px) and (max-width: 1024px) {
+  .admission-content {
+    flex-direction: column;
+  }
+  .right {
+    width: auto;
+  }
+  #admission {
+    margin-left: 5.5rem;
+  }
+  .boxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 2fr);
+  grid-gap: 1.75rem;
+}
+
+.box {
+  border-radius: 10px;
+  color: black;
+  font-size: 1.4rem;
+  font-family: sans-serif;
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 11rem;
+  width: 20rem;
+  justify-self: center; /* Center horizontally within the grid cell */
+  align-self: center; /* Center vertically within the grid cell */
+}
+
+  
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -119,14 +160,6 @@ text-align: center;
             <p id="datePlaceholder" class="font-bold text-black"></p>
             <h1 id="timePlaceholder" class="font-bold text-black"></h1>
           </div>
-          
-          {{-- <div class="box flex-row bg-custom-101 shadow">
-            <img src="{{ asset('storage/image/inpatient.png') }}" alt="Inpatient Image" class="w-24 h-auto mr-4">
-            <div class="flex flex-col justify-between">
-                <h1 class="font-bold text-black">{{ $inpatientCount }}</h1>
-                <p>Inpatient</p>
-            </div>
-          </div> --}}
 
 
           <div class="box flexi flex-row bg-custom-101 shadow">
@@ -206,28 +239,7 @@ text-align: center;
                       <a class="nav-link {{ request('specialty') == 'Otolaryngology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('admission.index', ['specialty' => 'Otolaryngology']) }}">Otolaryngologist</a>
                   </li>
                 </ul>
-              
-    
-              {{-- <table class="table table-striped mt-3 Add">
-                  <thead>
-                      <tr>
-                          <th scope="col">ID</th>
-                          <th scope="col">Name</th> <!-- Removed text-center class -->
-                          <th scope="col">No. Patients</th> <!-- Removed text-center class -->
-                          <th scope="col">Availability</th> <!-- Removed text-center class -->
-                      </tr>
-                  </thead>
-                  <tbody>
-                      @foreach($physicians as $physician)
-                      <tr>
-                        <td>{{ $physician->physician_id }}</td>
-                        <td>{{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
-                          <td>xxx</td>
-                          <td>xxx</td>
-                      </tr>
-                      @endforeach
-                  </tbody>
-              </table> --}}
+
               <table class="table table-striped mt-3 Add">
                 <thead>
                     <tr>

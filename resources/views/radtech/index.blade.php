@@ -253,9 +253,11 @@ text-align: center;
             <div class="d-flex justify-content-between mb-4">
               <h4 class="font-bold">New Imaging Requests</h4>
               <form class="d-flex" action="{{ route('radtech.index') }}" method="GET">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+                <div class="input-group mb-3">
+                  <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
                   <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
+                </div>
+            </form>
           </div>
           {{-- @if(session('message'))
           <div class="alert alert-danger">
