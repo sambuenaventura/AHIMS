@@ -243,6 +243,64 @@ class PatientController extends Controller
     //     return view('patients.create', compact('assignedRooms', 'physicians'));
     // }
     
+// public function store(Request $request)
+// {
+
+//     //dd($request->input('specialist'));
+
+//        // Validate the request data
+//        $request->validate([
+//         'password' => 'required|string', // Add any additional validation rules for the password
+//     ]);
+
+//     // Check if the password matches the user's password
+//     if (!Hash::check($request->password, Auth::user()->password)) {
+//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+//     }
+
+//     $validated = $request->validate([
+//         "first_name" => ['required', 'min:1'],
+//         "last_name" => ['required', 'min:1'],
+//         "date_of_birth" => ['required', 'date'],
+//         "gender" => ['required'],
+//         "contact_number" => ['required'],
+//         "address" => ['required'],
+//         "pic_first_name" => ['required', 'min:1'],
+//         "pic_last_name" => ['required', 'min:1'],
+//         "pic_relation" => ['required', 'min:1'],
+//         "pic_contact_number" => ['required'],
+//         "ap_first_name" => ['required', 'min:1'],
+//         "ap_last_name" => ['required', 'min:1'],
+//         "ap_contact_number" => ['required'],
+//         "physician_id" => ['required'],
+//         "admission_type" => ['required'],
+//         "room_number" => [''], // No need to enforce required here
+//     ]);
+
+//     // If admission type is Outpatient, set the room number to "For ER"
+//     if ($validated['admission_type'] == "Outpatient") {
+//         $validated['room_number'] = "For ER";
+//     } elseif ($validated['admission_type'] == "Inpatient") {
+//         // Only validate the room number if admission type is Inpatient and not empty
+//         if (!empty($validated['room_number'])) {
+//             $request->validate([
+//                 "room_number" => ['required'],
+//             ]);
+//         }
+//     }
+
+//     // Map the specialist name to the physician_id
+//     // $physicianId = $request->input('specialist');
+//     // $validated['physician_id'] = $physicianId;
+    
+//     $validated['physician_id'] = $request->input('specialist');
+
+    
+//     // Create a new patient
+//     $newPatient = Patients::create($validated);
+
+//     return redirect('/admission-patients')->with('message', 'New patient was added successfully!');
+// }
 
     public function create()
 {
@@ -260,20 +318,10 @@ class PatientController extends Controller
 
     return view('patients.create', compact('availableRooms', 'physicians'));
 }
+
+
 public function store(Request $request)
 {
-
-
-       // Validate the request data
-       $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
-    ]);
-
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    }
-
     $validated = $request->validate([
         "first_name" => ['required', 'min:1'],
         "last_name" => ['required', 'min:1'],
@@ -288,32 +336,52 @@ public function store(Request $request)
         "ap_first_name" => ['required', 'min:1'],
         "ap_last_name" => ['required', 'min:1'],
         "ap_contact_number" => ['required'],
-        "physician_id" => ['required'],
         "admission_type" => ['required'],
-        "room_number" => [''], // No need to enforce required here
-    ]);
+        "room_number" => ($request->input('admission_type') == "Outpatient") ? 'For ER' : 'required|numeric|between:1,20',
 
-    // If admission type is Outpatient, set the room number to "For ER"
-    if ($validated['admission_type'] == "Outpatient") {
-        $validated['room_number'] = "For ER";
-    } elseif ($validated['admission_type'] == "Inpatient") {
-        // Only validate the room number if admission type is Inpatient and not empty
-        if (!empty($validated['room_number'])) {
-            $request->validate([
-                "room_number" => ['required'],
-            ]);
-        }
+    ]);
+    
+
+    // Check if the password matches the user's password
+    if (!Hash::check($request->password, Auth::user()->password)) {
+        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
     }
 
-    // Map the specialist name to the physician_id
+    // // If admission type is Outpatient, set the room number to "For ER"
+    // if ($validated['admission_type'] == "Outpatient") {
+    //     $validated['room_number'] = "For ER";
+    // } else {
+    //     // For Inpatient, validate the room number if provided
+    //     $roomNumber = $request->input('room_number');
+        
+    //     // Validate room number if provided
+    //     if ($roomNumber !== "For ER") {
+    //         // Check if room number is empty or not a valid room number
+    //         if (empty($roomNumber)) {
+    //             return redirect()->back()->with('error', 'Room number is required for Inpatient.');
+    //         } elseif (!in_array($roomNumber, range(1, 20))) {
+    //             return redirect()->back()->with('error', 'Invalid room number selected.');
+    //         }
+    //     }
+    //     $validated['room_number'] = $roomNumber;
+    // }
+
+    // Validate physician selection
     $physicianId = $request->input('specialist');
+    $physician = Physicians::find($physicianId);
+    if (!$physician) {
+        return redirect()->back()->withErrors(['specialist' => 'Invalid physician selected.'])->withInput();
+    }
     $validated['physician_id'] = $physicianId;
-    
+
     // Create a new patient
     $newPatient = Patients::create($validated);
 
     return redirect('/admission-patients')->with('message', 'New patient was added successfully!');
 }
+
+
+
 
 
     // public function update(Request $request, Patients $patient)

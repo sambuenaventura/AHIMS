@@ -172,13 +172,24 @@
                             <p class="mb-4">Is the patient Inpatient or Outpatient?</p>
                             <div class="label">
                                 <label class="label-opt bg-custom-100 rounded">
-                                    <img src="http://127.0.0.1:8000/storage/image/inpatient.png" alt="Inpatient Image" class="w-20 h-auto" style="filter: brightness(0) invert(1);">
-                                    <p class="text-white m-0">Inpatient</p>
+                                    <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <rect width="70" height="70" fill="url(#pattern0)"/>
+                                        <defs>
+                                        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                        <use xlink:href="#image0_1387_953" transform="scale(0.0078125)"/>
+                                        </pattern>
+                                        <image id="image0_1387_953" width="128" height="128" xlink:href="data:image/png;base64,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"/>
+                                        </defs>
+                                    </svg>                                  
+                                    <p class="text-white m-0 font-bold">Inpatient</p>
                                     <input type="radio" name="admission_type" value="Inpatient" class="invisible" onclick="submitForm()">
                                 </label>
                                 <label class="label-opt bg-custom-100 rounded">
-                                    <img src="http://127.0.0.1:8000/storage/image/outpatient.png" alt="Outpatient Image" class="w-20 h-auto" style="filter: brightness(0) invert(1);">
-                                    <p class="text-white m-0">Outpatient</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="71" viewBox="0 -960 960 960" width="71">
+                                        <path fill="#ffffff" d="M720-400v-120H600v-80h120v-120h80v120h120v80H800v120h-80Zm-360-80q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm80-80h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0-80Zm0 400Z"/>
+                                      </svg>
+                                                                    
+                                    <p class="text-white m-0 font-bold">Outpatient</p>
                                     <input type="radio" name="admission_type" value="Outpatient" class="invisible" onclick="submitForm()">
                                 </label>
                             </div>
@@ -309,39 +320,55 @@
                                 </div>
                                 <h6 class="text-success">IV. Attending Physician</h6>
                                 <div class="form-floating">
-                                    <select id="specialist" name="specialist" class="form-select bg-light py-3">
+                                    <select id="specialist" name="specialist" class="form-select bg-light" aria-label="Specialist">
                                         <option value="" disabled>Select Specialist</option>
                                         @foreach ($physicians as $physician)
-                                            <option value="{{ $physician->physician_id }}">Dr. {{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</option>
+                                            <option value="{{ $physician->physician_id }}">{{ 'Dr. ' . $physician->phy_first_name . ' ' . $physician->phy_last_name }}</option>
                                         @endforeach
                                     </select>
+                                    <label for="specialist">Specialist</label>
                                 </div>
                                 
+                                
                                 <div class="input-group">
-                                    @error('physician_id')
+                                    @error('specialist') <!-- Update error field to 'specialist' -->
                                     <div class="mr-40">
-                                        <p class="text-red-500 text-xs p-1">Specialist field is required</p>
+                                        <p class="text-red-500 text-xs p-1">{{ $message }}</p> <!-- Display the error message -->
                                     </div>
                                     @enderror
                                 </div>
+                                
                                 
                             </div>
                             <div class="col">
                                 <h6 class="text-success">ㅤ</h6>
                                 <div class="row g-3 align-items-end">
                                     <div class="col">
-                                        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="form-control bg-light py-3" placeholder="Birth Date" aria-label="Birth Date">
+                                        <div class="form-floating">
+                                            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="form-control bg-light" placeholder="Birth Date" aria-label="Birth Date">
+                                            <label for="date_of_birth">Birth Date</label>
+                                        </div>
                                     </div>
+                                    
+                                    
                                     <div class="col">
-                                        <input type="number" id="age" name="age" class="form-control bg-light py-3" placeholder="Age" aria-label="Age" readonly>
+                                        <div class="form-floating">
+                                            <input type="number" id="age" name="age" class="form-control bg-light" placeholder="Age" aria-label="Age" readonly>
+                                            <label for="age">Age</label>
+                                        </div>
                                     </div>
+                                    
                                     <div class="col">
-                                        <select name="gender" class="form-control bg-light py-3" placeholder="Gender" aria-label="Age">
-                                            <option value="" {{old('gender') == "" ? 'selected' : ''}} disabled>Sex</option>
-                                            <option value="Male" {{old('gender') == "Male" ? 'selected' : ''}}>Male</option>
-                                            <option value="Female" {{old('gender') == "Female" ? 'selected' : ''}}>Female</option>
-                                        </select>
+                                        <div class="form-floating">
+                                            <select name="gender" class="form-select bg-light" aria-label="Gender">
+                                                <option value="" {{ old('gender') == "" ? 'selected' : '' }} disabled>Select Gender</option>
+                                                <option value="Male" {{ old('gender') == "Male" ? 'selected' : '' }}>Male</option>
+                                                <option value="Female" {{ old('gender') == "Female" ? 'selected' : '' }}>Female</option>
+                                            </select>
+                                            <label for="gender">Gender</label>
+                                        </div>
                                     </div>
+                                    
                                     <div class="input-group">
                                         @error('date_of_birth')
                                         <div class="ml-2 mr-64">
@@ -403,14 +430,16 @@
                                 </div>
                                 <h6 class="text-success">ㅤ</h6>
                                 <div class="form-floating">
-                                    <select id="room_number" name="room_number" class="form-select bg-light py-3" aria-label="Room Number">
+                                    <select id="room_number" name="room_number" class="form-select bg-light" aria-label="Room Number">
                                         <option value="" {{ old('room_number') == "" ? 'selected' : '' }} disabled>Select Room Number</option>
                                         @foreach($availableRooms as $room)
-                                            <option value="{{ $room }}">{{ $room }}</option>
+                                            <option value="{{ $room }}" {{ old('room_number') == $room ? 'selected' : '' }}>{{ $room }}</option>
                                         @endforeach
                                         <option value="For ER" {{ old('room_number') == "For ER" ? 'selected' : '' }}>For ER</option>
                                     </select>
+                                    <label for="room_number">Room Number</label>
                                 </div>
+                                
                                 
                                 
                                 
