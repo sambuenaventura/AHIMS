@@ -120,14 +120,14 @@ text-align: center;
             <h1 id="timePlaceholder" class="font-bold text-black"></h1>
           </div>
           <div class="box flexi flex-row bg-custom-101 shadow">
-                <div>
-                    <img src="{{ asset('storage/image/physician-b.png') }}" alt="Physician Image" class="w-24 h-auto mr-4">
-                </div>
-                <div class="flex-col">
-                  <h1 class="font-bold text-black">{{ $physicianCount }}</h1>
-                  <p class="mb-1">Physicians</p>
-                </div>
-          </div>
+            <div>
+                <img src="{{ asset('storage/image/physician-b.png') }}" alt="Physician Image" class="w-24 h-auto mr-4">
+            </div>
+            <div class="flex-col">
+                <h1 id="physicianCount" class="font-bold text-black">0</h1>
+                <p class="mb-1">Physicians</p>
+            </div>
+        </div>
 
 
           <div class="box flexi flex-row bg-custom-101 shadow">
@@ -135,7 +135,7 @@ text-align: center;
                 <img src="{{ asset('storage/image/nurse-b.png') }}" alt="Nurse Image" class="w-24 h-auto mr-4 invert">
             </div>
               <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $nurseCount }}</h1>
+                <h1 id="nurseCount" class="font-bold text-black">0</h1>
                 <p class="mb-1">Nurses</p>
               </div>
           </div>
@@ -145,7 +145,7 @@ text-align: center;
                   <img src="{{ asset('storage/image/medtech-b.png') }}" alt="medtech Image" class="w-24 h-auto mr-4">
               </div>
               <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $medtechCount }}</h1>
+                <h1 id="medtechCount" class="font-bold text-black">0</h1>
                 <p class="mb-1">Medical Technologists</p>
               </div>
           </div>
@@ -154,7 +154,7 @@ text-align: center;
                   <img src="{{ asset('storage/image/radtech-b.png') }}" alt="Radtech Image" class="w-24 h-auto mr-4">
               </div>
               <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $radtechCount }}</h1>
+                <h1 id="radtechCount" class="font-bold text-black">0</h1>
                 <p class="mb-1">Radiologic Technologist</p>
               </div>
           </div>
@@ -202,6 +202,29 @@ text-align: center;
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
+    function animateCount(id, finalCount) {
+    let currentCount = 0;
+    const frames = 100; // Number of frames for the animation
+    const increment = finalCount / frames; // Calculate the increment per frame
     
+    const interval = setInterval(() => {
+        currentCount += increment;
+        document.getElementById(id).textContent = Math.ceil(currentCount);
+
+        if (currentCount >= finalCount) {
+            clearInterval(interval);
+            document.getElementById(id).textContent = finalCount; // Ensure the final count matches the expected value exactly
+        }
+    }, 10); // Change 10 to adjust update frequency
+}
+
+// Call the animateCount function for each count box
+animateCount('physicianCount', {{ $physicianCount }});
+animateCount('nurseCount', {{ $nurseCount }});
+animateCount('medtechCount', {{ $medtechCount }});
+animateCount('radtechCount', {{ $radtechCount }});
+// Repeat the above line for other count boxes
+
 </script>
 @include('partials.footer')
+

@@ -167,7 +167,7 @@ text-align: center;
                     <img src="{{ asset('storage/image/inpatient.png') }}" alt="Inpatient Image" class="w-24 h-auto mr-4">
                 </div>
                 <div class="flex-col">
-                  <h1 class="font-bold text-black">{{ $inpatientCount }}</h1>
+                  <h1 id="inpatientCount" class="font-bold text-black">0</h1>
                   <p class="mb-1">Inpatient</p>
                 </div>
           </div>
@@ -178,7 +178,7 @@ text-align: center;
                   <img src="{{ asset('storage/image/outpatient.png') }}" alt="Outpatient Image" class="w-24 h-auto mr-4">
               </div>
               <div class="flex-col">
-                <h1 class="font-bold text-black">{{ $outpatientCount }}</h1>
+                <h1 id="outpatientCount" class="font-bold text-black">0</h1>
                 <p class="mb-1">Outpatient</p>
               </div>
           </div>
@@ -191,7 +191,7 @@ text-align: center;
         <div class="card pe-0 shadow">
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
-                    <h4 class="font-bold">Doctors</h4>
+                    <h4 class="font-bold">Physicians</h4>
                     <form class="d-flex" action="{{ route('admission.index') }}" method="GET">
                       <div class="input-group mb-3">
 
@@ -250,7 +250,7 @@ text-align: center;
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($physicians as $physician)
+                    @forelse($physicians as $physician)
                     <tr>
                         <td>{{ $physician->physician_id }}</td>
                         <td>{{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
@@ -264,7 +264,12 @@ text-align: center;
                       </td>
                                               {{-- <td><span style="color:green; font-size: 1.25em;">•</span> Available</td> <!-- You can add availability status here --> --}}
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                      <td colspan="7" class="text-center">No physicians found</td>
+                  </tr>
+                  
+                @endforelse   
                 </tbody>
             </table>
             
@@ -306,6 +311,28 @@ text-align: center;
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
+    
+    function animateCount(id, finalCount) {
+    let currentCount = 0;
+    const frames = 100; // Number of frames for the animation
+    const increment = finalCount / frames; // Calculate the increment per frame
+    
+    const interval = setInterval(() => {
+        currentCount += increment;
+        document.getElementById(id).textContent = Math.ceil(currentCount);
+
+        if (currentCount >= finalCount) {
+            clearInterval(interval);
+            document.getElementById(id).textContent = finalCount; // Ensure the final count matches the expected value exactly
+        }
+    }, 10); // Change 10 to adjust update frequency
+}
+
+// Call the animateCount function for each count box
+animateCount('inpatientCount', {{ $inpatientCount }});
+animateCount('outpatientCount', {{ $outpatientCount }});
+
+    // Repeat the above line for other count boxes
     
 </script>
 @include('partials.footer')
