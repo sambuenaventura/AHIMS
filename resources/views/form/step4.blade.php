@@ -112,7 +112,7 @@
                                                           <form id="passwordForm">
                                                               <div class="col-auto">
                                                                   <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                                  <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
+                                                                  <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
                                                               </div>
                                                               <div class="col-auto">
                                                                 <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
