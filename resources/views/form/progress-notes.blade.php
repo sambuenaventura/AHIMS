@@ -131,7 +131,7 @@
                     </div> --}}
 
                     <div class="row mx-4 mt-5">
-                        <h5 class="text-success">Progress Notes</h5>              
+                        <h5 class="text-success font-bold">Progress Notes</h5>              
                         <div class="col">
                             <div class="form-floating mt-2">
                                 <input type="date" class="form-control rounded" placeholder="Medication Date" id="progress_date" name="progress_date" value="{{ optional($patient->progressNotes->first())->progress_date }}" />
