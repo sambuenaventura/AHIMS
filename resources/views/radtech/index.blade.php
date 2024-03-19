@@ -367,7 +367,7 @@ text-align: center;
                 <form id="declineForm{{ $request->request_id }}" action="{{ route('radtech.decline', ['request_id' => $request->request_id]) }}" method="POST">
                     @csrf
                     <div class="d-flex justify-content-center">
-                      <button type="button" onclick="showConfirmationModalForDecline({{ $request->request_id }})" class="badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">                        
+                      <button type="button" onclick="showConfirmationModalForDecline({{ $request->request_id }})" class="decline badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">                         
                         <span class="p-1 rounded">
                           <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18">
                             <path fill="#ffff" d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
@@ -382,7 +382,7 @@ text-align: center;
                               <div class="modal-body m-3">
                                   <div class="modalContent">
                                       <h1 class="text-center text-success">
-                                          <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                          <span class="material-symbols-outlined bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20">
                                               <path fill="#ffff" d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
                                             </svg>
