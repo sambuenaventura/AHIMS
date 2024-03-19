@@ -219,7 +219,7 @@ html {
                 </div>
                 <hr>
                 <div class="mt-2">
-                    <p><strong>MedTech on Duty:</strong> {{ $request->medtech->first_name }} {{ $request->medtech->last_name }}</p>
+                    <p><strong>On Duty:</strong> {{ $request->medtech->first_name }} {{ $request->medtech->last_name }}</p>
                     <p><strong>Date Completed:</strong> {{ $request->updated_at->format('h:i A n/j/Y') }}</p>
                 </div>
                 {{-- <p><strong>File name:</strong> --}}
