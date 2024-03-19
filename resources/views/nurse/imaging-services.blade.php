@@ -142,7 +142,7 @@ html {
                                 <th scope="col">Nurse on Duty</th>
                             @endif
                             @if(request('status') === 'accepted')
-                                <th scope="col">MedTech on Duty</th>
+                                <th scope="col">RadTech on Duty</th>
                             @endif
                             @if(request('status') === 'completed')
                                 <th scope="col">Date Completed</th>
@@ -150,6 +150,7 @@ html {
                             @endif
                             @if($status == 'declined')
                                 <th scope="col">Date Declined</th>
+                                <th scope="col">RadTech on Duty</th>
                             @endif
                             @if($status == 'declined')
                                 <th scope="col">Reason</th>
@@ -191,6 +192,8 @@ html {
 
                                 @endif                                
                                 @if($status == 'declined')
+                                <td>{{ optional($request->medtech)->first_name }} {{ optional($request->medtech)->last_name }}</td>                                
+
                                 <td style="min-width: 140px;">{{ $request->message }}</td>
                                 @endif   
                                 @if(!$status)
