@@ -21,63 +21,6 @@ use App\Models\ServiceRequest;
 
 class MedTechController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     // Get the authenticated medtech's ID
-        
-    //     // Query for pending service requests assigned to the authenticated medtech
-    //     $requests = ServiceRequest::query()
-    //                                ->where('status', 'pending')
-    //                                ->paginate(10); 
-    //     return view('medtech.index', compact('requests'));
-    // }
-
-    
-    // public function index(Request $request)
-    // {
-    //     // Get the authenticated medtech's ID
-    //     $medtechId = auth()->user()->id;
-        
-    //     // Query for pending service requests assigned to the authenticated medtech
-    //     $requests = ServiceRequest::query()
-    //                                ->where('status', 'pending')
-    //                                ->whereIn('procedure_type', ['Chemistry', 'Bbis', 'Parasitology', 'Microbiology', 'Microscopy', 'Hematology'])
-    //                                ->paginate(10); 
-    
-    //     // Query for the count of patients for each procedure type with the condition on receiver_id
-    //     $chemistryPatientsCount = ServiceRequest::where('status', 'accepted')
-    //                                             ->where('procedure_type', 'Chemistry')
-    //                                             ->where('receiver_id', $medtechId)
-    //                                             ->count();
-    
-    //     $hematologyPatientsCount = ServiceRequest::where('status', 'accepted')
-    //                                              ->where('procedure_type', 'Hematology')
-    //                                              ->where('receiver_id', $medtechId)
-    //                                              ->count();
-    
-    //     $bbIsPatientsCount = ServiceRequest::where('status', 'accepted')
-    //                                         ->where('procedure_type', 'Bbis')
-    //                                         ->where('receiver_id', $medtechId)
-    //                                         ->count();
-    
-    //     $parasitologyPatientsCount = ServiceRequest::where('status', 'accepted')
-    //                                                 ->where('procedure_type', 'Parasitology')
-    //                                                 ->where('receiver_id', $medtechId)
-    //                                                 ->count();
-    
-    //     $microbiologyPatientsCount = ServiceRequest::where('status', 'accepted')
-    //                                                 ->where('procedure_type', 'Microbiology')
-    //                                                 ->where('receiver_id', $medtechId)
-    //                                                 ->count();
-    
-    //     $microscopyPatientsCount = ServiceRequest::where('status', 'accepted')
-    //                                               ->where('procedure_type', 'Microscopy')
-    //                                               ->where('receiver_id', $medtechId)
-    //                                               ->count();
-    
-    //     // Pass the counts and requests to the view
-    //     return view('medtech.index', compact('requests', 'chemistryPatientsCount', 'hematologyPatientsCount', 'bbIsPatientsCount', 'parasitologyPatientsCount', 'microbiologyPatientsCount', 'microscopyPatientsCount'));
-    // }
     
     public function index(Request $request)
     {
@@ -140,29 +83,6 @@ class MedTechController extends Controller
     }
     
 
-
-
-    // public function acceptRequest(Request $request, $request_id)
-    // {
-    //     // Validate the request data
-    //     $request->validate([
-    //         'password' => 'required|string', // Add any additional validation rules for the password
-    //     ]);
-    
-    //     // Check if the password matches the user's password
-    //     if (!Hash::check($request->password, Auth::user()->password)) {
-    //         return redirect()->back()->with('message', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    //     }
-    
-    //     $request = ServiceRequest::where('request_id', $request_id)->firstOrFail();
-    //     $request->status = 'accepted';
-    //     $request->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
-    //     $request->save();
-    
-    //     return redirect()->back()->with('message', 'Request accepted successfully');
-    // }
-
-
     public function acceptRequest(Request $request, $request_id)
     {
         // Validate the request data
@@ -205,51 +125,6 @@ class MedTechController extends Controller
 
     return redirect()->back()->with('message', 'Request declined successfully');
 }
-
-  
-    // public function viewRequests(Request $request)
-    // {
-    //     // Retrieve the search query and request status from the request
-    //     $search = $request->input('search');
-    //     $status = $request->input('status');
-    
-    //     // Get the authenticated user's ID
-    //     $userId = auth()->id();
-    
-    //     // Query based on request status
-    //     $query = ServiceRequest::query()->where('receiver_id', $userId);
-    //     switch ($status) {
-    //         case 'accepted':
-    //             $query->where('status', 'accepted');
-    //             break;
-    //         case 'completed':
-    //             $query->where('status', 'completed');
-    //             break;
-    //         case 'declined':
-    //             $query->where('status', 'declined');
-    //             break;
-    //         default:
-    //             // Default to pending requests
-    //             $query->where('status', 'pending');
-    //             break;
-    //     }
-    
-    //     // Apply search query if it exists
-    //     if ($search) {
-    //         $query->whereHas('patient', function ($q) use ($search) {
-    //             $q->where('first_name', 'like', '%' . $search . '%')
-    //             ->orWhere('last_name', 'like', '%' . $search . '%');
-    //         });
-    //     }
-
-
-    
-    //     // Retrieve requests and paginate the results
-    //     $requests = $query->paginate(10); // Adjust pagination limit as needed
-    
-    //     // Pass request status to the view to maintain consistency
-    //     return view('medtech.requests', compact('requests', 'status'));
-    // }
 
     public function viewRequests(Request $request)
 {
@@ -296,35 +171,6 @@ class MedTechController extends Controller
     // Pass request status to the view to maintain consistency
     return view('medtech.requests', compact('requests', 'status'));
 }
-
-
-
-    // public function processLabResult(Request $request)
-    // {
-    //     // Validate the request data
-    //     $validatedData = $request->validate([
-    //         'message' => ['required', 'string'],
-    //         'image' => ['required', 'image', 'max:2048'], // Max size 2MB, adjust as needed
-    //         'request_id' => ['required', 'exists:requests,request_id'],
-    //     ]);
-
-    //     // Find the request by request ID
-    //     $requestEntry = ServiceRequest::findOrFail($validatedData['request_id']);
-
-    //     // Store the uploaded image
-    //     // $imagePath = $request->file('image')->store('request_images', 'public');
-    //     $imagePath = $request->file('image')->storeAs('request_images', $request->file('image')->getClientOriginalName(), 'public');
-    //     // Update the request information
-    //     $requestEntry->message = $validatedData['message'];
-    //     $requestEntry->status = 'completed';
-    //     $requestEntry->image = $imagePath; // Save the image path
-    //     $requestEntry->save();
-
-    //     // Redirect back to the previous page after processing the result
-    //     return redirect()->route('medtech.requests', ['status' => 'accepted'])
-    //                     ->with('message', 'Result sent successfully');
-    // }
-
 
     public function processLabResult(Request $request)
     {
@@ -374,69 +220,6 @@ class MedTechController extends Controller
             return redirect()->back()->with('error', 'No images uploaded');
         }
     }
-    
-
-
-
-
-
-
-    // public function viewResults(Request $request)
-    // {
-    //     $medtechId = auth()->user()->id;
-
-    //     $status = 'completed';
-    //     $procedureType = $request->input('procedure');
-        
-    //     // Fetch data based on the procedure_type and status
-    //     $query = ServiceRequest::where('status', $status)
-    //                             ->where('receiver_id', $medtechId);
-        
-    //     if (!empty($procedureType)) {
-    //         $query->where('procedure_type', $procedureType);
-    //     }
-        
-    //     $requests = $query->paginate(10);
-        
-    //     return view('medtech.results', compact('requests'));
-    // }
-
-
-//     public function viewResults(Request $request)
-// {
-//     $medtechId = auth()->user()->id;
-//     $status = 'completed';
-//     $procedureType = $request->input('procedure');
-//     $search = $request->input('search');
-    
-//     // Fetch data based on the procedure_type, status, and search query
-//     $query = ServiceRequest::where('status', $status)
-//                             ->where('receiver_id', $medtechId);
-    
-//     if (!empty($procedureType)) {
-//         $query->where('procedure_type', $procedureType);
-//     }
-    
-//     if ($search) {
-//         // Search by first name, last name, file name, patient ID, and procedure type
-//         $query->where(function ($q) use ($search) {
-//             $q->whereHas('patient', function ($q) use ($search) {
-//                 $q->where('first_name', 'like', '%' . $search . '%')
-//                   ->orWhere('last_name', 'like', '%' . $search . '%');
-//             })
-//             ->orWhere('image', 'like', '%' . $search . '%')
-//             ->orWhere('patient_id', 'like', '%' . $search . '%')
-//             ->orWhere('procedure_type', 'like', '%' . $search . '%');
-//         });
-//     }
-    
-    
-    
-//     $requests = $query->paginate(10);
-    
-//     return view('medtech.results', compact('requests', 'procedureType', 'search'));
-// }
-
 
 
 public function viewResults(Request $request)
@@ -533,48 +316,7 @@ public function viewResults(Request $request)
                                             'medicalHistory' => $medicalHistory, 
                                             'currentMedication' => $currentMedication],);
     }
-    //     public function show($id)
-    // {
-    //     $patient = Patients::findOrFail($id);
 
-    //     // Fetch completed service requests for the selected patient handled by medtech
-    //     $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
-    //                                         ->where('status', 'completed')
-    //                                         ->whereHas('receiver', function ($query) {
-    //                                             $query->where('role', 'medtech');
-    //                                         })
-    //                                         ->get();
-
-    //     // Fetch completed service requests for the selected patient handled by radtech
-    //     $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
-    //                                         ->where('status', 'completed')
-    //                                         ->whereHas('receiver', function ($query) {
-    //                                             $query->where('role', 'radtech');
-    //                                         })
-    //                                         ->get();
-
-
-
-    //     // Retrieve the authenticated user's ID
-    //     $nurseUserId = auth()->user()->id;
-
-    //     // Check if the nurse is authenticated and has submitted medical history for the current patient
-    //     if (auth()->check()) {
-    //         // Nurse is authenticated
-    //         // Retrieve the nurse's information
-    //         $nurse = auth()->user(); // Use the authenticated user as the nurse
-
-    //         // If medical history exists and nurse ID is not set, update the medical history with nurse ID
-    //         if ($medicalHistory && !$medicalHistory->nurse_id) {
-    //             $medicalHistory->update(['nurse_id' => $nurseUserId]);
-    //         }
-    //     } else {
-    //         // If no nurse is authenticated, set nurse information to null
-    //         $nurse = null;
-    //     }
-
-    //     return view('patients.nurse-edit', compact('nurse', 'patient', 'medtechCompletedResults', 'radtechCompletedResults', 'medicalHistory', 'reviewOfSystems', 'physicalExaminations', 'neurologicalExaminations', 'currentMedication'));
-    // }
 
     public function showMedicalHistory()
     {

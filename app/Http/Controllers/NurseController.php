@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ServiceRequest; // Import the Request model
+use App\Models\ServiceRequest;
 use App\Models\ArchivedPatients;
 use App\Models\CurrentMedication;
 use App\Models\MedicalHistory;
@@ -61,87 +61,6 @@ class NurseController extends Controller
         return view('nurse.index', compact('patients'));
     }
     
-    // private function getPatients($search)
-    // {
-    //     $patientsQuery = DB::table('patients')
-    //                         ->leftJoin('physicians', 'patients.physician_id', '=', 'physicians.physician_id')
-    //                         ->select('patients.*', 'physicians.*');
-    
-    //     if ($search) {
-    //         $patientsQuery->where(function ($query) use ($search) {
-    //             $query->where('patients.first_name', 'like', '%' . $search . '%')
-    //                 ->orWhere('patients.last_name', 'like', '%' . $search . '%');
-    //         });
-    //     }
-        
-    //     return $patientsQuery->paginate(10);
-    // }
-    
-    
-    
-    
-
-// public function nurseView(Request $request)
-// {
-//     // Retrieve the search query and admission type from the request
-//     $search = $request->input('search');
-//     $admissionType = $request->input('admissionType');
-
-//     // Query based on admission type
-//     if ($admissionType == 'archived') {
-//         // Query for archived patients
-//         $query = ArchivedPatients::query();
-//     } else {
-//         $query = Patients::query();
-//         if ($admissionType) {
-//             $query->where('admission_type', $admissionType);
-//         }
-//     }
-
-//     // Apply search query if it exists
-//     if ($search) {
-//         $query->where(function ($q) use ($search) {
-//             $q->where('patient_id', 'like', '%' . $search . '%')
-//                 ->orWhere('first_name', 'like', '%' . $search . '%')
-//                 ->orWhere('last_name', 'like', '%' . $search . '%');
-//         });
-//     }
-
-//     // Retrieve patients and paginate the results
-//     $patients = $query->paginate(10); // Adjust pagination limit as needed
-
-//     // Pass admission type to the view to maintain consistency
-//     return view('nurse.nurse', compact('patients', 'admissionType'));
-// }
-
-// public function nurseView(Request $request)
-// {
-//     // Retrieve the search query and admission type from the request
-//     $search = $request->input('search');
-//     $admissionType = $request->input('admissionType');
-
-//     // Query based on admission type
-//     $query = Patients::query();
-//     if ($admissionType) {
-//         $query->where('admission_type', $admissionType);
-//     }
-
-//     // Apply search query if it exists
-//     if ($search) {
-//         $query->where(function ($q) use ($search) {
-//             $q->where('patient_id', 'like', '%' . $search . '%')
-//                 ->orWhere('first_name', 'like', '%' . $search . '%')
-//                 ->orWhere('last_name', 'like', '%' . $search . '%');
-//         });
-//     }
-
-//     // Retrieve patients and paginate the results
-//     $patients = $query->paginate(10); // Adjust pagination limit as needed
-
-//     // Pass admission type to the view to maintain consistency
-//     return view('nurse.nurse', compact('patients', 'admissionType'));
-// }
-
 
 public function nurseView(Request $request)
 {
@@ -174,45 +93,6 @@ public function nurseView(Request $request)
     // Pass admission type to the view to maintain consistency
     return view('nurse.nurse', compact('patients', 'admissionType'));
 }
-
-
-
-
-
-
-
-
-
-// INPATIENT/OUTPATIENT DISPLAY STILL SHOWING WHEN ARCHIVED = TRUE (FIX THIS)
-
-    // Your existing methods
-
-    // Method to handle /nurse-laboratory-services route
-    // public function laboratoryServices()
-    // {
-    //     // Assuming lab-services.blade.php exists in resources/views directory
-    //     return view('nurse.lab-services');
-    // }
-
-
-
-    // public function autocomplete(Request $request)
-    // {
-    //     $searchTerm = $request->input('term');
-    
-    //     // Query to search for matching patient names based on the search term
-    //     $patients = Patients::where('first_name', 'like', '%' . $searchTerm . '%')
-    //                         ->orWhere('last_name', 'like', '%' . $searchTerm . '%')
-    //                         ->get();
-    
-    //     // Build HTML for autocomplete suggestions
-    //     $html = '';
-    //     foreach($patients as $patient) {
-    //         $html .= '<div class="autocomplete-item">' . $patient->first_name . ' ' . $patient->last_name . '</div>';
-    //     }
-    
-    //     return response()->json($html);
-    // }
     
     public function autocomplete(Request $request)
     {
@@ -249,48 +129,6 @@ public function nurseView(Request $request)
     }
 }
 
-// public function searchInpatient(Request $request)
-// {
-//     $search = $request->input('inpatientSearch');
-//     $patients = Patients::query()
-//         ->where('admission_type', 'inpatient')
-//         ->where(function ($q) use ($search) {
-//             $q->where('patient_id', 'like', '%' . $search . '%')
-//                 ->orWhere('first_name', 'like', '%' . $search . '%')
-//                 ->orWhere('last_name', 'like', '%' . $search . '%');
-//         })
-//         ->paginate(10);
-
-//     return view('nurse.nurse', compact('patients'));
-// }
-
-// public function searchOutpatient(Request $request)
-// {
-//     $search = $request->input('outpatientSearch');
-//     $patients = Patients::query()
-//         ->where('admission_type', 'outpatient')
-//         ->where(function ($q) use ($search) {
-//             $q->where('patient_id', 'like', '%' . $search . '%')
-//                 ->orWhere('first_name', 'like', '%' . $search . '%')
-//                 ->orWhere('last_name', 'like', '%' . $search . '%');
-//         })
-//         ->paginate(10);
-
-//     return view('nurse.nurse', compact('patients'));
-// }
-
-
-// public function searchArchived(Request $request)
-// {
-//     $search = $request->input('archivedSearch');
-//     $patients = ArchivedPatients::query()
-//         ->where('first_name', 'like', '%' . $search . '%')
-//         ->orWhere('last_name', 'like', '%' . $search . '%')
-//         // Add other search conditions as needed
-//         ->paginate(10);
-
-//     return view('nurse.nurse', compact('patients'));
-// }
 
 public function searchInpatient(Request $request)
 {
@@ -336,11 +174,6 @@ public function searchArchived(Request $request)
     return view('nurse.nurse', compact('patients'));
 }
 
-// public function show($id)
-// {
-//     $patient = Patients::with('vitalSigns')->findOrFail($id);
-//     return view('patients.nurse-edit', ['patient' => $patient]);
-// }
 
 public function show($id)
 {
@@ -471,40 +304,8 @@ public function updateDischargeDate(Request $request, $id)
         'discharge_date' => $request->input('discharge_date'),
     ]);
 
-    return redirect()->back()->with('success', 'Discharge date updated successfully.');
+    return redirect()->back()->with('message', 'Discharge date updated successfully.');
 }
-
-
-
-// public function showMedtechCompletedRequests($id)
-// {
-//     $patient = Patients::findOrFail($id);  
-
-//     // Fetch completed service requests for the selected patient handled by medtech
-//     $completedResults = ServiceRequest::where('patient_id', $id)
-//                                         ->where('status', 'completed')
-//                                         ->whereHas('medtech', function ($query) {
-//                                             $query->where('role', 'medtech');
-//                                         })
-//                                         ->get();
-
-//     return view('patients.nurse-edit', compact('patient', 'completedResults'));
-// }
-
-// public function showRadtechCompletedRequests($id)
-// {
-//     $patient = Patients::findOrFail($id);  
-
-//     // Fetch completed service requests for the selected patient handled by radtech
-//     $completedResults = ServiceRequest::where('patient_id', $id)
-//                                         ->where('status', 'completed')
-//                                         ->whereHas('radtech', function ($query) {
-//                                             $query->where('role', 'radtech');
-//                                         })
-//                                         ->get();
-
-//     return view('patients.nurse-edit', compact('patient', 'completedResults'));
-// }
 
 
     
@@ -1041,31 +842,6 @@ public function updateDischargeDate(Request $request, $id)
     }
    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function updateVitalSigns(Request $request, Patients $patient)
     {
 
@@ -1227,34 +1003,6 @@ public function updateProgressNotes(Request $request, Patients $patient)
 }
 
 
-// public function viewRemarks($id)
-// {
-//     $patient = Patients::findOrFail($id);
-//     $vitalSigns = $patient->vitalSigns()->paginate(10);
-    
-//     // Fetch medication remarks for the patient
-//     $medicationRemarks = $patient->medicationRemarks;
-
-//     // Group medication remarks by date
-//     $medicationRemarksByDate = $medicationRemarks->groupBy(function ($item) {
-//         return Carbon::parse($item->medication_date)->format('n/j/Y');
-//     });
-
-//     // Paginate the grouped medication remarks
-//     $perPage = 5; // Number of items per page
-//     $currentPage = request()->query('page', 1); // Get the current page from the query string
-//     $pagedData = new LengthAwarePaginator(
-//         $medicationRemarksByDate->forPage($currentPage, $perPage),
-//         $medicationRemarksByDate->count(),
-//         $perPage,
-//         $currentPage,
-//         ['path' => request()->url(), 'query' => request()->query()]
-//     );
-
-//     return view('nurse.show-remarks', compact('patient', 'vitalSigns', 'pagedData'));
-// }
-
-
 
 public function viewRemarks($id)
 {
@@ -1318,130 +1066,6 @@ public function viewNotes($id)
 }
 
 
-
-
-
-// public function archivePatient(Request $request, $patient_id)
-// {
-//     // Validate the request data
-//     $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }
-
-//     // Retrieve the patient from the 'patients' table
-//     $patient = Patients::findOrFail($patient_id);
-
-//     // Insert the patient into the 'archived_patients' table
-//     ArchivedPatients::create($patient->toArray());
-
-//     // Delete the patient record from the 'patients' table
-//     $patient->delete();
-
-//     return redirect()->back()->with('message', 'Patient archived successfully.');
-// }
-
-// public function archivePatient(Request $request, $patient_id)
-// {
-//     // Validate the request data
-//     $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }
-
-//     // Retrieve the patient from the 'patients' table
-//     $patient = Patients::findOrFail($patient_id);
-
-//     // Insert the patient into the 'archived_patients' table
-//     ArchivedPatients::create($patient->toArray());
-
-//     // Optionally, you can update the patient status or add a flag indicating that the patient is archived
-//     $patient->update(['archived' => true]);
-
-//     return redirect()->back()->with('message', 'Patient archived successfully.');
-// }
-
-// public function archivePatient(Request $request, $patient_id)
-// {
-//     // Validate the request data
-//     $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }
-
-//     // Retrieve the patient from the 'patients' table
-//     $patient = Patients::findOrFail($patient_id);
-
-//     // // Insert the patient into the 'archived_patients' table
-//     // ArchivedPatients::create($patient->toArray());
-
-//     // Optionally, you can update the patient status or add a flag indicating that the patient is archived
-//     $patient->update(['admission_type' => 'archived']);
-
-//     return redirect()->back()->with('message', 'Patient archived successfully.');
-// }
-
-
-
-// public function archivePatient(Request $request, $patient_id)
-// {
-//     // Validate the request data
-//     $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }
-
-//     // Retrieve the patient from the 'patients' table
-//     $patient = Patients::findOrFail($patient_id);
-
-//     // Optionally, you can update the patient status or add a flag indicating that the patient is archived
-//     $patient->update(['admission_type' => 'archived', 'archived_at' => now()]);
-
-//     return redirect()->back()->with('message', 'Patient archived successfully.');
-// }
-
-
-// public function archivePatient(Request $request, $patient_id)
-// {
-//     // Validate the request data
-//     $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }
-
-//     // Retrieve the patient from the 'patients' table
-//     $patient = Patients::findOrFail($patient_id);
-
-//     // Update the patient's admission_type to 'archived', set the archived_at timestamp, and clear the room_number
-//     $patient->update([
-//         'admission_type' => 'archived',
-//         'archived_at' => now(),
-//         'room_number' => null,
-//     ]);
-
-//     return redirect()->back()->with('message', 'Patient archived successfully.');
-// }
-
 public function archivePatient(Request $request, $patient_id)
 {
     // Validate the request data
@@ -1469,52 +1093,11 @@ public function archivePatient(Request $request, $patient_id)
 }
 
 
-
-
-
     public function destroy(Patients $patient) {
         $patient->delete();
         return redirect('/admission')->with('message', 'Data was successfully deleted');
     }
     
-
-
-    // public function requestLaboratoryServices(Request $request)
-    // {
-    //     // Validate the request data
-    //     $request->validate([
-    //         'password' => 'required|string', // Add any additional validation rules for the password
-    //     ]);
-
-    //     // Check if the password matches the user's password
-    //     if (!Hash::check($request->password, Auth::user()->password)) {
-    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    //     }   
-        
-    //     // Validate the form input
-    //     $validatedData = $request->validate([
-    //         'patient_id' => 'required|exists:patients,patient_id',
-    //         'procedure_type' => 'required',
-    //         'sender_message' => 'required',
-    //         // Add more validation rules as needed
-    //     ]);
-    
-    //     // Create a new laboratory service request
-    //     $serviceRequest = new ServiceRequest();
-    //     $serviceRequest->patient_id = $validatedData['patient_id'];
-    //     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
-    //     $serviceRequest->procedure_type = $validatedData['procedure_type'];
-    //     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
-
-    //     // Set other attributes as needed
-    
-    //     // Save the laboratory service request
-    //     $serviceRequest->save();
-    
-    //     // Optionally, you can redirect the user after submitting the form
-    //     return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
-    // }
-
 
     public function requestLaboratoryServices(Request $request)
     {
@@ -1636,29 +1219,6 @@ public function requestService($id)
 }
 
 
-
-
-// public function requestLaboratory($id)
-// {
-
-//     $patient = Patients::findOrFail($id);
-//     // Fetch completed service requests for the selected patient handled by medtech
-//     $medtechCompletedResults = ServiceRequest::where('patient_id', $id)
-//                                         ->where('status', 'completed')
-//                                         ->whereHas('receiver', function ($query) {
-//                                             $query->where('role', 'medtech');
-//                                         })
-//                                         ->get();
-
-//     // Fetch physical examinations from the physical_examinations table
-//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
-
-
-//     return view('nurse.request-lab', compact('patient', 'medtechCompletedResults', 'physicalExaminations'));
-
-// }
-
-
 public function requestLaboratory(Request $request, $id)
 {
     $patient = Patients::findOrFail($id);
@@ -1693,28 +1253,6 @@ public function requestLaboratory(Request $request, $id)
     return view('nurse.request-lab', compact('patient', 'medtechCompletedResults', 'physicalExaminations'));
 }
 
-
-// public function requestImaging($id)
-// {
-
-//     $patient = Patients::findOrFail($id);
-//     // Fetch completed service requests for the selected patient handled by medtech
-
-//     // Fetch completed service requests for the selected patient handled by radtech
-//     $radtechCompletedResults = ServiceRequest::where('patient_id', $id)
-//                                         ->where('status', 'completed')
-//                                         ->whereHas('receiver', function ($query) {
-//                                             $query->where('role', 'radtech');
-//                                         })
-//                                         ->get();
-
-//     // Fetch physical examinations from the physical_examinations table
-//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
-
-//     return view('nurse.request-image', compact('patient', 'radtechCompletedResults', 'physicalExaminations'));
-
-// }
-
 public function requestImaging(Request $request, $id)
 {
     $patient = Patients::findOrFail($id);
@@ -1742,69 +1280,6 @@ public function requestImaging(Request $request, $id)
 
     return view('nurse.request-image', compact('patient', 'radtechCompletedResults', 'physicalExaminations'));
 }
-
-// public function showResults(Request $request, $id)
-// {
-//     $patient = Patients::findOrFail($id);
-
-//     // Query to fetch completed service requests for the selected patient handled by medtech
-//     $medtechCompletedResultsQuery = ServiceRequest::where('patient_id', $id)
-//         ->where('status', 'completed')
-//         ->whereHas('receiver', function ($query) {
-//             $query->where('role', 'medtech');
-//         });
-
-//     // Check if there is a search query
-//     if ($request->has('search')) {
-//         $search = $request->search;
-//         $medtechCompletedResultsQuery->where(function ($query) use ($search) {
-//             $query->where('image', 'LIKE', "%$search%");
-//         });
-//     }
-
-//     // Check if there is a procedure filter
-//     if ($request->has('procedure')) {
-//         $procedure = $request->procedure;
-//         $medtechCompletedResultsQuery->where('procedure_type', $procedure);
-//     }
-
-//     // Paginate the results
-//     $medtechCompletedResults = $medtechCompletedResultsQuery->paginate(10); // Adjust 10 to the desired number of results per page
-
-//     // Fetch physical examinations from the physical_examinations table
-//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
-
-
-
-
-
-
-
-
-//     // Query to fetch completed service requests for the selected patient handled by radtech
-//     $radtechCompletedResultsQuery = ServiceRequest::where('patient_id', $id)
-//         ->where('status', 'completed')
-//         ->whereHas('receiver', function ($query) {
-//             $query->where('role', 'radtech');
-//         });
-
-//     // Check if there is a search query
-//     if ($request->has('search')) {
-//         $search = $request->search;
-//         $radtechCompletedResultsQuery->where(function ($query) use ($search) {
-//             $query->where('image', 'LIKE', "%$search%");
-//         });
-//     }
-
-//     // Fetch completed service requests for the selected patient handled by radtech
-//     $radtechCompletedResults = $radtechCompletedResultsQuery->paginate(10); // Adjust 10 to the desired number of results per page
-
-//     // Fetch physical examinations from the physical_examinations table
-//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
-        
-//     return view('nurse.show-results', compact('patient', 'medtechCompletedResults', 'radtechCompletedResults'));
-// }
-
 
 public function showResults(Request $request, $id)
 {
@@ -1836,7 +1311,6 @@ public function showResults(Request $request, $id)
     }
 
 
-
     // Check if there is a procedure filter
     if ($request->has('procedure')) {
         $procedure = $request->procedure;
@@ -1852,178 +1326,6 @@ public function showResults(Request $request, $id)
     return view('nurse.show-results', compact('patient', 'completedResults'));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-    // public function viewRequestLab(Request $request)
-    // {
-    //     $requestType = $request->input('requestType');
-    
-    //     // Fetch requests based on the request type
-    //     if ($requestType === 'completed') {
-    //         $requests = ServiceRequest::with('patient')
-    //             ->where('status', 'completed')
-    //             ->paginate(10);
-    //     } elseif ($requestType === 'declined') {
-    //         $requests = ServiceRequest::with('patient')
-    //             ->where('status', 'declined')
-    //             ->paginate(10);
-    //     } elseif ($requestType === 'declined') {
-    //         $requests = ServiceRequest::with('patient')
-    //             ->where('status', 'declined')
-    //             ->paginate(10);
-    //     } else {
-    //         // Default to pending requests
-    //         $requests = ServiceRequest::with('patient')
-    //             ->where('sender_id', auth()->id())
-    //             ->where('status', 'pending')
-    //             ->paginate(10);
-    //     }
-    
-    //     return view('nurse.lab-services', compact('requests'));
-    // }
-    
-    
-    
-    // public function viewRequestLab(Request $request)
-    // {
-    //     // Retrieve the search query and request status from the request
-    //     $search = $request->input('search');
-    //     $status = $request->input('status');
-    
-    //     // Get the authenticated user's ID
-    //     $userId = auth()->id();
-    
-    //     // Query based on request status
-    //     $query = ServiceRequest::query()->where('sender_id', $userId);
-    //     switch ($status) {
-    //         case 'accepted':
-    //             $query->where('status', 'accepted');
-    //             break;
-    //         case 'completed':
-    //             $query->where('status', 'completed');
-    //             break;
-    //         case 'declined':
-    //             $query->where('status', 'declined');
-    //             break;
-    //         default:
-    //             // Default to pending requests
-    //             $query->where('status', 'pending');
-    //             break;
-    //     }
-    
-    //     // Apply search query if it exists
-    //     if ($search) {
-    //         $query->where(function ($q) use ($search) {
-    //             $q->where('patient_id', 'like', '%' . $search . '%')
-    //                 ->orWhere('procedure_type', 'like', '%' . $search . '%');
-    //         });
-    //     }
-    
-    //     // Retrieve requests and paginate the results
-    //     $requests = $query->paginate(10); // Adjust pagination limit as needed
-    
-    //     // Pass request status to the view to maintain consistency
-    //     return view('nurse.lab-services', compact('requests', 'status'));
-    // }
-    // public function viewRequestImaging(Request $request)
-    // {
-    //     // Retrieve the search query and request status from the request
-    //     $search = $request->input('search');
-    //     $status = $request->input('status');
-    
-    //     // Get the authenticated user's ID
-    //     $userId = auth()->id();
-    
-    //     // Query based on request status
-    //     $query = ServiceRequest::query()->where('sender_id', $userId);
-    //     switch ($status) {
-    //         case 'accepted':
-    //             $query->where('status', 'accepted');
-    //             break;
-    //         case 'completed':
-    //             $query->where('status', 'completed');
-    //             break;
-    //         case 'declined':
-    //             $query->where('status', 'declined');
-    //             break;
-    //         default:
-    //             // Default to pending requests
-    //             $query->where('status', 'pending');
-    //             break;
-    //     }
-    
-    //     // Apply search query if it exists
-    //     if ($search) {
-    //         $query->where(function ($q) use ($search) {
-    //             $q->where('patient_id', 'like', '%' . $search . '%')
-    //                 ->orWhere('procedure_type', 'like', '%' . $search . '%');
-    //         });
-    //     }
-    
-    //     // Retrieve requests and paginate the results
-    //     $requests = $query->paginate(10); // Adjust pagination limit as needed
-    
-    //     // Pass request status to the view to maintain consistency
-    //     return view('nurse.imaging-services', compact('requests', 'status'));
-    // }
-    
-
-    // public function viewRequests(Request $request, $serviceType)
-    // {
-    //     // Retrieve the search query and request status from the request
-    //     $search = $request->input('search');
-    //     $status = $request->input('status');
-    
-    //     // Get the authenticated user's ID
-    //     $userId = auth()->id();
-    
-    //     // Define the procedure types based on service type
-    //     $procedureTypes = ($serviceType === 'lab') ? ['chemistry', 'hematology', 'Bbis', 'parasitology', 'microbiology', 'microscopy'] : ['xray', 'ultrasound', 'ctscan'];
-    
-    //     // Query based on request status and procedure types
-    //     $query = ServiceRequest::query()->where('sender_id', $userId);
-    //     switch ($status) {
-    //         case 'accepted':
-    //             $query->where('status', 'accepted');
-    //             break;
-    //         case 'completed':
-    //             $query->where('status', 'completed');
-    //             break;
-    //         case 'declined':
-    //             $query->where('status', 'declined');
-    //             break;
-    //         default:
-    //             // Default to pending requests
-    //             $query->where('status', 'pending');
-    //             break;
-    //     }
-    
-    //     // Apply search query if it exists
-    //     if ($search) {
-    //         $query->where(function ($q) use ($search) {
-    //             $q->where('patient_id', 'like', '%' . $search . '%')
-    //                 ->orWhere('procedure_type', 'like', '%' . $search . '%');
-    //         });
-    //     }
-    
-    //     // Filter by procedure types
-    //     $query->whereIn('procedure_type', $procedureTypes);
-    
-    //     // Retrieve requests and paginate the results
-    //     $requests = $query->paginate(10); // Adjust pagination limit as needed
-    
-    //     // Pass request status to the view to maintain consistency
-    //     return view('nurse.' . $serviceType . '-services', compact('requests', 'status'));
-    // }
 
     public function viewRequests(Request $request, $serviceType)
 {
@@ -2079,13 +1381,6 @@ public function showResults(Request $request, $id)
     // Pass request status to the view to maintain consistency
     return view('nurse.' . $serviceType . '-services', compact('requests', 'status'));
 }
-
-    
-
-
-
-
-    
     
     public function viewRequest($patientId, $requestId)
     {
@@ -2106,14 +1401,5 @@ public function showResults(Request $request, $id)
         // Pass the patient, request, and procedure type details to the view
         return view('nurse.result', compact('patient', 'request', 'isImagingService'));
     }
-    
-    
-    
-
-    
-    
-
-
-    
     
 }
