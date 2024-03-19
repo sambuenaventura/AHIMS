@@ -163,8 +163,9 @@
                       </tr>
                   </thead>
                   <tbody>
-                      @foreach ($patients as $patient)
+                      @forelse ($patients as $patient)
                       <tr>
+                        
                           <td>{{  $patient->patient_id }}</td>
                           <td>{{  $patient->first_name }} {{  $patient->last_name }}</td>
                           <td>
@@ -174,11 +175,11 @@
                                 No Physician Assigned
                             @endif
                         </td>
-                                                  @if(request('admissionType') == 'inpatient')
+                          @if(request('admissionType') == 'inpatient')
                               <td>{{  $patient->room_number }}</td>
                               <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
                               <td>{{ $patient->discharge_date ? \Carbon\Carbon::parse($patient->discharge_date)->format('n/j/Y') : 'TBD' }}</td>                              
-                              @elseif(request('admissionType') == 'outpatient')
+                          @elseif(request('admissionType') == 'outpatient')
                           <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
                           {{-- <td>{{  $patient->follow_up_date }}</td> --}}
                           @elseif(request('admissionType') == 'archived')
@@ -198,8 +199,11 @@
                         </td>
                         
                       </tr>
-                      @endforeach
-                  </tbody>
+                      @empty
+                      <tr>
+                          <td colspan="7" class="text-center">No available patients</td>
+                      </tr>
+                  @endforelse                     </tbody>
               </table>
               
               
