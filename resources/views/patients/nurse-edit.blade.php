@@ -234,6 +234,7 @@ html {
                         <input type="date" class="form-control rounded-4 m-0" placeholder="Date" id="discharge_date" name="discharge_date" value="{{ $patient->discharge_date ?? ''}}"/>
                         <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Discharge</button>
                     </div>
+                    
                     @error('discharge_date')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -258,7 +259,7 @@ html {
                                         </div>
                                         
                                         <div class="d-flex justify-content-evenly mt-5">
-                                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" style="background-color: #E7E7E7;" data-bs-dismiss="modal">Cancel</button>
                                             <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#exampleModal2">Proceed</button>
                                         </div>
                                     </div>
