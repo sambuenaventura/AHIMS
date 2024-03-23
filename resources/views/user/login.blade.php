@@ -24,7 +24,7 @@
 
 @media all and (min-width: 768px) and (max-width: 1024px) {
      img {
-        width: 10rem !important;
+        width: 12rem !important;
     }
     .col-6 h3 {
         font-size: 1.5em;
@@ -192,23 +192,23 @@ button {
                             </div>
                             <div class="col-6">
                               <h3 class="text-center fw-bold pb-3">
-                                Hospital Information Management System
+                                Hospital Information <br>Management System
                               </h3>
                 
-                              <input type="email" name="email" class="form-control mb-2" placeholder="Email Address"/>
+                              <input type="email" name="email" class="form-control mb-4" placeholder="Email Address"/>
                               @error('email')
                               <p class="text-red-500 text-xs p-1">
                                   {{$message}}
                               </p>
                             @enderror
-                              <input type="password" name="password" class="form-control mb-2" placeholder="Password" />
+                              <input type="password" name="password" class="form-control mb-4" placeholder="Password" />
                               @error('password')
                               <p class="text-red-500 text-xs p-1">
                                   {{$message}}
                               </p>
                             @enderror
                 
-                              <div class="remember-forgot d-flex align-items-center justify-content-between mt-3">
+                              {{-- <div class="remember-forgot d-flex align-items-center justify-content-between mt-3">
                                 <div class="form-check form-check-inline">
                                   <input type="checkbox" class="form-check-input" id="rememberMe" />
                                   <label class="form-check-label mb-3" htmlFor="rememberMe">
@@ -218,11 +218,11 @@ button {
                                 <a class="form-check-label mb-3 text-decoration-none" htmlFor="rememberMe">
                                   Forgot Password?
                                 </a>
-                              </div>
+                              </div> --}}
                 
                               <div class="d-grid gap-2">
                                 <button class="btn btn-success" type="submit">
-                                  Sign In
+                                  <p class="font-bold mb-0">Log In</p>
                                 </button>
                               </div>
                             </div>
