@@ -24,40 +24,38 @@
                                   style="width: 2rem; height:2rem;">3</button>
                               </div>
                         </div>
+                        
                         <div class="row mx-4">
                             <h5 class="text-success">II. Current Medication</h5>
-                        
-                            <div class="col">
+                            <div class="col"  @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
                                 <div class="form-floating mt-2">
                                     <textarea class="form-control" id="current_medications" name="current_medications" style="height: 100px">{{ optional($patient->currentMedication)->current_medications }}</textarea>
                                     <label for="current_medications">Name of Medication</label>                                              
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col"  @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
                                 <div class="form-floating mt-2">
                                     <textarea class="form-control" id="current_dosage" name="current_dosage" style="height: 100px">{{ optional($patient->currentMedication)->current_dosage }}</textarea>
                                     <label for="current_dosage">Dosage</label>
                                 </div>
                             </div>                                                  
-           
                         </div>
                         <div class="row mx-4">
-                            <div class="col">
+                            <div class="col"  @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
                                 <div class="form-floating mt-2">
                                     <textarea class="form-control" id="current_frequency" name="current_frequency" style="height: 100px">{{ optional($patient->currentMedication)->current_frequency }}</textarea>
                                     <label for="current_frequency">Frequency</label>
                                 </div>
                             </div> 
-                            <div class="col">
+                            <div class="col"  @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
                                 <div class="form-floating mt-2">
                                     <textarea class="form-control" id="current_prescribing_physician" name="current_prescribing_physician" style="height: 100px">{{ optional($patient->currentMedication)->current_prescribing_physician }}</textarea>
                                     <label for="current_prescribing_physician">Prescribing Physician</label>
                                 </div>
                             </div> 
-
                         <div class="buttons my-4 d-flex justify-content-end">
                             <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" onclick="prevStep()">Back</button>
-                            @if ($patient->admission_type !== 'archived')
+                            @if(!$patient->archived)
                                 <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Submit</button>
                             @endif
                             
@@ -106,16 +104,16 @@
                                                       </h1>
                                                       <div class="text-center mt-4">
                                                           <h4 class="font-bold">Enter Password</h4>
-                                                          <p class="mb-4">Password is required to save the input.</p>
+                                                          <p class="mb-4">Password is required to proceed.</p>
                                                       </div>
                                                       <div class="d-flex justify-content-evenly mt-5">
                                                           <form id="passwordForm">
                                                               <div class="col-auto">
                                                                   <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                                  <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                                  <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                               </div>
                                                               <div class="col-auto">
-                                                                <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                                <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                             </div>
                                                           </form>
                                                       </div>

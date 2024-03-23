@@ -25,13 +25,15 @@
                     </div>
                 </div>
 
-                <div class="row overflow-auto mx-4">
+                <div class="row overflow-auto mx-4 mb-4">
                     <!-- LEFT -->
                     <div class="col-6">
                         <div class="d-flex">
                             <h5 class="text-success me-3">I. Medical History</h5>
                             <h6 class="text-success bg-success bg-opacity-25 rounded-1 p-1">Neurological Examinations</h6>
                         </div>
+                        <div @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
+
                         <div class="card">
                         <div class="card-body">
                             <div class="row mt-2">
@@ -160,8 +162,11 @@
 
 
                     </div>
+                    </div>
                     <!-- RIGHT -->
                     <div class="col-6">
+                        <div @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
+
                         <h5 class="text-success">ㅤ</h5>
                         <div class="card bg-light my-2 inputs">
                             <div class="card-body">
@@ -181,6 +186,7 @@
                                 </div>
                             </div>
                             
+                        </div>
                         </div>
                         <div class="buttons my-4 float-end">
                             <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" onclick="prevStep()" class="btn btn-light me-2">Back</button>

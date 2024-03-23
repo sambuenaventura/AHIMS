@@ -26,7 +26,10 @@
                 <div class="row overflow-auto mx-4">
                     <!-- LEFT -->
                     <div class="col-6">
+
                         <h5 class="text-success">I. Medical History</h5>
+                        <div @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
+
                         <div class="form-floating">
                             <textarea name="complete_history" class="form-control" id="floatingTextarea2" style="height: 400px">{{ optional($patient->medicalHistory)->complete_history }}</textarea>
                             <label for="floatingTextarea2">Complete History</label>
@@ -361,11 +364,12 @@
         
         
                     </div>
+                    </div>
         
                     <!-- RIGHT -->
 
                         <div class="col-6">
-                            <div @if($patient->gender != 'Female') style="pointer-events: none; opacity: 0.6;"@endif>
+                            <div @if($patient->gender != 'Female' || $patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
                                 <h5 class="text-success">ㅤ</h5>
                                                         <!-- Obstetrical History -->
                                 <div class="card my-2 bg-light inputs">

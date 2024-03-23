@@ -25,13 +25,14 @@
                     </div>
                 </div>
 
-                <div class="row overflow-auto mx-4">
+                <div class="row overflow-auto mx-4 mb-4">
                     <!-- LEFT -->
                     <div class="col-6">
                         <div class="d-flex">
                             <h5 class="text-success me-3">I. Medical History</h5>
                             <h6 class="text-success bg-success bg-opacity-25 rounded-1 p-1">Review of Systems</h6>
                         </div>
+                        <div @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
 
                         <!-- Constitutonal -->
                         <div class="card my-2 checkboxes">
@@ -646,8 +647,7 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col">
-                                        <div class="d-flex">
-                                            <div class="form-check bg-light rounded-2 py-1 pe-1">
+                                            <div class="form-check bg-light rounded-2 py-1">
                                                 <input class="form-check-input" type="checkbox" id="genittract_frequency"
                                                 name="genittract_frequency"
                                                 value="1"
@@ -657,8 +657,23 @@
                                                     Frequency
                                                 </label>
                                             </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check rounded-2 py-1">
+                                            <input class="form-check-input hidden" type="checkbox" id=""
+                                            name=""
+                                            value=""
+                                            disabled
+                                        />
+
+                                            <label class="form-check-label" for="">
+                                                
+                                            </label>
                                         </div>
                                     </div>
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -722,122 +737,7 @@
                                 </div>
                             </div>
                         </div>
-
-  
-                        {{-- <div class="X">
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="form-floating mt-2 bg-light">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_gcs }}</textarea>
-                                        <label for="floatingTextarea2">GCS</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_i }}</textarea>
-                                        <label for="floatingTextarea2">CN I</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_ii }}</textarea>
-                                        <label for="floatingTextarea2">CN II</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_iii_iv_vi }}</textarea>
-                                        <label for="floatingTextarea2">CN III IV, VI</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_v }}</textarea>
-                                        <label for="floatingTextarea2">CN V</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_vii }}</textarea>
-                                        <label for="floatingTextarea2">CN VII</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_viii }}</textarea>
-                                        <label for="floatingTextarea2">CN VIII</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_ix_x }}</textarea>
-                                        <label for="floatingTextarea2">CN IX, X</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_xi }}</textarea>
-                                        <label for="floatingTextarea2">CN XI</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_cn_xii }}</textarea>
-                                        <label for="floatingTextarea2">CN XII</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="d-flex">
-                                        <div class="form-check bg-light rounded-2 mt-2 bg-light px-4 rounded-2">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                id="flexCheckDefault" {{ $patient->neurologicalExamination && $patient->neurologicalExamination->neuro_babinski ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="flexCheckDefault">
-                                                Babinski
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_motor }}</textarea>
-                                        <label for="floatingTextarea2">Motor</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col">
-                                    <div class="form-floating mt-2">
-                                        <textarea class="form-control" id="floatingTextarea2"
-                                            style="height: 50px">{{ optional($patient->neurologicalExamination)->neuro_sensory }}</textarea>
-                                        <label for="floatingTextarea2">Sensory</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-                        
-
-
+                        </div>
                     </div>
 
                     <!-- RIGHT -->
@@ -846,7 +746,8 @@
                             <h6 class="text-success bg-success bg-opacity-25 rounded-1 p-1">Physical Examinations
                             </h6>
                         </div>
-                        
+                        <div @if($patient->archived) style="pointer-events: none; opacity: 0.6;"@endif>
+
                         <div class="card bg-light my-2 inputs">
 
                             <div class="card-body">
@@ -923,6 +824,12 @@
                                     <textarea class="form-control" id="pe_heart" name="pe_heart" style="height: 100px">{{ optional($patient->physicalExamination)->pe_heart }}</textarea>
                                     <label for="pe_heart">Heart</label>
                                 </div>
+
+                                <!-- Abdomen -->
+                                <div class="form-floating mt-2">
+                                    <textarea class="form-control" id="pe_abdomen" name="pe_abdomen" style="height: 100px">{{ optional($patient->physicalExamination)->pe_abdomen }}</textarea>
+                                    <label for="pe_abdomen">Abdomen</label>
+                                </div>
                             
                                 <!-- Breast -->
                                 <div class="form-floating mt-2">
@@ -951,6 +858,8 @@
                             </div>
                             
                         </div>
+                    </div>
+
                         <div class="buttons my-4 float-end">
                             <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" onclick="prevStep()" class="btn btn-light me-2">Back</button>
                             <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="nextStep()" class="btn btn-success">Next</button>
