@@ -152,11 +152,13 @@ html {
                         <p class="font-bold">ID{{  $patient->patient_id }}</p>
                     </div>
                     <div class="left-top-2 flex-row-none gap-16">
-                        <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                        <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                         <p class="font-bold">{{ optional($patient)->gender }}</p>
                     </div>
                 </div>
-                <div class="box box1 flex-col bg-white" style="font-size: 0.9em;">
+                {{-- <div class="box box1 flex-col bg-white" style="font-size: 0.9em;"> --}}
+                    <div class="box box1 flex-col bg-white">
+
                     <p class="font-bold">Request Information (ID: {{ $request->request_id }})</p>
                     <div class="left-top-1 flex-row">
                         <p class="">Date:</p>
@@ -170,9 +172,15 @@ html {
                         <p class="">Type of Service:</p>
                         <p class="">{{ $request->procedure_type }}</p>
                     </div>
-                    <div class="left-top-1">
+                    <div class="left-top-1 {{ strpos($request->sender_message, ',') === false ? 'flex-row' : '' }}">
                         <p class="">Type of Test:</p>
-                        <p class="">{{ $request->sender_message }}</p>
+                        @if (strpos($request->sender_message, ',') === false)
+                            <p class="">{{ $request->sender_message }}</p>
+                        @else
+                            @foreach (explode(',', $request->sender_message) as $item)
+                                <p class="">{{ $item }}</p>
+                            @endforeach
+                        @endif
                     </div>
                     {{-- <div class="left-top-1 row">
                         <div class="col-md-4">
@@ -203,7 +211,7 @@ html {
                     </div>
                     <div class="flex-row">
                         <small class="text-muted">Date & Time:</small>
-                        <small class="text-muted">{{ optional($request)->created_at ? \Carbon\Carbon::parse($request->created_at)->format('g:i A n/j/Y') : '' }}</small>
+                        <small class="text-muted">{{ optional($request)->created_at ? \Carbon\Carbon::parse($request->created_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                     </div>
                 </div>
                 
@@ -227,7 +235,7 @@ html {
                         <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="image" class="form-label">Images <span>(Maximum of 12 MB for file size)</span></label>
+                        <label for="image" class="form-label">Images <span style="color: grey;">(Preferably upload images in PNG or JPG format. The maximum file size allowed is 12 MB)</span></label>
                         <input type="file" class="form-control" id="image" name="image[]" accept="image/*" multiple required>
                         @error('image.*')
                             <div class="text-danger">{{ $message }}</div>
@@ -286,16 +294,16 @@ html {
                                         </h1>
                                         <div class="text-center mt-4">
                                             <h4 class="font-bold">Enter Password</h4>
-                                            <p class="mb-4">Password is required to save the input.</p>
+                                            <p class="mb-4">Password is required to proceed.</p>
                                         </div>
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -322,7 +330,7 @@ html {
                     <div class="flex-row gap-10">
                         <div class="flex-row gap-10">
                             <p class="history-label">Complete History:</p>
-                            <p class="history-value">{{ ($medicalHistory->complete_history) ?? 'No medical history available' }}</p>
+                            <p class="history-value">{{ ($medicalHistory->complete_history) ?? 'No medical history recorded.' }}</p>
                         </div>
                         
                     </div>
@@ -579,13 +587,13 @@ html {
                     @if ($medicalHistory && $medicalHistory->nurse_user)
                         <small class="text-muted">{{ optional($medicalHistory->nurse_user)->first_name }} {{ optional($medicalHistory->nurse_user)->last_name }}</small>
                     @else
-                        <small class="text-muted">Unknown Nurse</small>
+                        <small class="text-muted">N/A</small>
                     @endif
                 </div>
                             
                 <div class="flex-row">
                     <small class="text-muted">Date & Time:</small>
-                    <small class="text-muted">{{ optional($medicalHistory)->updated_at ? \Carbon\Carbon::parse($medicalHistory->updated_at)->format('g:i A n/j/Y') : '' }}</small>
+                    <small class="text-muted">{{ optional($medicalHistory)->updated_at ? \Carbon\Carbon::parse($medicalHistory->updated_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                 </div>
             </div>
         </div>
