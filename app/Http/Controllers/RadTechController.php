@@ -60,17 +60,27 @@ class RadTechController extends Controller
     // Retrieve the search query from the request
     $search = $request->input('search');
     
-    // Base query for pending service requests assigned to the authenticated radtech
-    $query = ServiceRequest::query()
+// Explode the search string into an array of keywords
+$keywords = explode(' ', $search);
+
+// Base query for pending service requests assigned to the authenticated radtech
+$query = ServiceRequest::query()
     ->where('status', 'pending')
     ->whereIn('procedure_type', ['Xray', 'Ultrasound', 'Ctscan'])
-    ->where(function ($q) use ($search) {
-        $q->where('procedure_type', 'like', '%' . $search . '%')
-            ->orWhere('patient_id', 'like', '%' . $search . '%')
-            ->orWhereHas('patient', function ($q) use ($search) {
-                $q->where('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%');
-            });
+    ->where(function ($q) use ($keywords) {
+        $q->where(function ($q1) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $q1->where('procedure_type', 'like', '%' . $keyword . '%');
+            }
+        })->orWhere(function ($q2) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $q2->orWhere('patient_id', 'like', '%' . $keyword . '%')
+                   ->orWhereHas('patient', function ($q3) use ($keyword) {
+                       $q3->where('first_name', 'like', '%' . $keyword . '%')
+                          ->orWhere('last_name', 'like', '%' . $keyword . '%');
+                   });
+            }
+        });
     })
     ->orderBy('created_at', 'asc'); // Sorting by time requested in ascending order
 
@@ -191,17 +201,32 @@ class RadTechController extends Controller
                 break;
         }
     
-    // Apply search query if it exists
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('patient_id', 'like', '%' . $search . '%')
-                ->orWhere('procedure_type', 'like', '%' . $search . '%')
-                ->orWhereHas('patient', function ($q) use ($search) {
-                    $q->where('first_name', 'like', '%' . $search . '%')
-                      ->orWhere('last_name', 'like', '%' . $search . '%');
+        // Explode the search string into an array of keywords
+        $keywords = explode(' ', $search);
+
+        // Apply search query if it exists
+        if ($search) {
+            $query->where(function ($q) use ($keywords) {
+                $q->where(function ($q1) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        $q1->where('patient_id', 'like', '%' . $keyword . '%')
+                        ->orWhere('procedure_type', 'like', '%' . $keyword . '%')
+                        ->orWhere('status', 'like', '%' . $keyword . '%')
+                        ->orWhere('request_id', 'like', '%' . $keyword . '%')
+                        ->orWhere('message', 'like', '%' . $keyword . '%')
+                        ->orWhere('sender_message', 'like', '%' . $keyword . '%');
+                    }
+                })->orWhereHas('patient', function ($q2) use ($keywords) {
+                    $q2->where(function ($q3) use ($keywords) {
+                        foreach ($keywords as $keyword) {
+                            $q3->where('first_name', 'like', '%' . $keyword . '%')
+                            ->orWhere('last_name', 'like', '%' . $keyword . '%');
+                        }
+                    });
                 });
-        });
-    }
+            });
+        }
+
     
         // Retrieve requests and paginate the results
         $requests = $query->paginate(10); // Adjust pagination limit as needed
@@ -328,18 +353,30 @@ class RadTechController extends Controller
         $query->where('procedure_type', $procedureType);
     }
     
-    if ($search) {
-        // Search by first name, last name, file name, patient ID, and procedure type
-        $query->where(function ($q) use ($search) {
-            $q->whereHas('patient', function ($q) use ($search) {
-                $q->where('first_name', 'like', '%' . $search . '%')
-                  ->orWhere('last_name', 'like', '%' . $search . '%');
-            })
-            ->orWhere('image', 'like', '%' . $search . '%')
-            ->orWhere('patient_id', 'like', '%' . $search . '%')
-            ->orWhere('procedure_type', 'like', '%' . $search . '%');
-        });
-    }
+        // Explode the search string into an array of keywords
+        $keywords = explode(' ', $search);
+
+        // Apply search query if it exists
+        if ($search) {
+            $query->where(function ($q) use ($keywords) {
+                $q->whereHas('patient', function ($q) use ($keywords) {
+                    $q->where(function ($q1) use ($keywords) {
+                        foreach ($keywords as $keyword) {
+                            $q1->where('first_name', 'like', '%' . $keyword . '%')
+                            ->orWhere('last_name', 'like', '%' . $keyword . '%');
+                        }
+                    });
+                })->orWhere(function ($q2) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        $q2->orWhere('image', 'like', '%' . $keyword . '%')
+                        ->orWhere('patient_id', 'like', '%' . $keyword . '%')
+                        ->orWhere('sender_message', 'like', '%' . $keyword . '%')
+                        ->orWhere('procedure_type', 'like', '%' . $keyword . '%');
+                    }
+                });
+            });
+        }
+
     
     
     $requests = $query->paginate(10);

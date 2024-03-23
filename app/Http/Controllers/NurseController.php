@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ArchivePatient;
 use App\Models\ServiceRequest;
 use App\Models\ArchivedPatients;
 use App\Models\CurrentMedication;
@@ -20,6 +21,7 @@ use App\Models\VitalSigns;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
@@ -32,20 +34,32 @@ class NurseController extends Controller
         // Use the Patients Eloquent model to query patients
         $patients = Patients::query();
     
+        // Exclude archived patients
+        $patients->where('archived', false);
+    
         if ($search) {
-            $patients->where(function ($query) use ($search) {
-                $query->where('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%')
-                    ->orWhere('patient_id', 'like', '%' . $search . '%')
-                    ->orWhere('gender', 'like', '%' . $search . '%')
-                    ->orWhere('room_number', 'like', '%' . $search . '%')
-                    ->orWhereHas('physician', function ($subquery) use ($search) {
-                        $subquery->where('phy_first_name', 'like', '%' . $search . '%')
-                                 ->orWhere('phy_last_name', 'like', '%' . $search . '%');
+            $terms = explode(' ', $search);
+            
+            $patients->where(function ($query) use ($terms) {
+                $query->where(function ($q) use ($terms) {
+                    foreach ($terms as $term) {
+                        $q->where('first_name', 'like', '%' . $term . '%')
+                            ->orWhere('last_name', 'like', '%' . $term . '%')
+                            ->orWhere('patient_id', 'like', '%' . $term . '%')
+                            ->orWhere('gender', 'like', '%' . $term . '%')
+                            ->orWhere('room_number', 'like', '%' . $term . '%');
+                    }
+                })
+                ->orWhereHas('physician', function ($subquery) use ($terms) {
+                    $subquery->where(function ($q) use ($terms) {
+                        foreach ($terms as $term) {
+                            $q->where('phy_first_name', 'like', '%' . $term . '%')
+                                ->orWhere('phy_last_name', 'like', '%' . $term . '%');
+                        }
                     });
+                });
             });
         }
-        
         
         // Eager load the physician relationship
         $patients->with('physician');
@@ -61,6 +75,7 @@ class NurseController extends Controller
         return view('nurse.index', compact('patients'));
     }
     
+    
 
 public function nurseView(Request $request)
 {
@@ -74,18 +89,30 @@ public function nurseView(Request $request)
         $query->where('admission_type', $admissionType);
     }
 
-    // Apply search query if it exists
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('patient_id', 'like', '%' . $search . '%')
-                ->orWhere('first_name', 'like', '%' . $search . '%')
-                ->orWhere('last_name', 'like', '%' . $search . '%')
-                ->orWhereHas('physician', function ($subquery) use ($search) {
-                    $subquery->where('phy_first_name', 'like', '%' . $search . '%')
-                             ->orWhere('phy_last_name', 'like', '%' . $search . '%');
+        // Apply search query if it exists
+        if ($search) {
+            $terms = explode(' ', $search);
+            
+            $query->where(function ($q) use ($terms) {
+                $q->where(function ($subquery) use ($terms) {
+                    foreach ($terms as $term) {
+                        $subquery->where('patient_id', 'like', '%' . $term . '%')
+                            ->orWhere('first_name', 'like', '%' . $term . '%')
+                            ->orWhere('last_name', 'like', '%' . $term . '%')
+                            ->orWhere('admission_type', 'like', '%' . $term . '%');
+                    }
+                })
+                ->orWhereHas('physician', function ($subquery) use ($terms) {
+                    $subquery->where(function ($q) use ($terms) {
+                        foreach ($terms as $term) {
+                            $q->where('phy_first_name', 'like', '%' . $term . '%')
+                                ->orWhere('phy_last_name', 'like', '%' . $term . '%');
+                        }
+                    });
                 });
-        });
-    }
+            });
+        }
+
 
     // Eager load the physician relationship to avoid N+1 query issue
     $patients = $query->with('physician')->paginate(10); // Adjust pagination limit as needed
@@ -231,6 +258,14 @@ public function show($id)
         $nurse = null;
     }
 
+            
+    // $patient->contact_number = Crypt::decryptString($patient->contact_number);
+    // $patient->address = Crypt::decryptString($patient->address);
+    // $patient->pic_contact_number = Crypt::decryptString($patient->pic_contact_number);
+    // $patient->ap_contact_number = Crypt::decryptString($patient->ap_contact_number);
+
+
+
     return view('patients.nurse-edit', compact('nurse', 'patient', 'medtechCompletedResults', 'radtechCompletedResults', 'medicalHistory', 'reviewOfSystems', 'physicalExaminations', 'neurologicalExaminations', 'currentMedication'));
 }
 
@@ -359,7 +394,6 @@ public function updateDischargeDate(Request $request, $id)
 
     public function update(Request $request, Patients $patient)
     {    //dd($request->all());
-
 
         // Validate the request data
         $request->validate([
@@ -772,17 +806,8 @@ public function updateDischargeDate(Request $request, $id)
         // Add validation for other review of systems fields as needed
     ]);
 
-    // If checkbox is unchecked, set corresponding values to false
-    $checkboxFields = [
-        'neuro_babinski',
-        // Add other checkbox fields here
-    ];
+    $validatedNeurologicalExamination['neuro_babinski'] = $request->has('neuro_babinski') ? 1 : 0;
 
-    foreach ($checkboxFields as $field) {
-        if (!$request->has($field)) {
-            $validatedNeurologicalExamination[$field] = false;
-        }
-    }
 
     // Update or create review of systems record
     if ($patient->neurologicalExamination) {
@@ -816,25 +841,25 @@ public function updateDischargeDate(Request $request, $id)
     }
 
 
-    $validatedObstetricalHistory = $request->validate([
-        'obstetrical_pregnancy_delivered_on' => ['nullable', 'date'], // Validation for delivered on date
-        'obstetrical_pregnancy_term_preterm' => ['nullable', Rule::in(['term', 'preterm'])],
-        'obstetrical_pregnancy_girl_boy' => ['nullable', Rule::in(['girl', 'boy'])],
-        'obstetrical_pregnancy_delivery_method' => ['nullable', Rule::in(['nsd', 'cs'])],
-        'obstetrical_pregnancy_delivery_place' => ['nullable', 'string', 'min:1'], // Validation for place of delivery
-        // Add validation for other obstetrical history fields as needed
-    ]);
+    // $validatedObstetricalHistory = $request->validate([
+    //     'obstetrical_pregnancy_delivered_on' => ['nullable', 'date'], // Validation for delivered on date
+    //     'obstetrical_pregnancy_term_preterm' => ['nullable', Rule::in(['term', 'preterm'])],
+    //     'obstetrical_pregnancy_girl_boy' => ['nullable', Rule::in(['girl', 'boy'])],
+    //     'obstetrical_pregnancy_delivery_method' => ['nullable', Rule::in(['nsd', 'cs'])],
+    //     'obstetrical_pregnancy_delivery_place' => ['nullable', 'string', 'min:1'], // Validation for place of delivery
+    //     // Add validation for other obstetrical history fields as needed
+    // ]);
     
-        // Update or create obstetrical history record
-        if ($patient->obstetricalHistory) {
-            // If the patient has existing obstetrical history, update it
-            foreach ($patient->obstetricalHistory as $history) {
-                $history->update($validatedObstetricalHistory);
-            }
-        } else {
-            // If no obstetrical history record exists, create a new one
-            $patient->obstetricalHistories()->create($validatedObstetricalHistory);
-        }
+    //     // Update or create obstetrical history record
+    //     if ($patient->obstetricalHistory) {
+    //         // If the patient has existing obstetrical history, update it
+    //         foreach ($patient->obstetricalHistory as $history) {
+    //             $history->update($validatedObstetricalHistory);
+    //         }
+    //     } else {
+    //         // If no obstetrical history record exists, create a new one
+    //         $patient->obstetricalHistories()->create($validatedObstetricalHistory);
+    //     }
     
 
         
@@ -881,7 +906,11 @@ public function updateDischargeDate(Request $request, $id)
         $vitalSign->nurse_user_id = $nurseId;
         $patient->vitalSigns()->save($vitalSign);
     
-        return Redirect::route('nurse.edit', ['id' => $patient->patient_id])->with('message', 'Vital signs were successfully updated');
+        // return Redirect::route('nurse.edit', ['id' => $patient->patient_id])->with('message', 'Vital signs were successfully recorded');
+       
+        return back()->with('message', 'Vital signs were successfully recorded');
+
+    
     }
 
 
@@ -943,8 +972,9 @@ public function updateDischargeDate(Request $request, $id)
     }
 
     
-    return redirect()->route('nurse.edit', ['id' => $patient->patient_id])->with('message', $message);
+    // return redirect()->route('nurse.edit', ['id' => $patient->patient_id])->with('message', $message);
 
+    return back()->with('message', $message);
 }
 
 public function updateProgressNotes(Request $request, Patients $patient)
@@ -992,13 +1022,15 @@ public function updateProgressNotes(Request $request, Patients $patient)
     if ($existingProgressNote) {
         $existingProgressNote->update($validatedProgressNotes);
         $message = 'Progress note was successfully updated';
-        return back()->with('message', $message)->with('existingProgressNote', $existingProgressNote);
+        // return back()->with('message', $message)->with('existingProgressNote', $existingProgressNote);
     } else {
         // Create a new progress note record
         $patient->progressNotes()->create($validatedProgressNotes);
         $message = 'Progress note was successfully created';
-        return back()->with('message', $message);
+        // return back()->with('message', $message);
     }
+    return back()->with('message', $message);
+
 
 }
 
@@ -1081,16 +1113,16 @@ public function archivePatient(Request $request, $patient_id)
     // Retrieve the patient from the 'patients' table
     $patient = Patients::findOrFail($patient_id);
 
-    // Update the patient's admission_type to 'archived', set the archived_at timestamp, and clear the room_number
-    $patient->update([
-        'admission_type' => 'archived',
-        'archived_at' => now(),
-        'room_number' => null,
-        'delete_after' => now()->addYears(5), // Schedule deletion after 5 years
-    ]);
+    // Dispatch the ArchivePatient job with a delay of 2 minutes
+    ArchivePatient::dispatch($patient)->delay(now()->addMinutes(2));
 
-    return redirect()->back()->with('message', 'Patient archived successfully.');
+    // Set the flag indicating that this patient has been archived
+    $patient->archived = true;
+    $patient->save();
+
+    return redirect()->back()->with('message', 'Patient archive scheduled successfully. It will take effect after 2 minutes.');
 }
+
 
 
     public function destroy(Patients $patient) {
@@ -1281,6 +1313,51 @@ public function requestImaging(Request $request, $id)
     return view('nurse.request-image', compact('patient', 'radtechCompletedResults', 'physicalExaminations'));
 }
 
+// public function showResults(Request $request, $id)
+// {
+//     $patient = Patients::findOrFail($id);
+
+//     // Query to fetch completed service requests for the selected patient
+//     $completedResultsQuery = ServiceRequest::where('patient_id', $id)
+//         ->where('status', 'completed');
+
+//     // Check if there is a search query
+//     if ($request->has('search')) {
+//         $search = $request->search;
+//         $completedResultsQuery->where(function ($query) use ($search) {
+//             $query->where('image', 'LIKE', "%$search%")
+//                 ->orWhereHas('patient', function ($subquery) use ($search) {
+//                     $subquery->where('first_name', 'LIKE', "%$search%")
+//                             ->orWhere('last_name', 'LIKE', "%$search%");
+//                 })
+//                 ->orWhereHas('medtech', function ($subquery) use ($search) {
+//                     $subquery->where('first_name', 'LIKE', "%$search%")
+//                             ->orWhere('last_name', 'LIKE', "%$search%");
+//                 })
+//                 ->orWhereHas('radtech', function ($subquery) use ($search) {
+//                     $subquery->where('first_name', 'LIKE', "%$search%")
+//                             ->orWhere('last_name', 'LIKE', "%$search%");
+//                 })
+//                 ->orWhere('request_id', 'LIKE', "%$search%");
+//         });
+//     }
+
+
+//     // Check if there is a procedure filter
+//     if ($request->has('procedure')) {
+//         $procedure = $request->procedure;
+//         $completedResultsQuery->where('procedure_type', $procedure);
+//     }
+
+//     // Paginate the results
+//     $completedResults = $completedResultsQuery->paginate(10); // Adjust 10 to the desired number of results per page
+
+//     // Fetch physical examinations from the physical_examinations table
+//     $physicalExaminations = PhysicalExamination::where('patient_id', $id)->first();
+
+//     return view('nurse.show-results', compact('patient', 'completedResults'));
+// }
+
 public function showResults(Request $request, $id)
 {
     $patient = Patients::findOrFail($id);
@@ -1289,26 +1366,27 @@ public function showResults(Request $request, $id)
     $completedResultsQuery = ServiceRequest::where('patient_id', $id)
         ->where('status', 'completed');
 
-    // Check if there is a search query
-    if ($request->has('search')) {
-        $search = $request->search;
-        $completedResultsQuery->where(function ($query) use ($search) {
-            $query->where('image', 'LIKE', "%$search%")
-                ->orWhereHas('patient', function ($subquery) use ($search) {
-                    $subquery->where('first_name', 'LIKE', "%$search%")
-                            ->orWhere('last_name', 'LIKE', "%$search%");
-                })
-                ->orWhereHas('medtech', function ($subquery) use ($search) {
-                    $subquery->where('first_name', 'LIKE', "%$search%")
-                            ->orWhere('last_name', 'LIKE', "%$search%");
-                })
-                ->orWhereHas('radtech', function ($subquery) use ($search) {
-                    $subquery->where('first_name', 'LIKE', "%$search%")
-                            ->orWhere('last_name', 'LIKE', "%$search%");
-                })
-                ->orWhere('request_id', 'LIKE', "%$search%");
-        });
-    }
+// Check if there is a search query
+if ($request->has('search')) {
+    $search = $request->search;
+    $completedResultsQuery->where(function ($query) use ($search) {
+        $query->where('image', 'LIKE', "%$search%")
+            ->orWhereHas('patient', function ($subquery) use ($search) {
+                $subquery->where('first_name', 'LIKE', "%$search%")
+                        ->orWhere('last_name', 'LIKE', "%$search%");
+            })
+            ->orWhereHas('medtech', function ($subquery) use ($search) {
+                $subquery->where('first_name', 'LIKE', "%$search%")
+                        ->orWhere('last_name', 'LIKE', "%$search%");
+            })
+            ->orWhereHas('radtech', function ($subquery) use ($search) {
+                $subquery->where('first_name', 'LIKE', "%$search%")
+                        ->orWhere('last_name', 'LIKE', "%$search%");
+            })
+            ->orWhere('request_id', 'LIKE', "%$search%")
+            ->orWhere('sender_message', 'LIKE', "%$search%"); // Add this line to search in sender_message column
+    });
+}
 
 
     // Check if there is a procedure filter
@@ -1325,6 +1403,7 @@ public function showResults(Request $request, $id)
 
     return view('nurse.show-results', compact('patient', 'completedResults'));
 }
+
 
 
     public function viewRequests(Request $request, $serviceType)
@@ -1357,20 +1436,37 @@ public function showResults(Request $request, $id)
             break;
     }
 
-    // Apply search query if it exists
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('patient_id', 'like', '%' . $search . '%')
-                ->orWhere('procedure_type', 'like', '%' . $search . '%')
-                ->orWhereHas('patient', function ($query) use ($search) {
-                    $query->where('first_name', 'like', '%' . $search . '%')
-                        ->orWhere('last_name', 'like', '%' . $search . '%');
+// Apply search query if it exists
+if ($search) {
+    $terms = explode(' ', $search); // Split the search input into individual terms
+
+    $query->where(function ($q) use ($terms) {
+        foreach ($terms as $term) {
+            $q->where('patient_id', 'like', '%' . $term . '%')
+                ->orWhere('procedure_type', 'like', '%' . $term . '%')
+                ->orWhere('sender_message', 'like', '%' . $term . '%')
+                ->orWhere('message', 'like', '%' . $term . '%')
+                ->orWhere('status', 'like', '%' . $term . '%')
+                ->orWhere('request_id', 'like', '%' . $term . '%')
+                ->orWhereHas('patient', function ($query) use ($term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%');
                 })
-                ->orWhere('message', 'like', '%' . $search . '%')
-                ->orWhere('status', 'like', '%' . $search . '%')
-                ->orWhere('request_id', 'like', '%' . $search . '%');
-        });
-    }
+                ->orWhereHas('sender', function ($query) use ($term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%');
+                })
+                ->orWhereHas('receiver', function ($query) use ($term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%');
+                });
+        }
+    });
+}
+
+
+
+
 
     // Filter by procedure types
     $query->whereIn('procedure_type', $procedureTypes);
