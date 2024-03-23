@@ -15,6 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class PatientController extends Controller
@@ -97,11 +98,19 @@ class PatientController extends Controller
     
         // Apply search filter if provided
         if ($search) {
-            $physicians->where(function ($query) use ($search) {
-                $query->where('phy_first_name', 'like', '%' . $search . '%')
-                    ->orWhere('phy_last_name', 'like', '%' . $search . '%');
+            $terms = explode(' ', $search); // Split the search input into individual terms
+
+            $physicians->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where('phy_first_name', 'like', '%' . $term . '%')
+                        ->orWhere('phy_last_name', 'like', '%' . $term . '%')
+                        ->orWhere('physician_id', 'like', '%' . $term . '%')
+                        ->orWhere('availability', 'like', '%' . $term . '%')
+                        ->orWhere('specialty', 'like', '%' . $term . '%');
+                }
             });
         }
+
     
         // Fetch the physicians with their patient counts
         $physicians = $physicians->withCount('patients');
@@ -133,12 +142,28 @@ class PatientController extends Controller
     
         // Apply search query if it exists
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('patient_id', 'like', '%' . $search . '%')
-                    ->orWhere('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%');
+            $terms = explode(' ', $search);
+            
+            $query->where(function ($q) use ($terms) {
+                $q->where(function ($subquery) use ($terms) {
+                    foreach ($terms as $term) {
+                        $subquery->where('patient_id', 'like', '%' . $term . '%')
+                            ->orWhere('first_name', 'like', '%' . $term . '%')
+                            ->orWhere('last_name', 'like', '%' . $term . '%')
+                            ->orWhere('admission_type', 'like', '%' . $term . '%');
+                    }
+                })
+                ->orWhereHas('physician', function ($subquery) use ($terms) {
+                    $subquery->where(function ($q) use ($terms) {
+                        foreach ($terms as $term) {
+                            $q->where('phy_first_name', 'like', '%' . $term . '%')
+                                ->orWhere('phy_last_name', 'like', '%' . $term . '%');
+                        }
+                    });
+                });
             });
         }
+
     
         // Retrieve patients and paginate the results
         $patients = $query->paginate(10); // Adjust pagination limit as needed
@@ -229,78 +254,15 @@ class PatientController extends Controller
     public function show($patient_id) {
         $patient = Patients::where('patient_id', $patient_id)->firstOrFail();
         $physician = Physicians::findOrFail($patient->physician_id); // Assuming 'physician_id' is the foreign key in your Patients table
-    
+        
+        //  $patient->contact_number = Crypt::decryptString($patient->contact_number);
+        //  $patient->address = Crypt::decryptString($patient->address);
+        //  $patient->pic_contact_number = Crypt::decryptString($patient->pic_contact_number);
+        //  $patient->ap_contact_number = Crypt::decryptString($patient->ap_contact_number);
+
         return view('patients.edit', ['patient' => $patient, 'physician' => $physician]); 
     }
     
-
-    // public function create()
-    // {
-    //     // Retrieve room numbers already assigned to patients
-    //     $assignedRooms = Patients::pluck('room_number')->toArray();
-    //     $physicians = Physicians::all(); // Fetch all physicians from the database
-
-    //     return view('patients.create', compact('assignedRooms', 'physicians'));
-    // }
-    
-// public function store(Request $request)
-// {
-
-//     //dd($request->input('specialist'));
-
-//        // Validate the request data
-//        $request->validate([
-//         'password' => 'required|string', // Add any additional validation rules for the password
-//     ]);
-
-//     // Check if the password matches the user's password
-//     if (!Hash::check($request->password, Auth::user()->password)) {
-//         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-//     }
-
-//     $validated = $request->validate([
-//         "first_name" => ['required', 'min:1'],
-//         "last_name" => ['required', 'min:1'],
-//         "date_of_birth" => ['required', 'date'],
-//         "gender" => ['required'],
-//         "contact_number" => ['required'],
-//         "address" => ['required'],
-//         "pic_first_name" => ['required', 'min:1'],
-//         "pic_last_name" => ['required', 'min:1'],
-//         "pic_relation" => ['required', 'min:1'],
-//         "pic_contact_number" => ['required'],
-//         "ap_first_name" => ['required', 'min:1'],
-//         "ap_last_name" => ['required', 'min:1'],
-//         "ap_contact_number" => ['required'],
-//         "physician_id" => ['required'],
-//         "admission_type" => ['required'],
-//         "room_number" => [''], // No need to enforce required here
-//     ]);
-
-//     // If admission type is Outpatient, set the room number to "For ER"
-//     if ($validated['admission_type'] == "Outpatient") {
-//         $validated['room_number'] = "For ER";
-//     } elseif ($validated['admission_type'] == "Inpatient") {
-//         // Only validate the room number if admission type is Inpatient and not empty
-//         if (!empty($validated['room_number'])) {
-//             $request->validate([
-//                 "room_number" => ['required'],
-//             ]);
-//         }
-//     }
-
-//     // Map the specialist name to the physician_id
-//     // $physicianId = $request->input('specialist');
-//     // $validated['physician_id'] = $physicianId;
-    
-//     $validated['physician_id'] = $request->input('specialist');
-
-    
-//     // Create a new patient
-//     $newPatient = Patients::create($validated);
-
-//     return redirect('/admission-patients')->with('message', 'New patient was added successfully!');
-// }
 
     public function create()
 {
@@ -322,6 +284,7 @@ class PatientController extends Controller
 
 public function store(Request $request)
 {
+    // Validate input data
     $validated = $request->validate([
         "first_name" => ['required', 'min:1'],
         "last_name" => ['required', 'min:1'],
@@ -337,34 +300,28 @@ public function store(Request $request)
         "ap_last_name" => ['required', 'min:1'],
         "ap_contact_number" => ['required'],
         "admission_type" => ['required'],
-        "room_number" => ($request->input('admission_type') == "Outpatient") ? 'For ER' : 'required|numeric|between:1,20',
-
     ]);
-    
 
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    // Set room number based on admission type
+    if ($request->input('admission_type') == "Outpatient") {
+        $validated['room_number'] = 'For ER';
+    } else {
+        $validated = array_merge($validated, $request->validate([
+            "room_number" => ['required', 'numeric', 'between:1,20'],
+        ]));
     }
 
-    // // If admission type is Outpatient, set the room number to "For ER"
-    // if ($validated['admission_type'] == "Outpatient") {
-    //     $validated['room_number'] = "For ER";
-    // } else {
-    //     // For Inpatient, validate the room number if provided
-    //     $roomNumber = $request->input('room_number');
-        
-    //     // Validate room number if provided
-    //     if ($roomNumber !== "For ER") {
-    //         // Check if room number is empty or not a valid room number
-    //         if (empty($roomNumber)) {
-    //             return redirect()->back()->with('error', 'Room number is required for Inpatient.');
-    //         } elseif (!in_array($roomNumber, range(1, 20))) {
-    //             return redirect()->back()->with('error', 'Invalid room number selected.');
-    //         }
-    //     }
-    //     $validated['room_number'] = $roomNumber;
-    // }
+    // // Encrypt sensitive data
+    // $validated['contact_number'] = Crypt::encryptString($request->input('contact_number'));
+    // $validated['address'] = Crypt::encryptString($request->input('address'));
+    // $validated['pic_contact_number'] = Crypt::encryptString($request->input('pic_contact_number'));
+    // $validated['ap_contact_number'] = Crypt::encryptString($request->input('ap_contact_number'));
+    // // You can encrypt other fields as needed...
+
+    // Check password verification
+    if (!Hash::check($request->password, Auth::user()->password)) {
+        return redirect()->back()->with('error', 'Incorrect password. Please try again.');
+    }
 
     // Validate physician selection
     $physicianId = $request->input('specialist');
@@ -379,6 +336,7 @@ public function store(Request $request)
 
     return redirect('/admission-patients')->with('message', 'New patient was added successfully!');
 }
+
 
 
 
