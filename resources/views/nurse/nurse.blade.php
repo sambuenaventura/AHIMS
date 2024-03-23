@@ -71,15 +71,10 @@ html {
   overflow: auto; /* This prevents the child from overflowing */
 }
 
-/* Customize modal width */
-.modal-dialog {
-    max-width: 600px; /* Change the width to your desired value */
-    width: 100%; /* Ensure modal doesn't exceed viewport width */
-}
-
-/* Optionally, you can center the modal horizontally */
 .modal-dialog { 
     margin: auto;
+    max-width: 600px; /* Change the width to your desired value */
+    width: 100%; /* Ensure modal doesn't exceed viewport width */
 }
 .modal-dialog h4 {
   margin-bottom: 1.5rem;
@@ -91,7 +86,16 @@ html {
 .modal-backdrop {
     background-color: rgb(44, 105, 75)/* Change the background color and opacity as needed */
 }
-
+.no-hover:hover {
+    pointer-events: none;
+    /* Reset other properties to their initial values */
+    background-color: grey !important;
+    color: initial;
+    /* Add any other CSS properties to customize the appearance */
+}
+.no-hover {
+    background-color: grey !important;
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -104,8 +108,8 @@ html {
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Patients</h4>
-                        @if(request('admissionType') == 'inpatient')
-                        <form class="d-flex" action="{{ route('nurse.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
+                        {{-- @if(request('admissionType') == 'inpatient')
+                    <form class="d-flex" action="{{ route('nurse.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
                          <div class="input-group mb-3">
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="inpatientSearch">
                             <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
@@ -113,7 +117,7 @@ html {
                         </div>
                     </form>
                         @elseif(request('admissionType') == 'outpatient')
-                        <form class="d-flex" action="{{ route('nurse.searchOutpatient', ['admissionType' => 'outpatient']) }}" method="GET">
+                    <form class="d-flex" action="{{ route('nurse.searchOutpatient', ['admissionType' => 'outpatient']) }}" method="GET">
                         <div class="input-group mb-3">
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="outpatientSearch">
                             <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
@@ -122,7 +126,7 @@ html {
 
                     </form>
                         @elseif(request('admissionType') == 'archived')
-                        <form class="d-flex" action="{{ route('nurse.searchArchived', ['admissionType' => 'archived']) }}" method="GET">
+                    <form class="d-flex" action="{{ route('nurse.searchArchived', ['admissionType' => 'archived']) }}" method="GET">
                         <div class="input-group mb-3">
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="archivedSearch">
                             <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
@@ -131,16 +135,24 @@ html {
                     </form>
                     
                         @else
-                        <form class="d-flex" action="{{ route('nurse.view', ['admissionType' => request('admissionType')]) }}" method="GET">
+                    <form class="d-flex" action="{{ route('nurse.view', ['admissionType' => request('admissionType')]) }}" method="GET">
                         <div class="input-group mb-3">
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
                             <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </div>
                     </form>
-                        @endif
+                        @endif --}}
                 
-                
+                        <form class="d-flex" action="{{ route('nurse.view') }}" method="GET">
+                            <div class="input-group mb-3">
+      
+                                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request('search') }}">
+                                <!-- Hidden input field for the specialty -->
+                            <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                            </div>
+                        </form>
                 
                 </div>
                 
@@ -169,6 +181,9 @@ html {
                           <th scope="col">Patient ID</th>
                           <th scope="col">Patient Name</th>
                           <th scope="col">Attending Physician</th>
+                          @if(!$admissionType)
+                          <th scope="col">Admission Status</th>
+                      @endif
                           {{-- @if(!$admissionType)
                             <th scope="col">Admission Type</th>
                             <th scope="col"></th>
@@ -176,7 +191,7 @@ html {
                           @if(request('admissionType') == 'inpatient')
                               <th scope="col">Room Number</th>
                               <th scope="col">Admission Date</th>
-                              <th scope="col">Discharge Date</th>
+                              {{-- <th scope="col">Discharge Date</th> --}}
                           @elseif(request('admissionType') == 'outpatient')
                           <th scope="col">Consultation Date</th>
                           @elseif(request('admissionType') == 'archived')
@@ -205,9 +220,20 @@ html {
                             @else
                                 No attending physician
                             @endif
-                        </td>   
+                        </td>
                         @if(!$admissionType)
-                        {{-- <td>{{ ucfirst($patient->admission_type) }}</td> --}}
+                            <td>
+                                <span class="badge 
+                                    @if($patient->admission_type == 'Inpatient') bg-success 
+                                    @elseif($patient->admission_type == 'Outpatient') bg-primary 
+                                    @elseif($patient->admission_type == 'archived') bg-secondary 
+                                    @else bg-danger 
+                                    @endif">
+                                    {{ ucfirst($patient->admission_type) }}
+                                </span>
+                            </td>
+                        @endif
+                        @if(!$admissionType)
                         <td style="text-align: center; max-width: 80px;">
                             <div class="">
                               <a href="/nurse-patients/{{$patient->patient_id}}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center gap-0.5" style="font-size: 1em;">
@@ -224,7 +250,7 @@ html {
                         @if(request('admissionType') == 'inpatient')
                             <td>{{  $patient->room_number }}</td>
                             <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
-                            <td>{{ $patient->discharge_date ? \Carbon\Carbon::parse($patient->discharge_date)->format('n/j/Y') : 'TBD' }}</td>
+                            {{-- <td>{{ $patient->discharge_date ? \Carbon\Carbon::parse($patient->discharge_date)->format('n/j/Y') : 'TBD' }}</td> --}}
                             
                             @elseif(request('admissionType') == 'outpatient')
                         <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
@@ -282,7 +308,7 @@ html {
                                       <form id="acceptForm{{ $patient->patient_id }}" action="{{ route('archive.patient', ['patient_id' => $patient->patient_id]) }}" method="POST">
                                         @csrf
                                           {{-- <button type="button" class="" onclick="showConfirmationModal()"> --}}
-                                            <button type="button" class="decline badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5" style="font-size: 1em;" onclick="showConfirmationModalForAccept({{ $patient->patient_id }})">
+                                            <button type="button" class="decline badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5 @if($patient->archived) no-hover @endif" style="font-size: 1em;" onclick="showConfirmationModalForAccept({{ $patient->patient_id }})" @if($patient->archived) disabled @endif>
                                                 <span class="p-1 rounded">
                                                     {{-- btn btn-success ms-2 btn-custom-style btn-submit --}}
                                                 <svg width="18" height="18" viewBox="0 0 17 16" fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg">
@@ -347,10 +373,10 @@ html {
                                                                 <form id="passwordForm">
                                                                     <div class="col-auto">
                                                                         <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                                        <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                                        <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                                     </div>
                                                                     <div class="col-auto">
-                                                                        <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                                        <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
