@@ -133,8 +133,9 @@ html {
                         <tr>
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
-                            <th scope="col">Type of Service</th>
-                            <th scope="col">Date Requested</th>
+                            <th scope="col">Service</th>
+                            <th scope="col">Test</th>
+                            <th scope="col">Date Needed</th>
                             @if(!$status)
                                 <th scope="col">Status</th>
                             @endif
@@ -163,7 +164,9 @@ html {
                                 <td>{{ $request->patient_id }}</td>
                                 <td>{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
                                 <td>{{ $request->procedure_type }}</td>
-                                <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>
+                                <td>{{ $request->sender_message }}</td>                                
+                                {{-- <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td> --}}
+                                <td>{{ \Carbon\Carbon::parse($request->date_needed . ' ' . $request->time_needed)->format('h:i A n/j/Y') }}</td>
                                 @if(request('status') === 'pending')
                                 <td>{{ optional($request->nurse)->first_name }} {{ optional($request->nurse)->last_name }}</td>
                                 @endif      
@@ -208,7 +211,7 @@ html {
                             @empty
                             
                             <tr>
-                                <td colspan="6" class="text-center">No available imaging requests</td>
+                                <td colspan="8" class="text-center">No available imaging requests</td>
                             </tr>
                         @endforelse                     
                     </tbody>
