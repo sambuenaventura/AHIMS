@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -14,10 +15,26 @@ class NurseImport implements ToCollection, WithHeadingRow
     */
     public function collection(Collection $rows)
     {
+        // Define the expected headers
+        $expectedHeaders = ['first_name', 'last_name', 'role', 'email', 'student_number', 'password'];
+
+        // Get the actual headers from the Excel file
+        $actualHeaders = $rows->first()->keys()->toArray();
+
+        // Check if the actual headers match the expected headers
+        if ($actualHeaders !== $expectedHeaders) {
+            // Redirect back with an error message
+            return Redirect::back()->with('error', 'Incorrect headers. Please make sure the Excel file has the correct headers.');
+        }
+
+        // Check if all role values are "nurse"
+        $roles = $rows->pluck('role')->unique();
+        if ($roles->count() !== 1 || $roles->first() !== 'nurse') {
+            return Redirect::back()->with('error', 'Invalid role values. All role values should be "nurse".');
+        }
+
         foreach ($rows as $row) 
         {
-            // dd($row);
-
             $user = User::where('email', $row['email'])->first();
             if($user) {
                 $user->update([
@@ -27,7 +44,7 @@ class NurseImport implements ToCollection, WithHeadingRow
                     'student_number' => $row['student_number'],
                     'password' => $row['password'],
                 ]);
-            }else {
+            } else {
                 User::create([
                     'first_name' => $row['first_name'],
                     'last_name' => $row['last_name'],
