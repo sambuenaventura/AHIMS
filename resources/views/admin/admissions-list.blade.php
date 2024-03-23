@@ -98,15 +98,24 @@
                       <tr>
                           <th scope="col">ID</th>
                           <th scope="col">Name</th>
+                          <th scope="col">Student Number</th>
+                          <th scope="col">HAU Email</th>
+
                       </tr>
                   </thead>
                   <tbody>
-                      @foreach ($admissions as $admission)
+                      @forelse ($admissions as $admission)
                       <tr>
                           <td>{{ $admission->id }}</td> <!-- User ID -->
                           <td>{{ $admission->first_name }} {{ $admission->last_name }}</td> <!-- User Name -->
-                      </tr>
-                      @endforeach
+                          <td>{{ $admission->student_number }}</td>
+                          <td>{{ $admission->email }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No admission officers found</td>
+                        </tr>
+                    @endforelse                      
                   </tbody>
               </table>
               
