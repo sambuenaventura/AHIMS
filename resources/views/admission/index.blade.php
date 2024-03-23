@@ -195,8 +195,8 @@ text-align: center;
                     <form class="d-flex" action="{{ route('admission.index') }}" method="GET">
                       <div class="input-group mb-3">
 
-                      <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
-                      <!-- Hidden input field for the specialty -->
+                        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request('search') }}">
+                        <!-- Hidden input field for the specialty -->
                       <input type="hidden" name="specialty" value="{{ request('specialty') }}">
                       <button class="btn btn-outline-success" type="submit">Search</button>
                       </div>
@@ -245,6 +245,7 @@ text-align: center;
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Specialty</th>
                         <th scope="col">No. Patients</th>
                         <th scope="col">Availability</th>
                     </tr>
@@ -253,9 +254,10 @@ text-align: center;
                     @forelse($physicians as $physician)
                     <tr>
                         <td>{{ $physician->physician_id }}</td>
-                        <td>{{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
+                        <td>Dr. {{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
+                        <td>{{ str_replace('_', ' ', $physician->specialty) }}</td>
                         <td>{{ $physician->patients()->count() }}</td> <!-- Display the number of patients -->
-                        <td>
+                        <td style="min-width: 200px;">
                           @if(empty($physician->availability))
                               Availability not set
                           @else
