@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\MedtechImport;
 use App\Imports\NurseImport;
 use App\Imports\PhysicianImport;
+use App\Imports\RadtechImport;
 use Illuminate\Http\Request;
 use App\Models\ServiceRequest; // Import the Request model
 use App\Models\ArchivedPatients;
@@ -111,12 +112,19 @@ class AdminController extends Controller
 
         // Apply search filter if provided
         if ($search) {
-            $physicians->where(function ($query) use ($search) {
-                $query->where('phy_first_name', 'like', '%' . $search . '%')
-                    ->orWhere('phy_last_name', 'like', '%' . $search . '%')
-                    ->orWhere('specialty', 'like', '%' . $search . '%');
+            $terms = explode(' ', $search); // Split the search input into individual terms
+
+            $physicians->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where('phy_first_name', 'like', '%' . $term . '%')
+                        ->orWhere('phy_last_name', 'like', '%' . $term . '%')
+                        ->orWhere('physician_id', 'like', '%' . $term . '%')
+                        ->orWhere('availability', 'like', '%' . $term . '%')
+                        ->orWhere('specialty', 'like', '%' . $term . '%');
+                }
             });
         }
+
 
         // Fetch the physicians with their patient counts
         $physicians = $physicians->withCount('patients');
@@ -142,12 +150,18 @@ class AdminController extends Controller
         // Apply search filter if provided
         $search = $request->input('search');
         if ($search) {
-            $admissions->where(function ($query) use ($search) {
-                $query->where('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%')
-                    ->orWhere('role', 'like', '%' . $search . '%');
+            $terms = explode(' ', $search); // Split the search input into individual terms
+
+            $admissions->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%')
+                        ->orWhere('id', 'like', '%' . $term . '%')
+                        ->orWhere('role', 'like', '%' . $term . '%');
+                }
             });
         }
+
         
         // Paginate the results
         $admissions = $admissions->paginate(10);
@@ -163,6 +177,23 @@ class AdminController extends Controller
     {
         // Retrieve nurses with the role "nurse"
         $nurses = User::where('role', 'nurse');
+
+        // Apply search filter if provided
+        $search = $request->input('search');
+        if ($search) {
+            $terms = explode(' ', $search); // Split the search input into individual terms
+
+            $nurses->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%')
+                        ->orWhere('id', 'like', '%' . $term . '%')
+                        ->orWhere('email', 'like', '%' . $term . '%')
+                        ->orWhere('student_number', 'like', '%' . $term . '%');
+                }
+            });
+        }
+
 
         // Fetch the nurses with any additional conditions or filters as needed
         // For example, you might want to filter nurses based on certain criteria
@@ -183,6 +214,23 @@ class AdminController extends Controller
         // Retrieve medtechs with the role "medtech"
         $medtechs = User::where('role', 'medtech');
     
+        // Apply search filter if provided
+        $search = $request->input('search');
+        if ($search) {
+            $terms = explode(' ', $search); // Split the search input into individual terms
+
+            $medtechs->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%')
+                        ->orWhere('id', 'like', '%' . $term . '%')
+                        ->orWhere('email', 'like', '%' . $term . '%')
+                        ->orWhere('student_number', 'like', '%' . $term . '%');
+                }
+            });
+        }
+
+
         // Fetch the medtechs with any additional conditions or filters as needed
         // For example, you might want to filter medtechs based on certain criteria
     
@@ -200,6 +248,24 @@ class AdminController extends Controller
         // Retrieve radtechs with the role "radtech"
         $radtechs = User::where('role', 'radtech');
     
+
+        // Apply search filter if provided
+        $search = $request->input('search');
+        if ($search) {
+            $terms = explode(' ', $search); // Split the search input into individual terms
+
+            $radtechs->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where('first_name', 'like', '%' . $term . '%')
+                        ->orWhere('last_name', 'like', '%' . $term . '%')
+                        ->orWhere('id', 'like', '%' . $term . '%')
+                        ->orWhere('email', 'like', '%' . $term . '%')
+                        ->orWhere('student_number', 'like', '%' . $term . '%');
+                }
+            });
+        }
+
+
         // Fetch the radtechs with any additional conditions or filters as needed
         // For example, you might want to filter radtechs based on certain criteria
     
@@ -284,29 +350,35 @@ class AdminController extends Controller
 
     public function importDoctor(Request $request)
     {
-
         // Validate the request data
         $request->validate([
             'password' => 'required|string', // Add any additional validation rules for the password
+            'import_file' => 'required|file', // Allow only files
         ]);
-
+    
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
             return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }
-
-        $request->validate([
-            'import_file' => [
-                'required',
-                'file'
-            ]
-            ]);
-
+    
+        // Ensure the file is a valid Excel file (xlsx)
+        $fileExtension = $request->file('import_file')->getClientOriginalExtension();
+        if ($fileExtension !== 'xlsx') {
+            return redirect()->back()->with('error', 'Invalid file format. Please upload an Excel file (.xlsx).'); // Redirect back with an error message
+        }
+    
+        // Process the Excel file if it passes validation
+        try {
             Excel::import(new PhysicianImport, $request->file('import_file'));
-
-        // Redirect back with a success message
-        return redirect()->back()->with('message', 'Physicians imported successfully!');
+            
+            // Redirect back with a success message
+            return redirect()->back()->with('message', 'Physicians imported successfully!');
+        } catch (\Exception $e) {
+            // Handle any exceptions and return with an error message
+            return redirect()->back()->with('error', 'Error importing physicians: ' . $e->getMessage());
+        }
     }
+    
 
     public function addNurse() {
         return view('admin.create-nurse');
@@ -343,29 +415,35 @@ class AdminController extends Controller
 
     public function importNurse(Request $request)
     {
-
         // Validate the request data
         $request->validate([
             'password' => 'required|string', // Add any additional validation rules for the password
+            'import_file' => 'required|file', // Allow only files
         ]);
-
+    
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
             return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }
-
-        $request->validate([
-            'import_file' => [
-                'required',
-                'file'
-            ]
-            ]);
-
+    
+        // Ensure the file is a valid Excel file (xlsx)
+        $fileExtension = $request->file('import_file')->getClientOriginalExtension();
+        if ($fileExtension !== 'xlsx') {
+            return redirect()->back()->with('error', 'Invalid file format. Please upload an Excel file (.xlsx).'); // Redirect back with an error message
+        }
+    
+        // Process the Excel file if it passes validation
+        try {
             Excel::import(new NurseImport, $request->file('import_file'));
-
-        // Redirect back with a success message
-        return redirect()->back()->with('message', 'Nurses imported successfully!');
+            
+            // Redirect back with a success message
+            return redirect()->back()->with('message', 'Nurses imported successfully!');
+        } catch (\Exception $e) {
+            // Handle any exceptions and return with an error message
+            return redirect()->back()->with('error', 'Error importing nurses: ' . $e->getMessage());
+        }
     }
+    
 
     public function addMedtech() {
         return view('admin.create-medtech');
@@ -402,29 +480,35 @@ class AdminController extends Controller
 
     public function importMedtech(Request $request)
     {
-
         // Validate the request data
         $request->validate([
             'password' => 'required|string', // Add any additional validation rules for the password
+            'import_file' => 'required|file', // Allow only files
         ]);
-
+    
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
             return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }
-
-        $request->validate([
-            'import_file' => [
-                'required',
-                'file'
-            ]
-            ]);
-
+    
+        // Ensure the file is a valid Excel file (xlsx)
+        $fileExtension = $request->file('import_file')->getClientOriginalExtension();
+        if ($fileExtension !== 'xlsx') {
+            return redirect()->back()->with('error', 'Invalid file format. Please upload an Excel file (.xlsx).'); // Redirect back with an error message
+        }
+    
+        // Process the Excel file if it passes validation
+        try {
             Excel::import(new MedtechImport, $request->file('import_file'));
-
-        // Redirect back with a success message
-        return redirect()->back()->with('message', 'Medical Technologists imported successfully!');
+            
+            // Redirect back with a success message
+            return redirect()->back()->with('message', 'Medical Technologists imported successfully!');
+        } catch (\Exception $e) {
+            // Handle any exceptions and return with an error message
+            return redirect()->back()->with('error', 'Error importing medical technologists: ' . $e->getMessage());
+        }
     }
+    
 
     public function addRadtech() {
         return view('admin.create-radtech');
@@ -461,29 +545,35 @@ class AdminController extends Controller
 
     public function importRadtech(Request $request)
     {
-
         // Validate the request data
         $request->validate([
             'password' => 'required|string', // Add any additional validation rules for the password
+            'import_file' => 'required|file', // Allow only files
         ]);
-
+    
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
             return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }
-
-        $request->validate([
-            'import_file' => [
-                'required',
-                'file'
-            ]
-            ]);
-
-            Excel::import(new MedtechImport, $request->file('import_file'));
-
-        // Redirect back with a success message
-        return redirect()->back()->with('message', 'Radiologic Technologists imported successfully!');
+    
+        // Ensure the file is a valid Excel file (xlsx)
+        $fileExtension = $request->file('import_file')->getClientOriginalExtension();
+        if ($fileExtension !== 'xlsx') {
+            return redirect()->back()->with('error', 'Invalid file format. Please upload an Excel file (.xlsx).'); // Redirect back with an error message
+        }
+    
+        // Process the Excel file if it passes validation
+        try {
+            Excel::import(new RadtechImport, $request->file('import_file'));
+            
+            // Redirect back with a success message
+            return redirect()->back()->with('message', 'Radiologic Technologists imported successfully!');
+        } catch (\Exception $e) {
+            // Handle any exceptions and return with an error message
+            return redirect()->back()->with('error', 'Error importing radiologic technologists: ' . $e->getMessage());
+        }
     }
+    
 
 
 
