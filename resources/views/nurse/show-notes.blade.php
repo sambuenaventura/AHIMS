@@ -144,11 +144,11 @@ html {
         <div class="boxes">
             <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999;">
                 <div class="left-top-1">
-                    <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                    <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                 </div>
                 <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
@@ -271,7 +271,7 @@ html {
                                             @if ($progressNote->nurse_user)
                                                 <small class="text-muted">{{ $progressNote->nurse_user->first_name }} {{ $progressNote->nurse_user->last_name }}</small>
                                             @else
-                                                <small class="text-muted">Unknown Nurse</small>
+                                                <small class="text-muted">N/A</small>
                                             @endif
                                         </div>
                                         <div class="flex-row">

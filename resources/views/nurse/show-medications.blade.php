@@ -144,11 +144,11 @@ html {
         <div class="boxes">
             <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999;">
                 <div class="left-top-1">
-                    <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                    <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                 </div>
                 <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
@@ -208,8 +208,11 @@ html {
             <div class="card-body m-2">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Nurse Remarks</h4>
+                    @if(!$patient->archived)
+
                     <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
-                    </div>   
+                    @endif
+                </div>   
                 
                 
                 
@@ -280,7 +283,7 @@ html {
                                             @if ($medicationRemark->nurse_user)
                                                 <small class="text-muted">{{ $medicationRemark->nurse_user->first_name }} {{ $medicationRemark->nurse_user->last_name }}</small>
                                             @else
-                                                <small class="text-muted">Unknown Nurse</small>
+                                                <small class="text-muted">N/A</small>
                                             @endif
                                         </div>
                                         <div class="flex-row">

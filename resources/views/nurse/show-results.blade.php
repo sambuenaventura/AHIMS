@@ -206,11 +206,11 @@ html {
         <div class="boxes">
             <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999;">
                 <div class="left-top-1">
-                    <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                    <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                 </div>
                 <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
@@ -371,9 +371,12 @@ html {
                     <form action="{{ route('showResults', ['patientId' => $patient->patient_id]) }}" method="GET">
                         <div class="input-group mb-3">
                             <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request()->input('search') }}">
+                            <input type="hidden" name="test" value="{{ request('sender_message') }}">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </div>
                     </form>
+                    
+                    
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
@@ -409,9 +412,10 @@ html {
                     <thead>
                         <tr>
                             <th scope="col">File</th>
-                            <th class="text-center" scope="col">Date Performed</th>
-                            <th class="text-center" scope="col">Date Completed</th>
-                            <th class="text-center" scope="col">Technician on duty</th>
+                            <th scope="col">Test</th>
+                            <th scope="col">Date Requested</th>
+                            <th scope="col">Date Completed</th>
+                            <th scope="col">Staff on duty</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -442,10 +446,11 @@ html {
                                         <p>No images available</p>
                                     @endif --}}
                                 </td>
-                                                     
-                                <td class="text-center">{{ $result->created_at->format('h:i A n/j/Y' ) }}</td>
-                                <td class="text-center">{{ $result->updated_at->format('h:i A n/j/Y' ) }}</td>
-                                <td class="text-center">
+                                <td>{{ $result->sender_message }}</td>
+
+                                <td>{{ $result->created_at->format('h:i A n/j/Y' ) }}</td>
+                                <td>{{ $result->updated_at->format('h:i A n/j/Y' ) }}</td>
+                                <td>
                                     @if($result->receiver->role == 'medtech')
                                         {{ optional($result->medtech)->first_name }} {{ optional($result->medtech)->last_name }}
                                     @elseif($result->receiver->role == 'radtech')
@@ -457,14 +462,15 @@ html {
                                                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center">No available results</td>
+                                <td colspan="7" class="text-center">No available results</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
                 
                 <div class="mt-4">
-                    {{ $completedResults->links() }}
+                    {{ $completedResults->appends(['search' => request('search'), 'procedure' => request('procedure')])->links() }}
+
                 </div>
             </div>
         </div>
