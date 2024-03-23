@@ -86,8 +86,8 @@
                     <form class="d-flex" action="{{ route('admin.doctorsView') }}" method="GET">
                       <div class="input-group mb-3">
 
-                      <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
-                      <!-- Hidden input field for the specialty -->
+                        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request('search') }}">
+                        <!-- Hidden input field for the specialty -->
                       <input type="hidden" name="specialty" value="{{ request('specialty') }}">
                       <button class="btn btn-outline-success" type="submit">Search</button>
                       </div>
@@ -142,13 +142,13 @@
                       </tr>
                   </thead>
                   <tbody>
-                    @foreach ($physicians as $physician)
+                    @forelse ($physicians as $physician)
                     <tr>
                         <td>{{ $physician->physician_id }}</td>
                         <td>Dr. {{ $physician->phy_first_name }} {{ $physician->phy_last_name }}</td>
                         <td>{{ str_replace('_', ' ', $physician->specialty) }}</td>
                         <td>{{ $physician->patients()->count() }}</td> <!-- Display the number of patients -->
-                        <td>
+                        <td style="min-width: 200px;">
                           @if(empty($physician->availability))
                               Availability not set
                           @else
@@ -158,8 +158,12 @@
                         {{-- <td>{{ $physician->phy_contact_number }}</td> --}}
                         <!-- Add more columns if needed -->
                     </tr>
-                    @endforeach
-                </tbody>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="text-center">No physicians found</td>
+                    </tr>
+                @endforelse                  
+              </tbody>
                 
               </table>
               
