@@ -166,7 +166,7 @@ html {
                 <h4 class="font-bold">Patients</h4>
                 <form class="d-flex" action="{{ route('nurse.index') }}" method="GET">
                     <div class="input-group mb-3">
-                      <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search">
+                      <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request('search') }}">
                       <button class="btn btn-outline-success" type="submit">Search</button>
                     </div>
                 </form>
@@ -176,7 +176,7 @@ html {
     <table class="table table-striped mt-3 Add">
       <thead>
           <tr>
-              <th scope="col"></th>
+              {{-- <th scope="col"></th> --}}
               <th scope="col">ID</th>
               <th scope="col">Name</th>
               <th scope="col">Gender</th>
@@ -186,28 +186,28 @@ html {
           </tr>
       </thead>
       <tbody>
-          @forelse ($patients as $patient)
-          <tr>
-              <td style="min-width: 100px;">{{ \Carbon\Carbon::parse($patient->created_at)->format('g:i A') }}</td>
-              <td style="min-width: 100px;">{{ $patient->patient_id }}</td>
-              <td style="min-width: 200px;">{{ $patient->first_name }} {{ $patient->last_name }}</td>
-              <td style="min-width: 100px;">{{ $patient->gender }}</td>
-              <td style="min-width: 50px;">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }}</td>
-              <td style="min-width: 100px;">{{ $patient->room_number }}</td>
-              <td style="min-width: 200px;">
-                  @if ($patient->physician)
-                  Dr. {{ $patient->physician->phy_first_name }} {{ $patient->physician->phy_last_name }}
-                  @else
-                      No attending physician
-                  @endif
-              </td>
-          </tr>
-          @empty
-          <tr>
-              <td colspan="7" class="text-center">No available patients</td>
-          </tr>
-      @endforelse  
-      </tbody>
+        @forelse ($patients as $patient)
+                <tr>
+                    <td style="min-width: 100px;">{{ $patient->patient_id }}</td>
+                    <td style="min-width: 200px;">{{ $patient->first_name }} {{ $patient->last_name }}</td>
+                    <td style="min-width: 100px;">{{ $patient->gender }}</td>
+                    <td style="min-width: 50px;">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }}</td>
+                    <td style="min-width: 100px;">{{ $patient->room_number }}</td>
+                    <td style="min-width: 200px;">
+                        @if ($patient->physician)
+                            Dr. {{ $patient->physician->phy_first_name }} {{ $patient->physician->phy_last_name }}
+                        @else
+                            No attending physician
+                        @endif
+                    </td>
+                </tr>
+        @empty
+            <tr>
+                <td colspan="7" class="text-center">No available patients</td>
+            </tr>
+        @endforelse  
+    </tbody>
+    
   </table>
   
               <div class="mt-4">
