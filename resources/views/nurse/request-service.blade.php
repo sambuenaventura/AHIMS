@@ -196,6 +196,22 @@ html {
     display: none;
     /* Additional styles for error message inside the modal */
 }
+a.close-btn:hover {
+    background-color: #E6E6E6 !important;
+}
+
+a.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+    background-color: transparent;
+    border-radius: 50%; /* Makes the button circular */
+}
+
+
   </style>
 
 <section id="admission">
@@ -204,11 +220,11 @@ html {
         <div class="boxes">
             <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999;">
                 <div class="left-top-1">
-                    <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                    <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                 </div>
                 <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
@@ -265,7 +281,12 @@ html {
 
 <!-- Overlay for patient options -->
 <div id="patientOptionsOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-    <div id="patientOptions" style="padding: 20px; border-radius: 10px; background-color: white;">
+    <div id="patientOptions" style="position: relative; padding: 30px; border-radius: 10px; background-color: white;">
+        <a href="/nurse-patients/{{$patient->patient_id}}" class="close-btn" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: black; text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20">
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+            </svg>
+        </a>
         <h4 class="font-bold">Service Request</h4>
         <p class="mb-4">Select the service to request</p>
         <div class="label">
