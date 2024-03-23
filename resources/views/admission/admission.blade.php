@@ -83,8 +83,8 @@
             <div class="card-body m-1">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Patients</h4>
-                    @if(request('admissionType') == 'inpatient')
-                    <form class="d-flex" action="{{ route('admission.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
+                    {{-- @if(request('admissionType') == 'inpatient')
+                  <form class="d-flex" action="{{ route('admission.searchInpatient', ['admissionType' => 'inpatient']) }}" method="GET">
                       <div class="input-group mb-3">
                         <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="inpatientSearch">
                         <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
@@ -116,9 +116,17 @@
                     <button class="btn btn-outline-success" type="submit">Search</button>
                   </div>
               </form>
-                @endif
+                @endif --}}
                 
-                
+                <form class="d-flex" action="{{ route('admission.view') }}" method="GET">
+                  <div class="input-group mb-3">
+
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request('search') }}">
+                    <!-- Hidden input field for the specialty -->
+                  <input type="hidden" name="admissionType" value="{{ request('admissionType') }}">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  </div>
+              </form>
                 
                 </div>
                 
@@ -147,6 +155,9 @@
                           <th scope="col">Patient ID</th>
                           <th scope="col">Patient Name</th>
                           <th scope="col">Attending Physician</th>
+                          @if(!$admissionType)
+                          <th scope="col">Admission Status</th>
+                      @endif
                           @if(request('admissionType') == 'inpatient')
                               <th scope="col">Room Number</th>
                               <th scope="col">Admission Date</th>
@@ -168,6 +179,7 @@
                         
                           <td>{{  $patient->patient_id }}</td>
                           <td>{{  $patient->first_name }} {{  $patient->last_name }}</td>
+
                           <td>
                             @if ($patient->physician)
                                 Dr. {{ $patient->physician->phy_first_name }} {{ $patient->physician->phy_last_name }}
@@ -175,6 +187,18 @@
                                 No Physician Assigned
                             @endif
                         </td>
+                        @if(!$admissionType)
+                            <td>
+                                <span class="badge 
+                                    @if($patient->admission_type == 'Inpatient') bg-success 
+                                    @elseif($patient->admission_type == 'Outpatient') bg-primary 
+                                    @elseif($patient->admission_type == 'archived') bg-secondary 
+                                    @else bg-danger 
+                                    @endif">
+                                    {{ ucfirst($patient->admission_type) }}
+                                </span>
+                            </td>
+                        @endif
                           @if(request('admissionType') == 'inpatient')
                               <td>{{  $patient->room_number }}</td>
                               <td>{{ \Carbon\Carbon::parse($patient->created_at)->format('h:i A n/j/Y') }}</td>                            
