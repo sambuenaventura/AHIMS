@@ -149,7 +149,20 @@
     cursor: pointer;
     
 }
+a.close-btn:hover {
+    background-color: #E6E6E6 !important;
+}
 
+a.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+    background-color: transparent;
+    border-radius: 50%; /* Makes the button circular */
+}
   </style>
 
 <section id="admission">
@@ -167,7 +180,14 @@
                     @csrf
 
                     <div id="patientOptionsOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-                        <div id="patientOptions" style="padding: 20px; border-radius: 10px;">
+                        <div id="patientOptions" style="position: relative; padding: 30px; border-radius: 10px; background-color: white;">
+                            <a href="{{ route('admission.index') }}" class="close-btn" style="position: absolute; top: 10px; right: 10px; font-size: 20px; color: black; text-decoration: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20">
+                                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                                </svg>
+                            </a>
+                            
+                            
                             <h4 class="font-bold">Add Patient</h4>
                             <p class="mb-4">Is the patient Inpatient or Outpatient?</p>
                             <div class="label">
@@ -509,16 +529,16 @@
                                         </h1>
                                         <div class="text-center mt-4">
                                             <h4 class="font-bold">Enter Password</h4>
-                                            <p class="mb-4">Password is required to save the input.</p>
+                                            <p class="mb-4">Password is required to proceed.</p>
                                         </div>
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
