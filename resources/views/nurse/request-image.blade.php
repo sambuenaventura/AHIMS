@@ -206,11 +206,11 @@ html {
         <div class="boxes">
             <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999;">
                 <div class="left-top-1">
-                    <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                    <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                 </div>
                 <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
@@ -912,10 +912,10 @@ html {
                                             <form id="passwordForm">
                                                 <div class="col-auto">
                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
