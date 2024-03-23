@@ -117,14 +117,18 @@ html {
                 <table class="table table-striped mt-3">
                     <thead>
                         <tr>
-                            <th scope="col">File Name</th>
+                            <th scope="col">File Name(s)</th>
                             <th scope="col">Patient ID</th>
                             <th scope="col">Patient Name</th>
                             @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
                                 <th scope="col">Service</th>
-                            @endif                            
-                        <th scope="col">Date Performed</th>
-                            <th scope="col">Time Performed</th>
+                            @endif               
+                            @if(!empty($procedureType))
+                                <th scope="col">Test</th>
+                            @endif
+             
+                        <th scope="col">Date Requested</th>
+                        <th scope="col">Date Completed</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,9 +162,13 @@ html {
                             <td>{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
                             @if(empty($procedureType)) <!-- Show Service Type column only if no procedure type filter is applied -->
                                 <td>{{ ucfirst($request->procedure_type) }}</td>
-                            @endif                            
-                        <td>{{ $request->created_at->format('n/j/Y') }}</td>
-                            <td>{{ $request->created_at->format('h:i A') }}</td>
+                            @endif           
+                            @if(!empty($procedureType))
+                                <td>{{ ucfirst($request->sender_message) }}</td>
+                            @endif
+                 
+                            <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>                            
+                            <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
                         </tr>
                         @empty
                         <tr>
