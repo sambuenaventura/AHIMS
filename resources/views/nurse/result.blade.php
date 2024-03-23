@@ -151,11 +151,13 @@ html {
                             <p class="font-bold">ID{{  $patient->patient_id }}</p>
                         </div>
                         <div class="left-top-2 flex-row-none gap-16">
-                            <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                            <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                             <p class="font-bold">{{ optional($patient)->gender }}</p>
                         </div>
                     </div>
-                    <div class="box box1 flex-col bg-white" style="font-size: 0.9em;">
+                    {{-- <div class="box box1 flex-col bg-white" style="font-size: 0.9em;"> --}}
+                        <div class="box box1 flex-col bg-white">
+
                         <p class="font-bold">Request Information (ID: {{ $request->request_id }})</p>
                         <div class="left-top-1 flex-row">
                             <p class="">Date:</p>
@@ -169,9 +171,15 @@ html {
                             <p class="">Type of Service:</p>
                             <p class="">{{ $request->procedure_type }}</p>
                         </div>
-                        <div class="left-top-1">
+                        <div class="left-top-1 {{ strpos($request->sender_message, ',') === false ? 'flex-row' : '' }}">
                             <p class="">Type of Test:</p>
-                            <p class="">{{ $request->sender_message }}</p>
+                            @if (strpos($request->sender_message, ',') === false)
+                                <p class="">{{ $request->sender_message }}</p>
+                            @else
+                                @foreach (explode(',', $request->sender_message) as $item)
+                                    <p class="">{{ $item }}</p>
+                                @endforeach
+                            @endif
                         </div>
                         {{-- <div class="left-top-1 row">
                             <div class="col-md-4">
@@ -202,7 +210,7 @@ html {
                         </div>
                         <div class="flex-row">
                             <small class="text-muted">Date & Time:</small>
-                            <small class="text-muted">{{ optional($request)->created_at ? \Carbon\Carbon::parse($request->created_at)->format('g:i A n/j/Y') : '' }}</small>
+                            <small class="text-muted">{{ optional($request)->created_at ? \Carbon\Carbon::parse($request->created_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                         </div>
                     </div>
                     
