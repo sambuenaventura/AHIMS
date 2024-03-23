@@ -132,6 +132,22 @@ html {
     cursor: pointer;
 }
 
+.modal-dialog { 
+    margin: auto;
+    max-width: 600px; /* Change the width to your desired value */
+    width: 100%; /* Ensure modal doesn't exceed viewport width */
+}
+.modal-dialog h4 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+.cancel-btn {
+    background: #E7E7E7 !important;
+}
+/* Customize modal backdrop background */
+.modal-backdrop {
+    background-color: rgb(44, 105, 75)/* Change the background color and opacity as needed */
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -146,17 +162,17 @@ html {
                 @if ($patient->admission_type === 'archived')
                     <div class="left-top-1">
                         <span class="badge bg-secondary position-absolute top-0 start-0">ARCHIVED</span>
-                        <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                        <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                        <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                        <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                     </div>
                 @else
                     <div class="left-top-1">
-                        <p class="font-bold mb-1">ID{{  $patient->patient_id }}</p>
-                        <h4 class="font-bold mb-2">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                        <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                        <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
                     </div>
                 @endif
                 <div class="left-top-2 flexi">
-                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} yrs</p>
+                    <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
                 </div>
@@ -204,7 +220,7 @@ html {
                 </div>
 
             </div>
-            @if ($patient->admission_type !== 'archived')
+            @if(!$patient->archived)
 
             <div class="box box1 flex-col bg-white shadow-md" style="margin-top: -20px;">
                 <p class="font-bold">Laboratory/Imaging Services</p>
@@ -246,16 +262,18 @@ html {
                                     <div class="modalContent">
                                         <h1 class="text-center text-success">
                                             <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M12.75 2.25098C12.75 1.65424 12.9871 1.08194 13.409 0.659986C13.831 0.238029 14.4033 0.000976563 15 0.000976563L21 0.000976562C21.7956 0.000976563 22.5587 0.317047 23.1213 0.879656C23.6839 1.44227 24 2.20533 24 3.00098V21.001C24 21.7966 23.6839 22.5597 23.1213 23.1223C22.5587 23.6849 21.7956 24.001 21 24.001H3C2.20435 24.001 1.44129 23.6849 0.87868 23.1223C0.316071 22.5597 0 21.7966 0 21.001V3.00098C0 2.20533 0.316071 1.44227 0.87868 0.879656C1.44129 0.317047 2.20435 0.000976563 3 0.000976563L12 0.000976562C11.529 0.627977 11.25 1.40648 11.25 2.25098V11.251H8.25C8.10147 11.2507 7.9562 11.2946 7.83262 11.3769C7.70904 11.4593 7.6127 11.5766 7.55582 11.7138C7.49895 11.851 7.48409 12.002 7.51314 12.1477C7.54219 12.2933 7.61384 12.4271 7.719 12.532L11.469 16.282C11.5387 16.3518 11.6214 16.4072 11.7125 16.445C11.8037 16.4829 11.9013 16.5023 12 16.5023C12.0987 16.5023 12.1963 16.4829 12.2874 16.445C12.3786 16.4072 12.4613 16.3518 12.531 16.282L16.281 12.532C16.3862 12.4271 16.4578 12.2933 16.4869 12.1477C16.5159 12.002 16.5011 11.851 16.4442 11.7138C16.3873 11.5766 16.291 11.4593 16.1674 11.3769C16.0438 11.2946 15.8985 11.2507 15.75 11.251H12.75V2.25098Z" fill="white"/>
+
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                                    <path d="M600-80v-80h160v-400H200v160h-80v-320q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H600ZM320 0l-56-56 103-104H40v-80h327L264-344l56-56 200 200L320 0ZM200-640h560v-80H200v80Zm0 0v-80 80Z" fill="white"/>
                                                 </svg>
                                                 
+                                                                                                
                                                 
                                             </span>
                                         </h1>
                                         <div class="text-center mt-4">
                                             <h4 class="font-bold">Confirm Discharge</h4>
-                                            <p class="mb-4">This action will discharge the patient from the system. <br> Are you sure you want to proceed?</p>
+                                            <p class="mb-4">This action will set the discharge date for the patient. <br> Are you sure you want to proceed?</p>
                                         </div>
                                         
                                         <div class="d-flex justify-content-evenly mt-5">
@@ -284,16 +302,16 @@ html {
                                         </h1>
                                         <div class="text-center mt-4">
                                             <h4 class="font-bold">Enter Password</h4>
-                                            <p class="mb-4">Password is required to save the input.</p>
+                                            <p class="mb-4">Password is required to proceed.</p>
                                         </div>
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -318,10 +336,10 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Patient Complete History</h4>
-                @if ($patient->admission_type !== 'archived')
-                <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View/Edit</a>
-            @else
+                @if($patient->archived)
                 <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View</a>
+            @else
+                <a href="/nurse-patients/edit/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">View/Edit</a>
             @endif
                         </div>  
 
@@ -333,9 +351,9 @@ html {
                     <div class="flex-row gap-10">
                         <div class="flex-row gap-10">
                             <p class="history-label">Complete History:</p>
-                            <p class="history-value">{{ ($medicalHistory->complete_history) ?? 'No medical history available' }}</p>
+                            <p class="history-value">{{ ($medicalHistory->complete_history) ?? 'No medical history recorded.' }}</p>
                         </div>
-                        
+                    
                     </div>
                     <div class="flex-row gap-10">
                         <p class="history-label">Past Medical History:</p>
@@ -512,32 +530,20 @@ html {
                     </div>    
 
                     <div class="flex-row gap-10">
-                        <p class="history-label">Clinical Impression:</p>
-                        <div class="history-value">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <p class="flex gap-2">
-                                        {{ isset($neurologicalExaminations) && $neurologicalExaminations->clinical_impression ? $neurologicalExaminations->clinical_impression : 'No clinical impression recorded.' }}
-                                    </p>
-                                </div>
-                            </div>
+                        <div class="flex-row gap-10">
+                            <p class="history-label">Clinical Impression:</p>
+                            <p class="history-value">{{ isset($neurologicalExaminations) && $neurologicalExaminations->clinical_impression ? $neurologicalExaminations->clinical_impression : 'No clinical impression recorded.' }}</p>
                         </div>
                     </div>
-                    
 
                     <div class="flex-row gap-10">
-                        <p class="history-label">Work Up:</p>
-                        <div class="history-value">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <p class="flex gap-2">
-                                        {{ isset($neurologicalExaminations) && $neurologicalExaminations->work_up ? $neurologicalExaminations->work_up : 'No work up recorded.' }}
-                                    </p>
-                                </div>
-                            </div>
+                        <div class="flex-row gap-10">
+                            <p class="history-label">Work Up:&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                            <p class="history-value">
+                                {{ isset($neurologicalExaminations) && $neurologicalExaminations->work_up ? $neurologicalExaminations->work_up : 'No work up recorded.' }}
+                            </p>                        
                         </div>
                     </div>
-
 
                 </div>
                 <div class="header">
@@ -545,12 +551,24 @@ html {
                 </div>
                 <div class="patient-complete-history">
                     <div class="flex-row gap-10">
-                        <p class="history-label">Name of Medication and Dosage:</p>
+                        <p class="history-label">Name of Medication:</p>
                         <div class="history-value">
                             <div class="row">
                                 <div class="col-md-4">
                                     <p class="flex gap-2">
-                                        {{ $patient->currentMedication ? $patient->currentMedication->current_medications . ', ' . ($patient->currentMedication->current_dosage ?? 'Dosage not specified') : 'No current medications recorded.' }}
+                                        {!! nl2br(e($patient->currentMedication->current_medications ?? 'Medications not specified.')) !!}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-row gap-10">
+                        <p class="history-label">Dosage:</p>
+                        <div class="history-value">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p class="flex gap-2">
+                                        {!! nl2br(e($patient->currentMedication->current_dosage ?? 'Dosage not specified.')) !!}
                                     </p>
                                 </div>
                             </div>
@@ -562,7 +580,7 @@ html {
                             <div class="row">
                                 <div class="col-md-4">
                                     <p class="flex gap-2">
-                                        {{ $patient->currentMedication ? $patient->currentMedication->current_frequency : 'Frequency not specified.' }}
+                                        {!! nl2br(e($patient->currentMedication ? $patient->currentMedication->current_frequency : 'Frequency not specified.')) !!}
                                     </p>
                                 </div>
                             </div>
@@ -613,9 +631,9 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Nurse Remarks</h4>
-                @if ($patient->admission_type !== 'archived')
+                @if(!$patient->archived)
                 <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
-            @endif
+                @endif
                             </div>  
 
                 <div class="table-header">
@@ -686,14 +704,14 @@ html {
                                         @if ($vitalSign->nurse_user)
                                             <small class="text-muted">{{ $vitalSign->nurse_user->first_name }} {{ $vitalSign->nurse_user->last_name }}</small>
                                         @else
-                                            <small class="text-muted">Unknown Nurse</small>
+                                            <small class="text-muted">N/A</small>
                                         @endif
                                     </div>
                                     
                                     
                                     <div class="flex-row">
                                         <small class="text-muted">Date & Time:</small>
-                                        <small class="text-muted">{{ optional($vitalSign)->vital_time ? \Carbon\Carbon::parse($vitalSign->updated_at)->format('g:i A n/j/Y') : '' }}</small>
+                                        <small class="text-muted">{{ optional($vitalSign)->vital_time ? \Carbon\Carbon::parse($vitalSign->updated_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                     
                                         {{-- <small class="text-muted">{{ \Carbon\Carbon::parse($vitalSign->created_at)->format('g:i A') }}</small> --}}
                                     </div>
@@ -736,7 +754,7 @@ html {
                                     </div>
                                     <div class="flex-row">
                                         <p class="">Oxygen:</p>
-                                        <p class="">{{ $vitalSign->oxygen }} %</p>
+                                        <p class="">{{ $vitalSign->oxygen }}%</p>
                                     </div>
                                 </div>
                                 <div class="card-footer">
@@ -745,14 +763,14 @@ html {
                                         @if ($vitalSign->nurse_user)
                                             <small class="text-muted">{{ $vitalSign->nurse_user->first_name }} {{ $vitalSign->nurse_user->last_name }}</small>
                                         @else
-                                            <small class="text-muted">Unknown Nurse</small>
+                                            <small class="text-muted">N/A</small>
                                         @endif
                                     </div>
                                     
                                     
                                     <div class="flex-row">
                                         <small class="text-muted">Date & Time:</small>
-                                        <small class="text-muted">{{ optional($vitalSign)->vital_time ? \Carbon\Carbon::parse($vitalSign->updated_at)->format('g:i A n/j/Y') : '' }}</small>
+                                        <small class="text-muted">{{ optional($vitalSign)->vital_time ? \Carbon\Carbon::parse($vitalSign->updated_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                     
                                         {{-- <small class="text-muted">{{ \Carbon\Carbon::parse($vitalSign->created_at)->format('g:i A') }}</small> --}}
                                     </div>
@@ -850,7 +868,7 @@ html {
                                 @if ($medicationRemark->nurse_user)
                                     <small class="text-muted">{{ $medicationRemark->nurse_user->first_name }} {{ $medicationRemark->nurse_user->last_name }}</small>
                                 @else
-                                    <small class="text-muted">Unknown Nurse</small>
+                                    <small class="text-muted">N/A</small>
                                 @endif
                             </div>
                             <div class="flex-row">
@@ -882,7 +900,7 @@ html {
             <div class="card-body m-2">
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Progress Notes</h4>
-                @if ($patient->admission_type !== 'archived')
+                @if(!$patient->archived)
                 <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Progress Note</a>
             @endif
                         </div>  
@@ -948,7 +966,7 @@ html {
                                 @if ($progressNote->nurse_user)
                                     <small class="text-muted">{{ $progressNote->nurse_user->first_name }} {{ $progressNote->nurse_user->last_name }}</small>
                                 @else
-                                    <small class="text-muted">Unknown Nurse</small>
+                                    <small class="text-muted">N/A</small>
                                 @endif
                             </div>
                             <div class="flex-row">
