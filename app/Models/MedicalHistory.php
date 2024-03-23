@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class MedicalHistory extends Model
 {
@@ -57,9 +58,6 @@ class MedicalHistory extends Model
         'obstetrical_first_pregnancy_term_preterm',
         'obstetrical_first_pregnancy_girl_boy',
         'obstetrical_first_pregnancy_delivery_method',
-        'obstetrical_first_pregnancy_term_preterm',
-        'obstetrical_first_pregnancy_girl_boy',
-        'obstetrical_first_pregnancy_delivery_method',
         'obstetrical_first_pregnancy_delivery_place',
         'pediatric_term',
         'pediatric_preterm',
@@ -78,7 +76,6 @@ class MedicalHistory extends Model
         // 'mh_work_up',
         // Add other boolean columns here
     ];
-    
 
     protected $casts = [
         'hypertension' => 'boolean',
@@ -102,7 +99,69 @@ class MedicalHistory extends Model
         'personal_drug_abuse' => 'boolean',
         // Add other boolean columns here
     ];
-    protected $primaryKey = 'patient_id'; // Specify the correct primary key column name
+
+    protected $primaryKey = 'patient_id';
+
+    public function setAttribute($key, $value)
+    {
+        if (in_array($key, $this->encryptedAttributes())) {
+            $value = Crypt::encryptString($value);
+        }
+    
+        return parent::setAttribute($key, $value);
+    }
+    
+    public function getAttribute($key)
+    {
+        $value = parent::getAttribute($key);
+    
+        if (in_array($key, $this->encryptedAttributes()) && !empty($value)) {
+            $value = Crypt::decryptString($value);
+        }
+    
+        return $value;
+    }
+    
+    
+    protected function encryptedAttributes()
+    {
+        return [
+            'complete_history',
+            'others_details',
+            'family_others_details',
+            'menstrual_interval',
+            'menstrual_duration',
+            'menstrual_dysmenorrhea',
+            'obstetrical_lmp',
+            'obstetrical_aog',
+            'obstetrical_pmp',
+            'obstetrical_edc',
+            'obstetrical_prenatal_checkups',
+            'obstetrical_gravida',
+            'obstetrical_para',
+            // 'obstetrical_first_pregnancy_delivered_on',
+            // 'obstetrical_first_pregnancy_term_preterm',
+            // 'obstetrical_first_pregnancy_girl_boy',
+            // 'obstetrical_first_pregnancy_delivery_method',
+            'obstetrical_first_pregnancy_delivery_place',
+            'pediatric_term',
+            'pediatric_preterm',
+            'pediatric_postterm',
+            'pediatric_birth_by',
+            'pediatric_nsd_cs',
+            'pediatric_age_of_mother_at_pregnancy',
+            // 'pediatric_no_of_pregnancy_first',
+            // 'pediatric_no_of_pregnancy_second',
+            // 'pediatric_no_of_pregnancy_third',
+            // 'pediatric_no_of_pregnancy_others',
+            'pediatric_no_of_pregnancy',
+            'pediatric_complications_during_pregnancy',
+            'pediatric_immunizations',
+            // Add other attributes here that you want to encrypt
+        ];
+    }
+    
+    
 
     public function medicalHistory()
     {
@@ -116,5 +175,4 @@ class MedicalHistory extends Model
     {
         return $this->belongsTo(User::class, 'nurse_id', 'id');
     }
-
 }

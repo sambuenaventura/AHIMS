@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class Patients extends Model
 {
@@ -19,6 +20,37 @@ class Patients extends Model
 
     use HasFactory;
 
+
+    public function setAttribute($key, $value)
+    {
+        if (in_array($key, $this->encryptedAttributes())) {
+            $value = Crypt::encryptString($value);
+        }
+
+        return parent::setAttribute($key, $value);
+    }
+
+    public function getAttribute($key)
+    {
+        $value = parent::getAttribute($key);
+
+        if (in_array($key, $this->encryptedAttributes()) && !empty($value)) {
+            $value = Crypt::decryptString($value);
+        }
+
+        return $value;
+    }
+
+    protected function encryptedAttributes()
+    {
+        return [
+            'contact_number',
+            'address',
+            'pic_contact_number',
+            'ap_contact_number',
+        ];
+    }
+    
     public function medicalHistory()
     {
         return $this->hasOne(MedicalHistory::class, 'patient_id', 'patient_id');
