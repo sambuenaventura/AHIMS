@@ -104,7 +104,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                      @foreach ($medtechs as $medtech)
+                      @forelse ($medtechs as $medtech)
                       <tr>
                           <td>{{ $medtech->id }}</td>
                           <td>{{ $medtech->first_name }} {{ $medtech->last_name }}</td> 
@@ -112,8 +112,12 @@
                           <td>{{ $medtech->student_number }}</td>
                           <td>{{ $medtech->email }}</td>
                       </tr>
-                      @endforeach
-                  </tbody>
+                      @empty
+                      <tr>
+                          <td colspan="7" class="text-center">No medical technologists found</td>
+                      </tr>
+                  @endforelse                     
+                </tbody>
               </table>
               
               

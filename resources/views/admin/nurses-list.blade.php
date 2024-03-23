@@ -104,7 +104,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                      @foreach ($nurses as $nurse)
+                      @forelse ($nurses as $nurse)
                       <tr>
                           <td>{{ $nurse->id }}</td>
                           <td>{{ $nurse->first_name }} {{ $nurse->last_name }}</td> 
@@ -112,8 +112,12 @@
                           <td>{{ $nurse->student_number }}</td>
                           <td>{{ $nurse->email }}</td>
                       </tr>
-                      @endforeach
-                  </tbody>
+                      @empty
+                      <tr>
+                          <td colspan="7" class="text-center">No nurses found</td>
+                      </tr>
+                  @endforelse                   
+                </tbody>
               </table>
               
               
