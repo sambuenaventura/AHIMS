@@ -171,7 +171,11 @@ html {
                                 </td>   
                                 @endif
                                 @if(!$status)
-                                    <td>{{ ucfirst($request->status) }}</td>
+                                <td>
+                                    <span class="badge @if($request->status == 'completed') bg-success @elseif($request->status == 'declined') bg-danger @elseif($request->status == 'accepted') bg-primary @elseif($request->status == 'pending') bg-secondary @endif">
+                                        {{ ucfirst($request->status) }}
+                                    </span>
+                                </td>                    
                                 @endif
                             </tr>
                             @empty
