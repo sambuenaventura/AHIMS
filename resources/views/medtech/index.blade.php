@@ -170,7 +170,22 @@ text-align: center;
   font-size: 0.70em;
   font-weight: 700;
 }
-
+.modal-dialog { 
+    margin: auto;
+    max-width: 600px; /* Change the width to your desired value */
+    width: 100%; /* Ensure modal doesn't exceed viewport width */
+}
+.modal-dialog h4 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+.cancel-btn {
+    background: #E7E7E7 !important;
+}
+/* Customize modal backdrop background */
+.modal-backdrop {
+    background-color: rgb(44, 105, 75)/* Change the background color and opacity as needed */
+}
 </style>
 <?php $array = array('title' => 'HIMS');?>
 <x-nav :data="$array"/>
@@ -330,8 +345,8 @@ text-align: center;
                                       </div>
                                       
                                         <div class="d-flex justify-content-evenly mt-5">
-                                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#passwordModalAccept{{ $request->request_id }}">Accept</button>
+                                          <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" style="background-color: #E7E7E7;" data-bs-dismiss="modal">Cancel</button>
+                                          <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#passwordModalAccept{{ $request->request_id }}">Accept</button>
                                           </div>
                                     </div>
                                 </div>
@@ -361,10 +376,10 @@ text-align: center;
                                             <form id="passwordFormAccept">
                                                 <div class="col-auto">
                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -409,8 +424,8 @@ text-align: center;
                                           </div>
                                         
                                           <div class="d-flex justify-content-evenly mt-5">
-                                              <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                                              <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#passwordModalDecline{{ $request->request_id }}">Decline</button>
+                                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" style="background-color: #E7E7E7;" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#passwordModalDecline{{ $request->request_id }}">Decline</button>
                                             </div>
                                       </div>
                                   </div>
@@ -437,16 +452,16 @@ text-align: center;
                                                         </div>
                                                       <div class="col-auto">
                                                         <label for="inputReason" class="visually-hidden">Reason for Decline</label>
-                                                        <textarea class="form-control text-success" id="inputReason" name="reason" placeholder="Reason for Decline" rows="3" required></textarea>
+                                                        <textarea class="form-control" id="inputReason" name="reason" placeholder="Reason for Decline" rows="3" required></textarea>
                                                     </div>
                                                         <div class="d-flex justify-content-evenly mt-5">
                                                             <form id="passwordFormDecline{{ $request->request_id }}">
                                                                 <div class="col-auto">
                                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                                 </div>
                                                                 <div class="col-auto">
-                                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                                 </div>
                                                             </form>
                                                         </div>
