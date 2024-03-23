@@ -291,16 +291,16 @@
                                         </h1>
                                         <div class="text-center mt-4">
                                             <h4 class="font-bold">Enter Password</h4>
-                                            <p class="mb-4">Password is required to save the input.</p>
+                                            <p class="mb-4">Password is required to proceed.</p>
                                         </div>
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -330,7 +330,7 @@
                     <div class="hero-content">
                         <div class="row">
                             <div class="col">
-                                <h6 class="text-success"><span>Upload your .xls file here:</span></h6>
+                                <h6 class="text-success"><span>Upload your .xlsx file here:</span></h6>
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         {{-- <input type="file" class="form-control" id="image" name="import_file" multiple required> --}}
@@ -399,10 +399,10 @@
                                                             <form id="passwordForm">
                                                                 <div class="col-auto">
                                                                     <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                                    <input type="password" class="form-control text-success" id="inputPassword2" name="password" placeholder="Password" required>
+                                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
                                                                 </div>
                                                                 <div class="col-auto">
-                                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Enter</button>
+                                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                                 </div>
                                                             </form>
                                                         </div>
