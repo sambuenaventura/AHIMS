@@ -163,6 +163,21 @@ a.close-btn {
     background-color: transparent;
     border-radius: 50%; /* Makes the button circular */
 }
+
+.req {
+    color: red;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
   </style>
 
 <section id="admission">
@@ -223,14 +238,14 @@ a.close-btn {
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="first_name">First Name</label>
+                                            <input type="text" required id="first_name" name="first_name" value="{{ old('first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
+                                            <label for="first_name">First Name<span class="req">*</span></label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="last_name">Last Name</label>
+                                            <input type="text" required id="last_name" name="last_name" value="{{ old('last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
+                                            <label for="last_name">Last Name<span class="req">*</span></label>
                                         </div>
                                     </div>
                                 </div>
@@ -251,8 +266,8 @@ a.close-btn {
                                     @enderror
                                 </div>
                                 <div class="form-floating">
-                                    <input type="text" id="contact_number" name="contact_number" value="{{ old('contact_number') }}" class="form-control bg-light my-3" placeholder="Contact Number" aria-label="First name">
-                                    <label for="contact_number">Contact Number</label>
+                                    <input type="number" required id="contact_number" name="contact_number" value="{{ old('contact_number') }}" class="form-control bg-light my-3" placeholder="Contact Number" aria-label="First name">
+                                    <label for="contact_number">Contact Number<span class="req">*</span></label>
                                 </div>
                                 <div class="input-group">
                                     @error('contact_number')
@@ -267,14 +282,14 @@ a.close-btn {
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="pic_first_name" name="pic_first_name" value="{{ old('pic_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="pic_first_name">First Name</label>
+                                            <input type="text" required id="pic_first_name" name="pic_first_name" value="{{ old('pic_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
+                                            <label for="pic_first_name">First Name<span class="req">*</span></label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="pic_last_name" name="pic_last_name" value="{{ old('pic_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="pic_last_name">Last Name</label>
+                                            <input type="text" required id="pic_last_name" name="pic_last_name" value="{{ old('pic_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
+                                            <label for="pic_last_name">Last Name<span class="req">*</span></label>
                                         </div>
                                     </div>
                                 </div>
@@ -295,8 +310,8 @@ a.close-btn {
                                     @enderror
                                 </div>
                                 <div class="form-floating">
-                                    <input type="text" id="pic_contact_number" name="pic_contact_number" value="{{ old('pic_contact_number') }}" class="form-control bg-light my-3" placeholder="Contact Number" aria-label="First name">
-                                    <label for="pic_contact_number">Contact Number</label>
+                                    <input type="number" required id="pic_contact_number" name="pic_contact_number" value="{{ old('pic_contact_number') }}" class="form-control bg-light my-3" placeholder="Contact Number" aria-label="First name">
+                                    <label for="pic_contact_number">Contact Number<span class="req">*</span></label>
                                 </div>
                                 <div class="input-group">
                                     @error('pic_contact_number')
@@ -311,14 +326,14 @@ a.close-btn {
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="ap_first_name" name="ap_first_name" value="{{ old('ap_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="ap_first_name">First Name</label>
+                                            <input type="text" required id="ap_first_name" name="ap_first_name" value="{{ old('ap_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
+                                            <label for="ap_first_name">First Name<span class="req">*</span></label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="ap_last_name" name="ap_last_name" value="{{ old('ap_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="ap_last_name">Last Name</label>
+                                            <input type="text" required id="ap_last_name" name="ap_last_name" value="{{ old('ap_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
+                                            <label for="ap_last_name">Last Name<span class="req">*</span></label>
                                         </div>
                                     </div>
                                 </div>
@@ -340,13 +355,13 @@ a.close-btn {
                                 </div>
                                 <h6 class="text-success">IV. Attending Physician</h6>
                                 <div class="form-floating">
-                                    <select id="specialist" name="specialist" class="form-select bg-light" aria-label="Specialist">
+                                    <select required id="specialist" name="specialist" class="form-select bg-light" aria-label="Specialist">
                                         <option value="" disabled>Select Specialist</option>
                                         @foreach ($physicians as $physician)
                                             <option value="{{ $physician->physician_id }}">{{ 'Dr. ' . $physician->phy_first_name . ' ' . $physician->phy_last_name }}</option>
                                         @endforeach
                                     </select>
-                                    <label for="specialist">Specialist</label>
+                                    <label for="specialist">Specialist<span class="req">*</span></label>
                                 </div>
                                 
                                 
@@ -365,27 +380,28 @@ a.close-btn {
                                 <div class="row g-3 align-items-end">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="form-control bg-light" placeholder="Birth Date" aria-label="Birth Date">
-                                            <label for="date_of_birth">Birth Date</label>
+                                            <input type="date" required id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="form-control bg-light" placeholder="Birth Date" aria-label="Birth Date" max="{{ date('Y-m-d') }}">
+                                            <label for="date_of_birth">Birth Date<span class="req">*</span></label>
                                         </div>
                                     </div>
                                     
                                     
+                                    
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="number" id="age" name="age" class="form-control bg-light" placeholder="Age" aria-label="Age" readonly>
+                                            <input type="number" disabled id="age" name="age" class="form-control bg-light" placeholder="Age" aria-label="Age" readonly>
                                             <label for="age">Age</label>
                                         </div>
                                     </div>
                                     
                                     <div class="col">
                                         <div class="form-floating">
-                                            <select name="gender" class="form-select bg-light" aria-label="Gender">
+                                            <select name="gender" required class="form-select bg-light" aria-label="Gender">
                                                 <option value="" {{ old('gender') == "" ? 'selected' : '' }} disabled>Select Gender</option>
                                                 <option value="Male" {{ old('gender') == "Male" ? 'selected' : '' }}>Male</option>
                                                 <option value="Female" {{ old('gender') == "Female" ? 'selected' : '' }}>Female</option>
                                             </select>
-                                            <label for="gender">Gender</label>
+                                            <label for="gender">Gender<span class="req">*</span></label>
                                         </div>
                                     </div>
                                     
@@ -407,8 +423,8 @@ a.close-btn {
                                     </div>
                                 </div>
                                 <div class="form-floating">
-                                    <input type="text" id="address" name="address" value="{{ old('address') }}" class="form-control bg-light my-3" placeholder="Address" aria-label="Address">
-                                    <label for="address">Address</label>
+                                    <input type="text" required id="address" name="address" value="{{ old('address') }}" class="form-control bg-light my-3" placeholder="Address" aria-label="Address">
+                                    <label for="address">Address<span class="req">*</span></label>
                                 </div>
                                 <div class="input-group">
                                     @error('address')
@@ -421,8 +437,8 @@ a.close-btn {
                                 </div>
                                 <h6 class="text-success">ㅤ</h6>
                                 <div class="form-floating">
-                                    <input type="text" id="pic_relation" name="pic_relation" value="{{ old('pic_relation') }}" class="form-control bg-light mb-3" placeholder="Relation to Patient" aria-label="Relation to Patient">
-                                    <label for="pic_relation">Relation to Patient</label>
+                                    <input type="text" required id="pic_relation" name="pic_relation" value="{{ old('pic_relation') }}" class="form-control bg-light mb-3" placeholder="Relation to Patient" aria-label="Relation to Patient">
+                                    <label for="pic_relation">Relation to Patient<span class="req">*</span></label>
                                 </div>
                                 <div class="input-group">
                                     @error('pic_relation')
@@ -436,8 +452,8 @@ a.close-btn {
                                 <input type="text" class="form-control bg-light my-3 py-3 invisible" placeholder="pic_relation" aria-label="Address">
                                 <h6 class="text-success">ㅤ</h6>
                                 <div class="form-floating">
-                                    <input type="text" id="ap_contact_number" name="ap_contact_number" value="{{ old('ap_contact_number') }}" class="form-control bg-light mb-3" placeholder="Contact Number" aria-label="Contact Number">
-                                    <label for="ap_contact_number">Contact Number</label>
+                                    <input type="number" required id="ap_contact_number" name="ap_contact_number" value="{{ old('ap_contact_number') }}" class="form-control bg-light mb-3" placeholder="Contact Number" aria-label="Contact Number">
+                                    <label for="ap_contact_number">Contact Number<span class="req">*</span></label>
                                 </div>
                                 <div class="input-group">
                                     @error('ap_contact_number')
@@ -450,14 +466,14 @@ a.close-btn {
                                 </div>
                                 <h6 class="text-success">ㅤ</h6>
                                 <div class="form-floating">
-                                    <select id="room_number" name="room_number" class="form-select bg-light" aria-label="Room Number">
+                                    <select id="room_number" required name="room_number" class="form-select bg-light" aria-label="Room Number">
                                         <option value="" {{ old('room_number') == "" ? 'selected' : '' }} disabled>Select Room Number</option>
                                         @foreach($availableRooms as $room)
                                             <option value="{{ $room }}" {{ old('room_number') == $room ? 'selected' : '' }}>{{ $room }}</option>
                                         @endforeach
                                         <option value="For ER" {{ old('room_number') == "For ER" ? 'selected' : '' }}>For ER</option>
                                     </select>
-                                    <label for="room_number">Room Number</label>
+                                    <label for="room_number">Room Number<span class="req">*</span></label>
                                 </div>
                                 
                                 
