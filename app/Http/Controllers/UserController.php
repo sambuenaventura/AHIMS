@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -64,6 +65,122 @@ class UserController extends Controller
     public function register() {
         return view('user.register');
     }
+
+    public function viewProfile() {
+        return view('user.profile');
+    }
+    
+    public function editProfile() {
+        return view('user.edit-profile');
+    }
+
+    // public function updateProfile(Request $request)
+    // {    dd($request->all());
+
+    //     $request->validate([
+    //         'first_name' => 'required|string|max:255',
+    //         'last_name' => 'required|string|max:255',
+    //         'email' => [
+    //             'required',
+    //             'string',
+    //             'email',
+    //             'max:255',
+    //             Rule::unique('users')->ignore(auth()->user()->id),
+    //         ],
+    //         'student_number' => [
+    //             'required',
+    //             'string',
+    //             'max:255',
+    //             Rule::unique('users')->ignore(auth()->user()->id),
+    //         ],
+    //         'old_password' => 'nullable|string', // Make old password nullable
+    //         'new_password' => 'nullable|string|min:8|confirmed', // Include validation rules for new password
+    //         'pin' => 'nullable|string|digits:4', // Validate PIN format
+    //     ]);
+    
+    //     $user = auth()->user();
+    
+    //     // Validate old password
+    //     if ($request->filled('old_password')) {
+    //         if (!Hash::check($request->input('old_password'), $user->password)) {
+    //             return redirect()->back()->withErrors(['old_password' => 'The old password is incorrect.'])->withInput();
+    //         }
+    //     }
+    
+    //     // Update user profile fields
+    //     $user->update([
+    //         'first_name' => $request->input('first_name'),
+    //         'last_name' => $request->input('last_name'),
+    //         'email' => $request->input('email'),
+    //         'student_number' => $request->input('student_number'),
+    //         'pin' => $request->input('pin'), // Update PIN from the form
+    //         // Update other fields as needed
+    //     ]);
+    
+    //     // Update password if provided
+    //     if ($request->filled('new_password')) {
+    //         $user->password = Hash::make($request->input('new_password'));
+    //         $user->save();
+    //     }
+    
+    //     return redirect()->route('editProfile')->with('message', 'Profile updated successfully');
+    // }
+    
+    
+    public function updateProfile(Request $request)
+{
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'email' => [
+            'required',
+            'string',
+            'email',
+            'max:255',
+            Rule::unique('users')->ignore(auth()->user()->id),
+        ],
+        'student_number' => [
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('users')->ignore(auth()->user()->id),
+        ],
+        'old_password' => 'nullable|string', // Make old password nullable
+        'new_password' => 'nullable|string|min:8|confirmed', // Include validation rules for new password
+        'pin' => 'nullable|string|digits:4', // Validate PIN format
+    ]);
+
+    $user = auth()->user();
+
+    // Validate old password
+    if ($request->filled('old_password')) {
+        if (!Hash::check($request->input('old_password'), $user->password)) {
+            return redirect()->back()->withErrors(['old_password' => 'The old password is incorrect.'])->withInput();
+        }
+    }
+
+    // Update user profile fields
+    $user->update([
+        'first_name' => $request->input('first_name'),
+        'last_name' => $request->input('last_name'),
+        'email' => $request->input('email'),
+        'student_number' => $request->input('student_number'),
+        'pin' => $request->input('pin'), // Update PIN from the form
+        // Update other fields as needed
+    ]);
+
+    // Update password if provided
+    if ($request->filled('new_password')) {
+        $user->password = Hash::make($request->input('new_password'));
+        $user->save();
+    }
+
+    return redirect()->route('editProfile')->with('message', 'Profile updated successfully');
+}
+
+    
+
+
 
     public function logout(Request $request) {
         auth()->logout();
