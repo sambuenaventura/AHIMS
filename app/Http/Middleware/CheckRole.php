@@ -29,12 +29,19 @@ class CheckRole
     //     abort(401);
     // }
 
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
     {
-        if (! $request->user() || $request->user()->role !== $role) {
-            abort(403, 'Unauthorized access.');
+        // Check if the user is authenticated
+        if (! $request->user()) {
+            abort(403, 'Unauthorized access.'); // Unauthorized if not authenticated
         }
 
+        // Check if the user's role matches any of the allowed roles
+        if (! in_array($request->user()->role, $roles)) {
+            abort(403, 'Unauthorized access.'); // Unauthorized if role doesn't match
+        }
+
+        // User has the required role, allow access to the route
         return $next($request);
     }
 
