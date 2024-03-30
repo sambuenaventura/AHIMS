@@ -3,6 +3,16 @@
     font-size: 0.8750em;
     
   }
+  #navbar-hims {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  #sidebar {
+    z-index: 1001;
+  }
   @media all and (min-width: 300px) and (max-width: 1024px) {
     #sidebar {
         display: none;
@@ -120,14 +130,42 @@
     color: white; 
 } */
 
-button:hover {
-    background-color:   #4c4c4c !important; /* Hover background color */
-    color: white; /* Hover text color */
+.notif:hover {
+    background-color:   #c0c0c0 !important;
+    color: white; 
 }
-button.notif {
+.notif {
   padding: 5px;
   border-radius: 6px; /* Border radius of the scrollbar thumb */
 
+}
+/* Notification dropdown styles */
+.dropdown-content {
+    display: none;
+    position: fixed;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 9999;
+    top: 50px;
+    right: 20px;
+    max-height: 300px; /* Add max-height for scrolling */
+    overflow-y: auto; /* Enable scrolling */
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
 }
 
 
@@ -236,7 +274,7 @@ button.notif {
   </ul>
 </div>
   
-<nav class="bg-white p-4 flex justify-between items-center">
+<nav class="bg-white p-4 flex justify-between items-center" id="navbar-hims">
   <!-- Welcome message (centered) -->
   <div class="flex justify-center flex-grow">
       <h1 class="mb-0" style="font-size: 2em;">
@@ -254,12 +292,63 @@ button.notif {
         {{ auth()->user()->role === 'admin' ? '+ Add Staff' : ''}}
       </a>
 
-      <!-- Notification icon -->
+      {{-- <!-- Notification icon -->
       <button class="notif ml-4">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M20.6286 15.9989C20.5508 15.9052 20.4744 15.8114 20.3994 15.7209C19.3682 14.4736 18.7443 13.7208 18.7443 10.1897C18.7443 8.36156 18.3069 6.86156 17.4449 5.73656C16.8093 4.90547 15.9501 4.275 14.8176 3.80906C14.803 3.80096 14.79 3.79032 14.7791 3.77766C14.3718 2.41359 13.2571 1.5 11.9999 1.5C10.7427 1.5 9.62849 2.41359 9.22115 3.77625C9.21027 3.78845 9.19744 3.79875 9.18318 3.80672C6.54036 4.89469 5.25599 6.98203 5.25599 10.1883C5.25599 13.7208 4.63302 14.4736 3.60083 15.7195C3.52583 15.81 3.44943 15.9019 3.37161 15.9975C3.17061 16.2399 3.04326 16.5348 3.00464 16.8473C2.96601 17.1598 3.01772 17.4769 3.15365 17.7609C3.44286 18.3703 4.05927 18.7486 4.76286 18.7486H19.2421C19.9424 18.7486 20.5546 18.3708 20.8447 17.7642C20.9813 17.4801 21.0335 17.1628 20.9952 16.8499C20.9569 16.537 20.8297 16.2417 20.6286 15.9989ZM11.9999 22.5C12.6773 22.4995 13.3418 22.3156 13.9232 21.9679C14.5045 21.6202 14.9809 21.1217 15.3018 20.5252C15.3169 20.4966 15.3244 20.4646 15.3234 20.4322C15.3225 20.3999 15.3133 20.3684 15.2966 20.3407C15.2799 20.313 15.2563 20.2901 15.2281 20.2742C15.2 20.2583 15.1682 20.25 15.1358 20.25H8.8649C8.83252 20.2499 8.80066 20.2582 8.77243 20.274C8.7442 20.2899 8.72055 20.3128 8.7038 20.3405C8.68704 20.3682 8.67774 20.3997 8.67682 20.4321C8.67588 20.4645 8.68335 20.4965 8.69849 20.5252C9.01936 21.1216 9.49567 21.6201 10.0769 21.9678C10.6581 22.3155 11.3226 22.4994 11.9999 22.5Z" fill="#808080"></path>
           </svg>
+      </button> --}}
+
+
+
+      <!-- Notification icon -->
+      <button class="notif ml-4" id="notificationIcon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.6286 15.9989C20.5508 15.9052 20.4744 15.8114 20.3994 15.7209C19.3682 14.4736 18.7443 13.7208 18.7443 10.1897C18.7443 8.36156 18.3069 6.86156 17.4449 5.73656C16.8093 4.90547 15.9501 4.275 14.8176 3.80906C14.803 3.80096 14.79 3.79032 14.7791 3.77766C14.3718 2.41359 13.2571 1.5 11.9999 1.5C10.7427 1.5 9.62849 2.41359 9.22115 3.77625C9.21027 3.78845 9.19744 3.79875 9.18318 3.80672C6.54036 4.89469 5.25599 6.98203 5.25599 10.1883C5.25599 13.7208 4.63302 14.4736 3.60083 15.7195C3.52583 15.81 3.44943 15.9019 3.37161 15.9975C3.17061 16.2399 3.04326 16.5348 3.00464 16.8473C2.96601 17.1598 3.01772 17.4769 3.15365 17.7609C3.44286 18.3703 4.05927 18.7486 4.76286 18.7486H19.2421C19.9424 18.7486 20.5546 18.3708 20.8447 17.7642C20.9813 17.4801 21.0335 17.1628 20.9952 16.8499C20.9569 16.537 20.8297 16.2417 20.6286 15.9989ZM11.9999 22.5C12.6773 22.4995 13.3418 22.3156 13.9232 21.9679C14.5045 21.6202 14.9809 21.1217 15.3018 20.5252C15.3169 20.4966 15.3244 20.4646 15.3234 20.4322C15.3225 20.3999 15.3133 20.3684 15.2966 20.3407C15.2799 20.313 15.2563 20.2901 15.2281 20.2742C15.2 20.2583 15.1682 20.25 15.1358 20.25H8.8649C8.83252 20.2499 8.80066 20.2582 8.77243 20.274C8.7442 20.2899 8.72055 20.3128 8.7038 20.3405C8.68704 20.3682 8.67774 20.3997 8.67682 20.4321C8.67588 20.4645 8.68335 20.4965 8.69849 20.5252C9.01936 21.1216 9.49567 21.6201 10.0769 21.9678C10.6581 22.3155 11.3226 22.4994 11.9999 22.5Z" fill="#808080"></path>
+        </svg>
       </button>
+      @php
+        // Fetch notifications from the database
+        $notifications = App\Models\Notification::all();
+    @endphp
+
+
+    {{-- <div class="dropdown-content" id="notificationDropdown">
+      @foreach($notifications as $notification)
+          @if($notification->user_id === auth()->user()->id)
+              <a href="#">{{ $notification->message }}</a>
+          @endif
+      @endforeach
+    </div> --}}
+
+
+    <!-- Notification dropdown -->
+    @if(auth()->user()->hasRole('medtech'))
+        <div class="dropdown-content" id="notificationDropdown">
+            <!-- Notification items go here -->
+            @foreach($notifications as $notification)
+                @if($notification->user_id === auth()->user()->id)
+                    <a href="#">{{ $notification->message }}</a>
+                @endif
+            @endforeach
+        </div>
+    @endif
+
+    <!-- Notification dropdown -->
+    @if(auth()->user()->hasRole('radtech'))
+        <div class="dropdown-content" id="notificationDropdown">
+            <!-- Notification items go here -->
+            @foreach($notifications as $notification)
+                @if($notification->user_id === auth()->user()->id)
+                    <a href="#">{{ $notification->message }}</a>
+                @endif
+            @endforeach
+        </div>
+    @endif
+
+
+
+
   </div>
 </nav>
 
@@ -465,4 +554,35 @@ button.notif {
     </div>
   </nav>
 
-  <script></script>
+  <script>
+// Toggle notification dropdown visibility when clicking on the notification icon or SVG
+document.getElementById("notificationIcon").addEventListener("click", function() {
+    var dropdown = document.getElementById("notificationDropdown");
+    dropdown.classList.toggle("show");
+});
+
+// Add event listener to the SVG element to toggle dropdown visibility
+var svgElement = document.querySelector(".notif svg");
+svgElement.addEventListener("click", function(event) {
+    // Prevent the click event from bubbling up to the button
+    event.stopPropagation();
+    // Toggle dropdown visibility
+    var dropdown = document.getElementById("notificationDropdown");
+    dropdown.classList.toggle("show");
+});
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.notif')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+
+  </script>
