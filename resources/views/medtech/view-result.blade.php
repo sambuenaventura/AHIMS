@@ -165,7 +165,13 @@ html {
                     </div>
                     <div class="left-top-1 flex-row">
                         <p class="">Time:</p>
-                        <p class="">{{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}</p>               
+                        <p class="">                            
+                            @if($request->stat)
+                            <span class="badge bg-danger">STAT</span>
+                            @else
+                                {{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}
+                            @endif
+                        </p>                      
                     </div>
                     <div class="left-top-1 flex-row">
                         <p class="">Type of Service:</p>
