@@ -166,7 +166,13 @@ html {
                     </div>
                     <div class="left-top-1 flex-row">
                         <p class="">Time:</p>
-                        <p class="">{{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}</p>               
+                        <p class="">                            
+                            @if($request->stat)
+                            <span class="badge bg-danger">STAT</span>
+                            @else
+                                {{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}
+                            @endif
+                        </p>                      
                     </div>
                     <div class="left-top-1 flex-row">
                         <p class="">Type of Service:</p>
@@ -232,7 +238,7 @@ html {
                     <input type="hidden" name="request_id" value="{{ $request->request_id }}">
                     <div class="mb-3">
                         <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                        <textarea class="form-control" id="message" name="message" rows="3" required>{{ old('message') }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">Images <span style="color: grey;">(Preferably upload images in PNG or JPG format. The maximum file size allowed is 12 MB)</span></label>
