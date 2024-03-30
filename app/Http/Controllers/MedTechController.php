@@ -18,6 +18,7 @@ use App\Models\Patients;
 use App\Models\PhysicalExamination;
 use App\Models\ReviewOfSystems;
 use App\Models\ServiceRequest;
+use Illuminate\Support\Facades\Redirect;
 
 class MedTechController extends Controller
 {
@@ -94,25 +95,49 @@ class MedTechController extends Controller
     }
     
 
+    // public function acceptRequest(Request $request, $request_id)
+    // {
+    //     // Validate the request data
+    //     $request->validate([
+    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //     ]);
+    
+    //     // Check if the password matches the user's password
+    //     if (!Hash::check($request->password, Auth::user()->password)) {
+    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     }
+    
+    //     $serviceRequest = ServiceRequest::findOrFail($request_id);
+    //     $serviceRequest->status = 'accepted';
+    //     $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
+    //     $serviceRequest->save();
+    
+    //     return redirect()->back()->with('message', 'Request accepted successfully');
+    // }
+
     public function acceptRequest(Request $request, $request_id)
-    {
-        // Validate the request data
-        $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
-    
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }
-    
-        $serviceRequest = ServiceRequest::findOrFail($request_id);
-        $serviceRequest->status = 'accepted';
-        $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
-        $serviceRequest->save();
-    
-        return redirect()->back()->with('message', 'Request accepted successfully');
+{
+    // Validate the request data
+    $request->validate([
+        'password' => 'required|string', // Add any additional validation rules for the password
+    ]);
+
+    // Check if the password matches the user's password
+    if (!Hash::check($request->password, Auth::user()->password)) {
+        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
     }
+
+    $serviceRequest = ServiceRequest::findOrFail($request_id);
+    $serviceRequest->status = 'accepted';
+    $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
+    $serviceRequest->save();
+
+    // Generate the URL for the specific request
+    $redirectUrl = route('medtech.viewRequests', ['id' => $serviceRequest->patient_id, 'request_id' => $serviceRequest->request_id]);
+
+    // Redirect the user to the specific request URL
+    return Redirect::to($redirectUrl)->with('message', 'Request accepted successfully');
+}
     
 
     public function declineRequest(Request $request, $request_id)
@@ -206,12 +231,17 @@ class MedTechController extends Controller
             'password' => 'required|string',
         ]);
 
+        // // Check if the password matches the user's password
+        // if (!Hash::check($request->password, Auth::user()->password)) {
+        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        // }
+
         // Check if the password matches the user's password
         if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+            // If the password doesn't match, return back with an error message
+            return redirect()->back()->withInput()->with('error', 'Incorrect password. Please try again.');
         }
 
-        
         // Validate the request data
         $validatedData = $request->validate([
             'message' => ['required', 'string'],
