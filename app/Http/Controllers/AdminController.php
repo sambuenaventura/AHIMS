@@ -390,14 +390,15 @@ class AdminController extends Controller
             'admin_password' => 'required|string', // Validate the admin's password
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
-            "student_number" => ['required', 'min:1', 'max:255'],
+            "student_number" => ['required', 'min:1', 'max:255', Rule::unique('users', 'student_number')],
             "email" => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
-        
+    
         // Check if the admin password matches the user's password
         if (!Hash::check($request->admin_password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect admin password. Please try again.');
+            // If the password doesn't match, return back with an error message
+            return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
         }
     
         // Create a new nurse instance
@@ -455,14 +456,15 @@ class AdminController extends Controller
             'admin_password' => 'required|string', // Validate the admin's password
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
-            "student_number" => ['required', 'min:1', 'max:255'],
+            "student_number" => ['required', 'min:1', 'max:255', Rule::unique('users', 'student_number')],
             "email" => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
         
         // Check if the admin password matches the user's password
         if (!Hash::check($request->admin_password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect admin password. Please try again.');
+            // If the password doesn't match, return back with an error message
+            return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
         }
     
         // Create a new nurse instance
@@ -520,14 +522,15 @@ class AdminController extends Controller
             'admin_password' => 'required|string', // Validate the admin's password
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
-            "student_number" => ['required', 'min:1', 'max:255'],
+            "student_number" => ['required', 'min:1', 'max:255', Rule::unique('users', 'student_number')],
             "email" => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
         
         // Check if the admin password matches the user's password
         if (!Hash::check($request->admin_password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect admin password. Please try again.');
+            // If the password doesn't match, return back with an error message
+            return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
         }
     
         // Create a new nurse instance

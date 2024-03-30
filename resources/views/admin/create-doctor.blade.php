@@ -149,7 +149,9 @@
     cursor: pointer;
     
 }
-
+.req {
+    color: red;
+}
   </style>
 
 <section id="admission">
@@ -172,8 +174,8 @@
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="phy_first_name" name="phy_first_name" value="" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="phy_first_name">First Name</label>
+                                            <input type="text" required id="phy_first_name" name="phy_first_name" value="{{ old('phy_first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
+                                            <label for="phy_first_name">First Name<span class="req">*</span></label>
                                         </div>
                                         @error('phy_first_name')
                                         <div class="">
@@ -185,8 +187,8 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="phy_last_name" name="phy_last_name" value="" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="phy_last_name">Last Name</label>
+                                            <input type="text" required id="phy_last_name" name="phy_last_name" value="{{ old('phy_last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
+                                            <label for="phy_last_name">Last Name<span class="req">*</span></label>
                                         </div>
                                         @error('phy_last_name')
                                         <div class="">
@@ -200,8 +202,8 @@
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="availability" name="availability" value="" class="form-control bg-light" placeholder="Availability (Day & Time)" aria-label="Availability (Day & Time)">
-                                            <label for="availability">Availability (Day & Time)</label>
+                                            <input type="text" required id="availability" name="availability" value="{{ old('availability') }}" class="form-control bg-light" placeholder="Availability (Day & Time)" aria-label="Availability (Day & Time)">
+                                            <label for="availability">Availability (Day & Time)<span class="req">*</span></label>
                                         </div>
                                         @error('availability')
                                         <div class="">
@@ -213,17 +215,20 @@
                                         
                                     </div>
                                     <div class="col">
-                                        <select name="specialty" class="form-control bg-light py-3" placeholder="Specialty" aria-label="Specialty">
-                                            <option value="" disabled selected>Select Speciality</option>
-                                            <option value="Internal_Medicine">Internist</option>
-                                            <option value="Gastroenterology">Gastroenterologist</option>
-                                            <option value="Neurology">Neurologist</option>
-                                            <option value="Cardiology">Cardiologist</option>
-                                            <option value="Pulmonology">Pulmonologist</option>
-                                            <option value="Pediatrics">Pediatrician</option>
-                                            <option value="Endocrinology">Endocrinologist</option>
-                                            <option value="Otolaryngology">Otolaryngologist</option>
-                                        </select>
+                                        <div class="form-floating">
+                                            <select id="specialty" required name="specialty" class="form-select bg-light" aria-label="Specialty">
+                                                <option value="" disabled selected>Select Speciality</option>
+                                                <option value="Internal_Medicine">Internist</option>
+                                                <option value="Gastroenterology">Gastroenterologist</option>
+                                                <option value="Neurology">Neurologist</option>
+                                                <option value="Cardiology">Cardiologist</option>
+                                                <option value="Pulmonology">Pulmonologist</option>
+                                                <option value="Pediatrics">Pediatrician</option>
+                                                <option value="Endocrinology">Endocrinologist</option>
+                                                <option value="Otolaryngology">Otolaryngologist</option>
+                                            </select>
+                                            <label for="specialty">Specailty<span class="req">*</span></label>
+                                        </div>
                                         @error('specialty')
                                         <div class="">
                                             <p class="text-red-500 text-xs p-1 mb-0">

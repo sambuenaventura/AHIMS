@@ -149,6 +149,9 @@
     cursor: pointer;
     
 }
+.req {
+    color: red;
+}
 
   </style>
 
@@ -168,8 +171,8 @@
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="first_name" name="first_name" value="" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
-                                            <label for="first_name">First Name</label>
+                                            <input type="text" required id="first_name" name="first_name" value="{{ old('first_name') }}" class="form-control bg-light" placeholder="First Name" aria-label="First Name">
+                                            <label for="first_name">First Name<span class="req">*</span></label>
                                         </div>
                                         @error('first_name')
                                         <div class="">
@@ -181,8 +184,8 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="last_name" name="last_name" value="" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
-                                            <label for="last_name">Last Name</label>
+                                            <input type="text" required id="last_name" name="last_name" value="{{ old('last_name') }}" class="form-control bg-light" placeholder="Last Name" aria-label="Last Name">
+                                            <label for="last_name">Last Name<span class="req">*</span></label>
                                         </div>
                                         @error('last_name')
                                         <div class="">
@@ -196,9 +199,10 @@
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="email" name="email" value="" class="form-control bg-light" placeholder="HAU Email" aria-label="HAU Email">
-                                            <label for="email">HAU Email</label>
+                                            <input type="email" required id="email" name="email" value="{{ old('email') }}" class="form-control bg-light" placeholder="HAU Email" aria-label="HAU Email">
+                                            <label for="email">HAU Email<span class="req">*</span></label>
                                         </div>
+                                        
                                         @error('email')
                                         <div class="">
                                             <p class="text-red-500 text-xs p-1 mb-0">
@@ -210,15 +214,15 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="text" id="student_number" name="student_number" value="" class="form-control bg-light" placeholder="Student Number" aria-label="Student Number">
-                                            <label for="student_number">Student Number</label>
+                                            <input type="text" required id="student_number" name="student_number" value="{{ old('student_number') }}" class="form-control bg-light" placeholder="Student Number" aria-label="Student Number">
+                                            <label for="student_number">Student Number<span class="req">*</span></label>
                                         </div>
                                         <div class="form-floating">
 
                                         @error('student_number')
                                         <div class="">
                                             <p class="text-red-500 text-xs p-1 mb-0">
-                                                {{ 'The student number field is required.' }}
+                                                {{ 'The student number has already been taken.' }}
                                             </p>
                                         </div>
                                         @enderror
@@ -228,8 +232,8 @@
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
-                                            <input type="password" id="password" name="password" value="" class="form-control bg-light" placeholder="Password" aria-label="Password">
-                                            <label for="password">Password</label>
+                                            <input type="password" required id="password" name="password" value="" class="form-control bg-light" placeholder="Password" aria-label="Password">
+                                            <label for="password">Password<span class="req">*</span></label>
                                         </div>
                                         @error('password')
                                         <div class="">
