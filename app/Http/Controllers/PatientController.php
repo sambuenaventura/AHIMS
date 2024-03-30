@@ -14,6 +14,7 @@ use App\Models\Physicians;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
@@ -251,16 +252,56 @@ class PatientController extends Controller
 
 
 
-    public function show($patient_id) {
-        $patient = Patients::where('patient_id', $patient_id)->firstOrFail();
-        $physician = Physicians::findOrFail($patient->physician_id); // Assuming 'physician_id' is the foreign key in your Patients table
+    // public function show($patient_id) {
+    //     $patient = Patients::where('patient_id', $patient_id)->firstOrFail();
+    //     $physician = Physicians::findOrFail($patient->physician_id); // Assuming 'physician_id' is the foreign key in your Patients table
         
-        //  $patient->contact_number = Crypt::decryptString($patient->contact_number);
-        //  $patient->address = Crypt::decryptString($patient->address);
-        //  $patient->pic_contact_number = Crypt::decryptString($patient->pic_contact_number);
-        //  $patient->ap_contact_number = Crypt::decryptString($patient->ap_contact_number);
+    //     //  $patient->contact_number = Crypt::decryptString($patient->contact_number);
+    //     //  $patient->address = Crypt::decryptString($patient->address);
+    //     //  $patient->pic_contact_number = Crypt::decryptString($patient->pic_contact_number);
+    //     //  $patient->ap_contact_number = Crypt::decryptString($patient->ap_contact_number);
 
-        return view('patients.edit', ['patient' => $patient, 'physician' => $physician]); 
+    //     return view('patients.edit', ['patient' => $patient, 'physician' => $physician]); 
+    // }
+
+
+
+    public function show($patient_id)
+    {
+        $patient = Patients::where('patient_id', $patient_id)->firstOrFail();
+        $physician = Physicians::findOrFail($patient->physician_id);
+
+        return view('patients.edit', ['patient' => $patient, 'physician' => $physician]);
+    }
+
+    public function generatePdf($patient_id)
+    {
+        $patient = Patients::where('patient_id', $patient_id)->firstOrFail();
+        $physician = Physicians::findOrFail($patient->physician_id);
+
+        // Data to pass to the PDF view
+        $data = [
+            'patient' => $patient,
+            'physician' => $physician
+        ];
+
+        // Instantiate DomPDF
+        $dompdf = new Dompdf();
+
+        // Load HTML content for the PDF from the view
+        $html = view('pdf.patient_report', $data)->render();
+
+        // Load HTML to DomPDF for rendering
+        $dompdf->loadHtml($html);
+
+        // Set paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the PDF
+        $dompdf->render();
+
+        // Output the generated PDF (inline or download)
+        return $dompdf->stream('patient_report.pdf');
     }
     
 
@@ -318,9 +359,15 @@ public function store(Request $request)
     // $validated['ap_contact_number'] = Crypt::encryptString($request->input('ap_contact_number'));
     // // You can encrypt other fields as needed...
 
-    // Check password verification
+    // // Check password verification
+    // if (!Hash::check($request->password, Auth::user()->password)) {
+    //     return redirect()->back()->with('error', 'Incorrect password. Please try again.');
+    // }
+    
+    // Check if the password matches the user's password
     if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.');
+        // If the password doesn't match, return back with an error message
+        return redirect()->back()->withInput()->with('error', 'Incorrect password. Please try again.');
     }
 
     // Validate physician selection
