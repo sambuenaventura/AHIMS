@@ -101,10 +101,10 @@ class Patients extends Model
         return $this->hasMany(ObstetricalHistory::class, 'patient_id', 'patient_id');
     }
 
-    // public function requests()
-    // {
-    //     return $this->hasMany(ServiceRequest::class, 'patient_id', 'patient_id');
-    // }
+    public function requests()
+    {
+        return $this->hasMany(ServiceRequest::class, 'patient_id', 'patient_id');
+    }
     
     // public function nurseHistory()
     // {
