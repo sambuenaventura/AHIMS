@@ -248,12 +248,12 @@ html {
             </div>
 
             <div class="box box1 flex-col bg-white shadow-md" style="margin-top: -20px;">
-                <p class="font-bold">Generate Report</p>
+                <p class="font-bold">Generate PDF Report</p>
 
                 <form action="{{ route('generate_report', ['patient_id' => $patient->patient_id]) }}" method="post">
                     @csrf
                     <!-- Add other form elements here -->
-                    <button type="submit" class="badge rounded-pill text-bg-success d-inline-flex align-items-center justify-content-center btn-submit" style="font-size: 1em; width:auto;">
+                    <button type="submit" class="badge rounded-pill text-bg-success d-flex align-items-center justify-content-center btn-submit" style="font-size: 1em; width:100%; display: flex;">
                         <span class="p-1 rounded">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#ffffff">
                                 <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
@@ -262,6 +262,7 @@ html {
                         <span class="p-1 rounded">Download PDF</span>
                     </button>
                 </form>
+                
                 
                 
             </div>
@@ -371,7 +372,10 @@ html {
                         </div>  
 
                 <div class="header">
+
+                    
                     <hr>
+                    
                     <p class="font-bold">Medical History</p>
                 </div>
                 <div class="patient-complete-history">
@@ -645,14 +649,15 @@ html {
                 </div>
                         
                 <!-- Addition of the button -->
-                <div class="flex-row">
-                    @if ($medicalHistory)
-                        <a href="{{ route('nurse.history', ['patient_id' => $patient->patient_id]) }}">View Nurse History</a>
-                    @else
-                        <p>No nurse history found for this patient.</p>
-                    @endif              
-                </div>
-                
+                @if ($medicalHistory)
+                    <div class="col-12 text-right mt-2 mb-2">
+                            <a href="{{ route('nurse.history', ['patient_id' => $medicalHistory->patient_id]) }}" class="badge btn-submit">View Audit Logs</a>
+                    </div>
+                @endif
+
+
+
+
             </div>
             
             
@@ -671,20 +676,23 @@ html {
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Nurse Remarks</h4>
                 @if(!$patient->archived)
-                <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
+                <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Add Remark</a>
                 @endif
-                            </div>  
+                            
+            </div>  
 
                 <div class="table-header">
+                    
                     <hr>
+                    
                     {{-- <p class="font-bold"><a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}">Vital Signs</a></p> --}}
                     <p class="font-bold">
                         @if(!$patient->vitalSigns->isEmpty())
                             <a href="{{ route('nurse.viewRemarks', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
                                     <span class="p-1 rounded">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="15" height="15" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
                                     </span>
-                                <span class="p-1 rounded">Vital Signs</span>
+                                <span class="p-1 rounded">View Vital Signs</span>
                             </a>
                         @endif
                     </p>
@@ -837,9 +845,9 @@ html {
                     @if(!$patient->medicationRemarks->isEmpty())
                         <a href="{{ route('nurse.viewMedications', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
                             <span class="p-1 rounded">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="15" height="15" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
                             </span>
-                            <span class="p-1 rounded">Medications</span>
+                            <span class="p-1 rounded">View Medications</span>
                         </a>
                     @endif
                 </p>            
@@ -940,7 +948,7 @@ html {
               <div class="d-flex justify-content-between mb-4">
                 <h4 class="font-bold">Progress Notes</h4>
                 @if(!$patient->archived)
-                <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Progress Note</a>
+                <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Add Progress Note</a>
             @endif
                         </div>  
             <div class="table-header">
@@ -951,9 +959,9 @@ html {
 
                     <a href="{{ route('nurse.viewNotes', ['id' => $patient->patient_id]) }}" class="badge rounded-pill text-bg-success d-inline-flex align-items-center btn-submit" style="font-size: 1em;">
                         <span class="p-1 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="18" height="18" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" width="15" height="15" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
                         </span>
-                        <span class="p-1 rounded">Notes</span>
+                        <span class="p-1 rounded">View Notes</span>
                     </a>
                     @endif
                 </p>
