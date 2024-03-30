@@ -127,7 +127,7 @@ html {
                                 <th scope="col">Test</th>
                             @endif
              
-                        <th scope="col">Date Requested</th>
+                        <th scope="col">Date Needed</th>
                         <th scope="col">Date Completed</th>
                         </tr>
                     </thead>
@@ -167,7 +167,14 @@ html {
                                 <td>{{ ucfirst($request->sender_message) }}</td>
                             @endif
                  
-                            <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>                            
+                            <td style="min-width: 140px;">
+                                @if($request->stat)
+                                    <span class="badge bg-danger">STAT</span>
+                                    {{ \Carbon\Carbon::parse($request->date_needed)->format('n/j/Y') }} 
+                                @else
+                                    {{ \Carbon\Carbon::parse($request->date_needed . ' ' . $request->time_needed)->format('h:i A n/j/Y') }}
+                                @endif
+                            </td>                              
                             <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
                         </tr>
                         @empty
@@ -215,5 +222,24 @@ html {
             document.getElementById('archivePatientForm_' + patientId).submit();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const isActive = this.classList.contains('active');
+                if (isActive) {
+                    // If the clicked tab is already active, prevent the default link behavior
+                    e.preventDefault();
+                    // Reset URL to its original state
+                    const originalUrl = "{{ route('medtech.results') }}";
+                    window.location.href = originalUrl;
+                }
+            });
+        });
+    });
+
+
 </script>
 @include('partials.footer')
