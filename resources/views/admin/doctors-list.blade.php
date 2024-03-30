@@ -200,5 +200,23 @@
             document.getElementById('archivePatientForm_' + patientId).submit();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const isActive = this.classList.contains('active');
+                if (isActive) {
+                    // If the clicked tab is already active, prevent the default link behavior
+                    e.preventDefault();
+                    // Reset URL to its original state
+                    const originalUrl = "{{ route('admin.doctorsView') }}";
+                    window.location.href = originalUrl;
+                }
+            });
+        });
+    });
+    
 </script>
 @include('partials.footer')
