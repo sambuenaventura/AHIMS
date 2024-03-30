@@ -181,7 +181,7 @@ Route::controller(NurseController::class)->group(function() {
 
         Route::post('/nurse-patients/{patient_id}/generate-report', 'generatePdf')->name('generate_report');
 
-        Route::get('/nurse-patients/{patient_id}/nurse-history', 'viewHistory')->name('nurse.history');
+        Route::get('/nurse-patients/{patient_id}/nurse-history/', 'viewHistory')->name('nurse.history');
 
 
     });
