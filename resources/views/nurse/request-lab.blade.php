@@ -281,22 +281,29 @@ html {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="date_needed" class="form-label">Date Needed</label>
-                            <input type="date" id="date_needed" name="date_needed" class="form-control">
+                            <input type="date" min="{{ date('Y-m-d') }}" id="date_needed" name="date_needed" class="form-control">
                             @error('date_needed')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger">{{ 'The date is required.' }}</span>
                             @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="time_needed" class="form-label">Time Needed</label>
                             <input type="time" id="time_needed" name="time_needed" class="form-control">
                             @error('time_needed')
-                                <span class="text-danger">{{ $message }}</span>
+                                <span class="text-danger">{{ 'The time is required.' }}</span>
                             @enderror
+                            <div class="mt-2">
+                                <input class="form-check-input" type="checkbox" id="stat" name="stat" value="1" onchange="toggleTimeInput(this)">
+                                <label class="form-check-label" for="stat">
+                                    STAT
+                                </label>
+                            </div>
                         </div>
                     </div>
                     
+                    
                     <div class="form-group mb-3">
-                        <label for="procedure_type" class="form-label">Procedure Type</label>
+                        <label for="procedure_type" class="form-label">Service Type</label>
                         <select id="procedure_type" name="procedure_type" class="form-select">
                             <option value="" selected disabled>Choose type of service</option>
                             <option value="chemistry">Chemistry</option>
@@ -308,11 +315,11 @@ html {
                             <!-- Add more options as needed -->
                         </select>
                         @error('procedure_type')
-                        <span class="text-danger">{{ $message }}</span>
+                        <span class="text-danger">{{ 'The service type is required.'}}</span>
                         @enderror
                     </div>
                     @error('sender_message')
-                    <span class="text-danger">{{ $message }}</span>
+                    <span class="text-danger">{{ 'The service test is required.' }}</span>
                     @enderror
                     <!-- Checkbox options for Chemistry -->
                     <div class="form-group mb-3" id="chemistryOptions" style="display: none;">
@@ -820,10 +827,12 @@ document.getElementById('procedure_type').addEventListener('change', function() 
 });
 
 document.getElementById('procedure_type').addEventListener('change', function() {
-    // Clear checkboxes
+    // Clear checkboxes except for the 'stat' checkbox
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
     checkboxes.forEach(function(checkbox) {
-        checkbox.checked = false;
+        if (checkbox.id !== 'stat') { // Exclude the 'stat' checkbox
+            checkbox.checked = false;
+        }
     });
 
     // Clear and hide "Others" input field for all services
@@ -853,6 +862,7 @@ document.getElementById('procedure_type').addEventListener('change', function() 
         othersInput.style.display = 'none';
     }
 });
+
   
 // Function to toggle display of the input field for "Others" based on section
 function toggleOthersInput(sectionId) {
@@ -877,8 +887,15 @@ function updateSenderMessage() {
             selectedTests.push(checkbox.value);
         }
     });
+
+    // Remove the first element if it's "1"
+    if (selectedTests.length > 0 && selectedTests[0] === "1") {
+        selectedTests.shift();
+    }
+
     document.getElementById('sender_message').value = selectedTests.join(', ');
 }
+
 
 
 
@@ -903,6 +920,24 @@ document.getElementById('submitButton').addEventListener('click', function() {
     });
     myModal.show();
 });
+
+
+function toggleTimeInput(checkbox) {
+    const timeInput = document.getElementById('time_needed');
+    if (checkbox.checked) {
+        // If STAT checkbox is checked, remove the 'required' attribute from the time input
+        timeInput.removeAttribute('required');
+        // Disable the time input
+        timeInput.disabled = true;
+        // Clear the value of the time input
+        timeInput.value = '';
+    } else {
+        // If STAT checkbox is unchecked, add the 'required' attribute to the time input
+        timeInput.setAttribute('required', 'required');
+        // Enable the time input
+        timeInput.disabled = false;
+    }
+}
 
 </script>
 
