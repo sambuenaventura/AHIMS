@@ -4,108 +4,311 @@
     <title>Patient Medical History Report</title>
     <!-- Include any necessary CSS styles here -->
     <style>
-        /* Define your CSS styles for the PDF content */
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        h1, h2 {
-            margin-bottom: 10px;
-        }
-        strong {
-            font-weight: bold;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #dddddd;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
     </style>
 </head>
 <body>
-    <h1>Patient Medical History Report</h1>
+    <h1 style="text-align: center">Patient Medical History Report</h1>
     
     <h2>Basic Information</h2>
-    <p><strong>Name:</strong> {{ $patient->first_name }} {{ $patient->last_name }}</p>
-    <p><strong>Date of Birth:</strong> {{ $patient->date_of_birth }}</p>
-    <p><strong>Gender:</strong> {{ $patient->gender }}</p>
-    <p><strong>Contact Number:</strong> {{ $patient->contact_number }}</p>
-    <p><strong>Address:</strong> {{ $patient->address }}</p>
-    <!-- Include other basic patient information as needed -->
+    <table>
+        <tr>
+          <th>Name:</th>
+          <td>{{ $patient->first_name }} {{ $patient->last_name }}</td>
+          <th>Date of Birth:</th>
+          <td>{{ $patient->date_of_birth }} ({{ \Carbon\Carbon::parse($patient->date_of_birth)->age }} years old)</td>
+          
+        </tr>
+        <tr>
+          <th>Gender:</th>
+          <td>{{ $patient->gender }}</td>
+          <th>Contact Number:</th>
+          <td>{{ $patient->contact_number }}</td>
+        </tr>
+        <tr>
+          <th>Address:</th>
+          <td colspan="3">{{ $patient->address }}</td>
+        </tr>
+      </table>
 
     <h2>Medical History</h2>
-    <p><strong>Complete History:</strong> 
-        @if (!empty($patient->medicalHistory->complete_history))
-            {{ $patient->medicalHistory->complete_history }}
-        @else
-            No complete history available.
-        @endif
-    </p>
+    
+    <table>
+        <tr>
+          <th>Complete History</th>
+        </tr>
+        <tr>
+          <td>
+            @if (!empty($patient->medicalHistory->complete_history))
+              {{ $patient->medicalHistory->complete_history }}
+            @else
+              No complete history available.
+            @endif
+          </td>
+        </tr>
+      </table>
         
     
     <h2>Medical History</h2>
-    <p><strong>Hypertension:</strong> {{ optional($patient->medicalHistory)->hypertension ? 'Yes' : 'No' }}</p>
-    <p><strong>Diabetes:</strong> {{ optional($patient->medicalHistory)->diabetes ? 'Yes' : 'No' }}</p>
-    <p><strong>Asthma:</strong> {{ optional($patient->medicalHistory)->asthma ? 'Yes' : 'No' }}</p>
-    <p><strong>Allergies:</strong> {{ optional($patient->medicalHistory)->allergies ? 'Yes' : 'No' }}</p>
-    <p><strong>Stroke:</strong> {{ optional($patient->medicalHistory)->stroke ? 'Yes' : 'No' }}</p>
-    <p><strong>CVD:</strong> {{ optional($patient->medicalHistory)->cvd ? 'Yes' : 'No' }}</p>
-    <p><strong>Medications:</strong> {{ optional($patient->medicalHistory)->medications ? 'Yes' : 'No' }}</p>
-    <p><strong>Previous Hospitalization:</strong> {{ optional($patient->medicalHistory)->previous_hospitalization ? 'Yes' : 'No' }}</p>
-    <p><strong>Mental Illness:</strong> {{ optional($patient->medicalHistory)->mental_neuropsychiatric_illness ? 'Yes' : 'No' }}</p>
-    @if (optional($patient->medicalHistory)->others_checkbox)
-        <p><strong>Others:</strong> {{ optional($patient->medicalHistory)->others_details }}</p>
-    @endif
+    <table>
+        <tr>
+          <th>Condition</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td><strong>Hypertension</strong></td>
+          <td>{{ optional($patient->medicalHistory)->hypertension ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Diabetes</strong></td>
+          <td>{{ optional($patient->medicalHistory)->diabetes ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Asthma</strong></td>
+          <td>{{ optional($patient->medicalHistory)->asthma ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Allergies</strong></td>
+          <td>{{ optional($patient->medicalHistory)->allergies ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Stroke</strong></td>
+          <td>{{ optional($patient->medicalHistory)->stroke ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>CVD</strong></td>
+          <td>{{ optional($patient->medicalHistory)->cvd ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Medications</strong></td>
+          <td>{{ optional($patient->medicalHistory)->medications ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Previous Hospitalization</strong></td>
+          <td>{{ optional($patient->medicalHistory)->previous_hospitalization ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Mental Illness</strong></td>
+          <td>{{ optional($patient->medicalHistory)->mental_neuropsychiatric_illness ? 'Yes' : 'No' }}</td>
+        </tr>
+        @if (optional($patient->medicalHistory)->others_checkbox)
+          <tr>
+            <td><strong>Others</strong></td>
+            <td>{{ optional($patient->medicalHistory)->others_details }}</td>
+          </tr>
+        @endif
+      </table>
     
     <!-- Include other medical conditions as needed -->
     
     
     <h2>Family History</h2>
-    <p><strong>Family History of Hypertension:</strong> {{ optional($patient->medicalHistory)->family_hypertension ? 'Yes' : 'No' }}</p>
-    <p><strong>Family History of Diabetes:</strong> {{ optional($patient->medicalHistory)->family_diabetes ? 'Yes' : 'No' }}</p>
-    <p><strong>Family History of Cancer:</strong> {{ optional($patient->medicalHistory)->family_cancer ? 'Yes' : 'No' }}</p>
-    <p><strong>Family History of Asthma:</strong> {{ optional($patient->medicalHistory)->family_asthma ? 'Yes' : 'No' }}</p>
-    <p><strong>Family History of Heart Disease:</strong> {{ optional($patient->medicalHistory)->family_heart_disease ? 'Yes' : 'No' }}</p>
-    @if (optional($patient->medicalHistory)->family_others_checkbox)
-        <p><strong>Others:</strong> {{ optional($patient->medicalHistory)->family_others_details }}</p>
-    @endif    
+    <table>
+      <tr>
+        <th>Condition</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td><strong>Family History of Hypertension</strong></td>
+        <td>{{ optional($patient->medicalHistory)->family_hypertension ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Family History of Diabetes</strong></td>
+        <td>{{ optional($patient->medicalHistory)->family_diabetes ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Family History of Cancer</strong></td>
+        <td>{{ optional($patient->medicalHistory)->family_cancer ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Family History of Asthma</strong></td>
+        <td>{{ optional($patient->medicalHistory)->family_asthma ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Family History of Heart Disease</strong></td>
+        <td>{{ optional($patient->medicalHistory)->family_heart_disease ? 'Yes' : 'No' }}</td>
+      </tr>
+      @if (optional($patient->medicalHistory)->family_others_checkbox)
+        <tr>
+          <td><strong>Others</strong></td>
+          <td>{{ optional($patient->medicalHistory)->family_others_details }}</td>
+        </tr>
+      @endif
+    </table>
 
 
     <h2>Personal/Social History</h2>
-    <p><strong>Smoker:</strong> {{ optional($patient->medicalHistory)->personal_smoker ? 'Yes' : 'No' }}</p>
-    <p><strong>Drug Abuse:</strong> {{ optional($patient->medicalHistory)->personal_drug_abuse ? 'Yes' : 'No' }}</p>
-    <p><strong>Alcoholic:</strong> {{ optional($patient->medicalHistory)->personal_alcohol_drinker ? 'Yes' : 'No' }}</p>
-
+    <table>
+      <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td><strong>Smoker</strong></td>
+        <td>{{ optional($patient->medicalHistory)->personal_smoker ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Drug Abuse</strong></td>
+        <td>{{ optional($patient->medicalHistory)->personal_drug_abuse ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Alcoholic</strong></td>
+        <td>{{ optional($patient->medicalHistory)->personal_alcohol_drinker ? 'Yes' : 'No' }}</td>
+      </tr>
+    </table>
+    
     <h2>Menstrual History</h2>
-    <p><strong>Interval:</strong> {{ optional($patient->medicalHistory)->menstrual_interval }} </p>
-    <p><strong>Duration:</strong> {{ optional($patient->medicalHistory)->menstrual_duration }} </p>
-    <p><strong>Dysmenorrhea:</strong> {{ optional($patient->medicalHistory)->menstrual_dysmenorrhea }} </p>
+    <table>
+      <tr>
+        <th>Aspect</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td><strong>Interval</strong></td>
+        <td>{{ optional($patient->medicalHistory)->menstrual_interval }}</td>
+      </tr>
+      <tr>
+        <td><strong>Duration</strong></td>
+        <td>{{ optional($patient->medicalHistory)->menstrual_duration }}</td>
+      </tr>
+      <tr>
+        <td><strong>Dysmenorrhea</strong></td>
+        <td>{{ optional($patient->medicalHistory)->menstrual_dysmenorrhea }}</td>
+      </tr>
+    </table>
     
     <h2>Obstetrical History</h2>
-    <p><strong>Last Menstrual Period (LMP):</strong> {{ optional($patient->medicalHistory)->obstetrical_lmp }} </p>
-    <p><strong>Age of Gestation (AOG):</strong> {{ optional($patient->medicalHistory)->obstetrical_aog }} </p>
-    <p><strong>Probable Date of Delivery (PMP):</strong> {{ optional($patient->medicalHistory)->obstetrical_pmp }} </p>
-    <p><strong>Estimated Date of Confinement (EDC):</strong> {{ optional($patient->medicalHistory)->obstetrical_edc }} </p>
-    <p><strong>Prenatal Checkups:</strong> {{ optional($patient->medicalHistory)->obstetrical_prenatal_checkups }} </p>
-    <p><strong>Gravida:</strong> {{ optional($patient->medicalHistory)->obstetrical_gravida }} </p>
-    <p><strong>Para:</strong> {{ optional($patient->medicalHistory)->obstetrical_para }} </p>
-    <p><strong>First Pregnancy Delivered On:</strong> {{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivered_on }} </p>
-    <p><strong>First Pregnancy Term/Preterm:</strong> {{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_term_preterm }} </p>
-    <p><strong>First Pregnancy Girl/Boy:</strong> {{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_girl_boy }} </p>
-    <p><strong>First Pregnancy Delivery Method:</strong> {{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivery_method }} </p>
-    <p><strong>First Pregnancy Delivery Place:</strong> {{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivery_place }} </p>
-
+    <table>
+      <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td><strong>Last Menstrual Period (LMP)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_lmp }}</td>
+      </tr>
+      <tr>
+        <td><strong>Age of Gestation (AOG)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_aog }}</td>
+      </tr>
+      <tr>
+        <td><strong>Probable Date of Delivery (PMP)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_pmp }}</td>
+      </tr>
+      <tr>
+        <td><strong>Estimated Date of Confinement (EDC)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_edc }}</td>
+      </tr>
+      <tr>
+        <td><strong>Prenatal Checkups</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_prenatal_checkups }}</td>
+      </tr>
+      <tr>
+        <td><strong>Gravida</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_gravida }}</td>
+      </tr>
+      <tr>
+        <td><strong>Para</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_para }}</td>
+      </tr>
+      <tr>
+        <td><strong>First Pregnancy Delivered On</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivered_on }}</td>
+      </tr>
+      <tr>
+        <td><strong>First Pregnancy Term/Preterm</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_term_preterm }}</td>
+      </tr>
+      <tr>
+        <td><strong>First Pregnancy Girl/Boy</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_girl_boy }}</td>
+      </tr>
+      <tr>
+        <td><strong>First Pregnancy Delivery Method</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivery_method }}</td>
+      </tr>
+      <tr>
+        <td><strong>First Pregnancy Delivery Place</strong></td>
+        <td>{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivery_place }}</td>
+      </tr>
+    </table>
+    
     <h2>Pediatric History</h2>
-    <p><strong>Term:</strong> {{ optional($patient->medicalHistory)->pediatric_term }} </p>
-    <p><strong>Preterm:</strong> {{ optional($patient->medicalHistory)->pediatric_preterm }} </p>
-    <p><strong>Postterm:</strong> {{ optional($patient->medicalHistory)->pediatric_postterm }} </p>
-    <p><strong>Birth By:</strong> {{ optional($patient->medicalHistory)->pediatric_birth_by }} </p>
-    <p><strong>NSD/CS:</strong> {{ optional($patient->medicalHistory)->pediatric_nsd_cs }} </p>
-    <p><strong>Age of Mother at Pregnancy:</strong> {{ optional($patient->medicalHistory)->pediatric_age_of_mother_at_pregnancy }} </p>
-    <p><strong>No of Pregnancy:</strong> {{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy }} </p>
-    <p><strong>Complications During Pregnancy:</strong> {{ optional($patient->medicalHistory)->pediatric_complications_during_pregnancy }} </p>
-    <p><strong>Immunizations:</strong> {{ optional($patient->medicalHistory)->pediatric_immunizations }} </p>
-    <p><strong>No of Pregnancy (First):</strong> {{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_first }} </p>
-    <p><strong>No of Pregnancy (Second):</strong> {{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_second }} </p>
-    <p><strong>No of Pregnancy (Third):</strong> {{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_third }} </p>
-    <p><strong>No of Pregnancy (Others):</strong> {{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_others }} </p>
-
+    <table>
+      <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td><strong>Term</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_term }}</td>
+      </tr>
+      <tr>
+        <td><strong>Preterm</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_preterm }}</td>
+      </tr>
+      <tr>
+        <td><strong>Postterm</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_postterm }}</td>
+      </tr>
+      <tr>
+        <td><strong>Birth By</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_birth_by }}</td>
+      </tr>
+      <tr>
+        <td><strong>NSD/CS</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_nsd_cs }}</td>
+      </tr>
+      <tr>
+        <td><strong>Age of Mother at Pregnancy</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_age_of_mother_at_pregnancy }}</td>
+      </tr>
+      <tr>
+        <td><strong>No of Pregnancy</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy }}</td>
+      </tr>
+      <tr>
+        <td><strong>Complications During Pregnancy</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_complications_during_pregnancy }}</td>
+      </tr>
+      <tr>
+        <td><strong>Immunizations</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_immunizations }}</td>
+      </tr>
+      <tr>
+        <td><strong>No of Pregnancy (First)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_first }}</td>
+      </tr>
+      <tr>
+        <td><strong>No of Pregnancy (Second)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_second }}</td>
+      </tr>
+      <tr>
+        <td><strong>No of Pregnancy (Third)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_third }}</td>
+      </tr>
+      <tr>
+        <td><strong>No of Pregnancy (Others)</strong></td>
+        <td>{{ optional($patient->medicalHistory)->pediatric_no_of_pregnancy_others }}</td>
+      </tr>
+    </table>
     {{-- <h2>Review of Systems</h2>
     <h2>Constitutional</h2>
     <table>
@@ -124,116 +327,423 @@
         </tr>
     </table> --}}
     <h2>Review of Systems</h2>
-    <h3>Constitutional</h3>
-    <p><strong>Fever:</strong> {{ optional($patient->reviewOfSystems)->consti_fever ? 'Yes' : 'No' }}</p>
-    <p><strong>Anorexia:</strong> {{ optional($patient->reviewOfSystems)->consti_anorexia ? 'Yes' : 'No' }}</p>
-    <p><strong>Weight Loss:</strong> {{ optional($patient->reviewOfSystems)->consti_weight_loss ? 'Yes' : 'No' }}</p>
-    <p><strong>Fatigue:</strong> {{ optional($patient->reviewOfSystems)->consti_fatigue ? 'Yes' : 'No' }}</p>
-    
-    <h3>Hematologic</h3>
-    <p><strong>Easy Bruisability:</strong> {{ optional($patient->reviewOfSystems)->hema_easy_bruisability ? 'Yes' : 'No' }}</p>
-    <p><strong>Abnormal Bleeding:</strong> {{ optional($patient->reviewOfSystems)->hema_abnormal_bleeding ? 'Yes' : 'No' }}</p>
-    
-    <h3>EENT</h3>
-    <p><strong>Blurring of Vision:</strong> {{ optional($patient->reviewOfSystems)->eent_blurring_of_vision ? 'Yes' : 'No' }}</p>
-    <p><strong>Hearing Loss:</strong> {{ optional($patient->reviewOfSystems)->eent_hearing_loss ? 'Yes' : 'No' }}</p>
-    <p><strong>Tinnitus:</strong> {{ optional($patient->reviewOfSystems)->eent_tinnitus ? 'Yes' : 'No' }}</p>
-    <p><strong>Ear Discharges:</strong> {{ optional($patient->reviewOfSystems)->eent_ear_discharges ? 'Yes' : 'No' }}</p>
-    <p><strong>Nose Bleed:</strong> {{ optional($patient->reviewOfSystems)->eent_nose_bleed ? 'Yes' : 'No' }}</p>
-    <p><strong>Mouth Snores:</strong> {{ optional($patient->reviewOfSystems)->eent_mouth_snores ? 'Yes' : 'No' }}</p>
-    
-    <!-- Add more sections as needed -->
-    <h3>CNS</h3>
-    <p><strong>Headache:</strong> {{ optional($patient->reviewOfSystems)->cns_headache ? 'Yes' : 'No' }}</p>
-    <p><strong>Dizziness:</strong> {{ optional($patient->reviewOfSystems)->cns_dizziness ? 'Yes' : 'No' }}</p>
-    <p><strong>Seizures:</strong> {{ optional($patient->reviewOfSystems)->cns_seizures ? 'Yes' : 'No' }}</p>
-    <p><strong>Tremors:</strong> {{ optional($patient->reviewOfSystems)->cns_tremors ? 'Yes' : 'No' }}</p>
-    <p><strong>Paralysis:</strong> {{ optional($patient->reviewOfSystems)->cns_paralysis ? 'Yes' : 'No' }}</p>
-    <p><strong>Numbness or Tingling of Sensations:</strong> {{ optional($patient->reviewOfSystems)->cns_numbness_or_tingling_of_sensations ? 'Yes' : 'No' }}</p>
-    
+      <h3>Constitutional</h3>
+      <table>
+      <tr>
+          <th>Symptom</th>
+          <th>Value</th>
+      </tr>
+
+
+      <tr>
+        <td>Fever</td>
+        <td>{{ optional($patient->reviewOfSystems)->consti_fever ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Anorexia</td>
+        <td>{{ optional($patient->reviewOfSystems)->consti_anorexia ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Weight Loss</td>
+        <td>{{ optional($patient->reviewOfSystems)->consti_weight_loss ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Fatigue</td>
+        <td>{{ optional($patient->reviewOfSystems)->consti_fatigue ? 'Yes' : 'No' }}</td>
+      </tr>
+    </table>
+
+      <h3>Hematologic</h3>
+      <table>
+      <tr>
+          <th>Symptom</th>
+          <th>Value</th>
+      </tr>
+
+
+      <tr>
+        <td>Easy Bruisability</td>
+        <td>{{ optional($patient->reviewOfSystems)->hema_easy_bruisability ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Abnormal Bleeding</td>
+        <td>{{ optional($patient->reviewOfSystems)->hema_abnormal_bleeding ? 'Yes' : 'No' }}</td>
+      </tr>
+
+    </table>
+
+      <h3>EENT</h3>
+      <table>
+      <tr>
+          <th>Symptom</th>
+          <th>Value</th>
+      </tr>
+
+
+      <tr>
+        <td>Blurring of Vision</td>
+        <td>{{ optional($patient->reviewOfSystems)->eent_blurring_of_vision ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Hearing Loss</td>
+        <td>{{ optional($patient->reviewOfSystems)->eent_hearing_loss ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Tinnitus</td>
+        <td>{{ optional($patient->reviewOfSystems)->eent_tinnitus ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Ear Discharges</td>
+        <td>{{ optional($patient->reviewOfSystems)->eent_ear_discharges ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Nose Bleed</td>
+        <td>{{ optional($patient->reviewOfSystems)->eent_nose_bleed ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Mouth Snores</td>
+        <td>{{ optional($patient->reviewOfSystems)->eent_mouth_snores ? 'Yes' : 'No' }}</td>
+      </tr>
+    </table>
+
+
+      <h3>CNS</h3>
+      <table>
+      <tr>
+          <th>Symptom</th>
+          <th>Value</th>
+      </tr>
+
+      
+      <tr>
+        <td>Headache</td>
+        <td>{{ optional($patient->reviewOfSystems)->cns_headache ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Dizziness</td>
+        <td>{{ optional($patient->reviewOfSystems)->cns_dizziness ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Seizures</td>
+        <td>{{ optional($patient->reviewOfSystems)->cns_seizures ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Tremors</td>
+        <td>{{ optional($patient->reviewOfSystems)->cns_tremors ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Paralysis</td>
+        <td>{{ optional($patient->reviewOfSystems)->cns_paralysis ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Numbness or Tingling of Sensations</td>
+        <td>{{ optional($patient->reviewOfSystems)->cns_numbness_or_tingling_of_sensations ? 'Yes' : 'No' }}</td>
+      </tr>
+    </table>
+
+
     <h3>Respiratory</h3>
-    <p><strong>Dyspnea:</strong> {{ optional($patient->reviewOfSystems)->respi_dyspnea ? 'Yes' : 'No' }}</p>
-    <p><strong>Cough:</strong> {{ optional($patient->reviewOfSystems)->respi_cough ? 'Yes' : 'No' }}</p>
-    <p><strong>Colds:</strong> {{ optional($patient->reviewOfSystems)->respi_colds ? 'Yes' : 'No' }}</p>
-    <p><strong>Orthopnea:</strong> {{ optional($patient->reviewOfSystems)->respi_orthopnea ? 'Yes' : 'No' }}</p>
-    <p><strong>Shortness of Breath:</strong> {{ optional($patient->reviewOfSystems)->respi_shortness_of_breath ? 'Yes' : 'No' }}</p>
-    <p><strong>Hemoptysis:</strong> {{ optional($patient->reviewOfSystems)->respi_hemoptysis ? 'Yes' : 'No' }}</p>
-    
-    <!-- Add more sections as needed -->
+    <table>
+    <tr>
+        <th>Symptom</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Dyspnea</td>
+        <td>{{ optional($patient->reviewOfSystems)->respi_dyspnea ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Cough</td>
+        <td>{{ optional($patient->reviewOfSystems)->respi_cough ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Colds</td>
+        <td>{{ optional($patient->reviewOfSystems)->respi_colds ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Orthopnea</td>
+        <td>{{ optional($patient->reviewOfSystems)->respi_orthopnea ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Shortness of Breath</td>
+        <td>{{ optional($patient->reviewOfSystems)->respi_shortness_of_breath ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Hemoptysis</td>
+        <td>{{ optional($patient->reviewOfSystems)->respi_hemoptysis ? 'Yes' : 'No' }}</td>
+    </tr>
+    </table>
+
     <h3>Cardiovascular</h3>
-    <p><strong>Chest Pain:</strong> {{ optional($patient->reviewOfSystems)->cvs_chest_pain ? 'Yes' : 'No' }}</p>
-    <p><strong>Palpitations:</strong> {{ optional($patient->reviewOfSystems)->cvs_palpitations ? 'Yes' : 'No' }}</p>
-    <p><strong>Swelling of Lower Extremities:</strong> {{ optional($patient->reviewOfSystems)->cvs_swelling_of_lower_extremities ? 'Yes' : 'No' }}</p>
-    
+    <table>
+    <tr>
+        <th>Symptom</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Chest Pain</td>
+        <td>{{ optional($patient->reviewOfSystems)->cvs_chest_pain ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Palpitations</td>
+        <td>{{ optional($patient->reviewOfSystems)->cvs_palpitations ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Swelling of Lower Extremities</td>
+        <td>{{ optional($patient->reviewOfSystems)->cvs_swelling_of_lower_extremities ? 'Yes' : 'No' }}</td>
+    </tr>
+    </table>
+
     <h3>Gastrointestinal</h3>
-    <p><strong>Diarrhea:</strong> {{ optional($patient->reviewOfSystems)->git_diarrhea ? 'Yes' : 'No' }}</p>
-    <p><strong>Constipation:</strong> {{ optional($patient->reviewOfSystems)->git_constipation ? 'Yes' : 'No' }}</p>
-    <p><strong>Abdominal Pain:</strong> {{ optional($patient->reviewOfSystems)->git_abdominal_pain ? 'Yes' : 'No' }}</p>
-    <p><strong>Loss of Appetite:</strong> {{ optional($patient->reviewOfSystems)->git_loss_of_appetite ? 'Yes' : 'No' }}</p>
-    <p><strong>Change in Bowel Movement:</strong> {{ optional($patient->reviewOfSystems)->git_change_in_bowel_movement ? 'Yes' : 'No' }}</p>
-    <p><strong>Nausea:</strong> {{ optional($patient->reviewOfSystems)->git_nausea ? 'Yes' : 'No' }}</p>
-    <p><strong>Vomiting:</strong> {{ optional($patient->reviewOfSystems)->git_vomiting ? 'Yes' : 'No' }}</p>
-    <p><strong>Hematochezia:</strong> {{ optional($patient->reviewOfSystems)->git_hematochezia ? 'Yes' : 'No' }}</p>
+    <table>
+    <tr>
+        <th>Symptom</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Diarrhea</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_diarrhea ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Constipation</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_constipation ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Abdominal Pain</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_abdominal_pain ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Loss of Appetite</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_loss_of_appetite ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Change in Bowel Movement</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_change_in_bowel_movement ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Nausea</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_nausea ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Vomiting</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_vomiting ? 'Yes' : 'No' }}</td>
+    </tr>
+    <tr>
+        <td>Hematochezia</td>
+        <td>{{ optional($patient->reviewOfSystems)->git_hematochezia ? 'Yes' : 'No' }}</td>
+    </tr>
+    </table>
     
-    <!-- Add more sections as needed -->
     <h3>Genitourinary Tract</h3>
-    <p><strong>Dysuria:</strong> {{ optional($patient->reviewOfSystems)->genittract_dysuria ? 'Yes' : 'No' }}</p>
-    <p><strong>Urgency:</strong> {{ optional($patient->reviewOfSystems)->genittract_urgency ? 'Yes' : 'No' }}</p>
-    <p><strong>Frequency:</strong> {{ optional($patient->reviewOfSystems)->genittract_frequency ? 'Yes' : 'No' }}</p>
-    <p><strong>Flank Pain:</strong> {{ optional($patient->reviewOfSystems)->genittract_flank_pain ? 'Yes' : 'No' }}</p>
-    <p><strong>Vaginal Discharge:</strong> {{ optional($patient->reviewOfSystems)->genittract_vaginal_discharge ? 'Yes' : 'No' }}</p>
+    <table>
+      <tr>
+        <th>Symptom</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>Dysuria</td>
+        <td>{{ optional($patient->reviewOfSystems)->genittract_dysuria ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Urgency</td>
+        <td>{{ optional($patient->reviewOfSystems)->genittract_urgency ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Frequency</td>
+        <td>{{ optional($patient->reviewOfSystems)->genittract_frequency ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Flank Pain</td>
+        <td>{{ optional($patient->reviewOfSystems)->genittract_flank_pain ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Vaginal Discharge</td>
+        <td>{{ optional($patient->reviewOfSystems)->genittract_vaginal_discharge ? 'Yes' : 'No' }}</td>
+      </tr>
+    </table>
     
     <h3>Musculoskeletal</h3>
-    <p><strong>Joint Pains:</strong> {{ optional($patient->reviewOfSystems)->musculo_joint_pains ? 'Yes' : 'No' }}</p>
-    <p><strong>Muscle Weakness:</strong> {{ optional($patient->reviewOfSystems)->musculo_muscle_weakness ? 'Yes' : 'No' }}</p>
-    <p><strong>Back Pains:</strong> {{ optional($patient->reviewOfSystems)->musculo_back_pains ? 'Yes' : 'No' }}</p>
-    <p><strong>Difficulty in Walking:</strong> {{ optional($patient->reviewOfSystems)->musculo_difficulty_in_walking ? 'Yes' : 'No' }}</p>
+    <table>
+      <tr>
+        <th>Symptom</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>Joint Pains</td>
+        <td>{{ optional($patient->reviewOfSystems)->musculo_joint_pains ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Muscle Weakness</td>
+        <td>{{ optional($patient->reviewOfSystems)->musculo_muscle_weakness ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Back Pains</td>
+        <td>{{ optional($patient->reviewOfSystems)->musculo_back_pains ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Difficulty in Walking</td>
+        <td>{{ optional($patient->reviewOfSystems)->musculo_difficulty_in_walking ? 'Yes' : 'No' }}</td>
+      </tr>
+    </table>
     
-    <!-- Add more sections as needed -->
-
     <h2>Vital Signs</h2>
-    <p><strong>Blood Pressure:</strong> {{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</p>
-    <p><strong>Respiratory Rate:</strong> {{ optional($patient->physicalExamination)->vitals_respiratory_rate }} cpm</p>
-    <p><strong>Pulse Rate:</strong> {{ optional($patient->physicalExamination)->vitals_pulse_rate }} bpm</p>
-    <p><strong>Temperature:</strong> {{ optional($patient->physicalExamination)->vitals_temperature }}°C</p>
-    <p><strong>Weight:</strong> {{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
-    
+    <table>
+        <tr>
+          <th>Blood Pressure:</th>
+          <td>{{ optional($patient->physicalExamination)->vitals_blood_pressure }} mmHg</td>
+          <th>Respiratory Rate:</th>
+          <td>{{ optional($patient->physicalExamination)->vitals_respiratory_rate }} cpm</td>
+        </tr>
+        <tr>
+          <th>Pulse Rate:</th>
+          <td>{{ optional($patient->physicalExamination)->vitals_pulse_rate }} bpm</td>
+          <th>Temperature:</th>
+          <td>{{ optional($patient->physicalExamination)->vitals_temperature }}°C</td>
+          {{-- <th>Weight:</th>
+          <td>{{ optional($patient->physicalExamination)->vitals_weight }} kg</td> --}}
+
+        </tr>
+        <tr>
+            <th>Weight:</th>
+            <td colspan="3">{{ optional($patient->physicalExamination)->vitals_weight }} kg</td>
+        </tr>
+      </table>
+
     <h2>Physical Examination</h2>
-    <p><strong>HEENT:</strong> {{ optional($patient->physicalExamination)->pe_heent }}</p>
-    <p><strong>Neck:</strong> {{ optional($patient->physicalExamination)->pe_neck }}</p>
-    <p><strong>Chest (Left):</strong> {{ optional($patient->physicalExamination)->pe_chest_left }}</p>
-    <p><strong>Chest (Right):</strong> {{ optional($patient->physicalExamination)->pe_chest_right }}</p>
-    <p><strong>Lungs:</strong> {{ optional($patient->physicalExamination)->pe_lungs }}</p>
-    <p><strong>Heart:</strong> {{ optional($patient->physicalExamination)->pe_heart }}</p>
-    <p><strong>Abdomen:</strong> {{ optional($patient->physicalExamination)->pe_abdomen }}</p>
-    <p><strong>Breast:</strong> {{ optional($patient->physicalExamination)->pe_breast }}</p>
-    <p><strong>Extremities:</strong> {{ optional($patient->physicalExamination)->pe_extremities }}</p>
-    <p><strong>Internal Examination:</strong> {{ optional($patient->physicalExamination)->pe_internal_examination }}</p>
-    <p><strong>Rectal Examination:</strong> {{ optional($patient->physicalExamination)->pe_rectal_examination }}</p>
+    <table>
+      <tr>
+        <th>Area</th>
+        <th>Observation</th>
+      </tr>
+      <tr>
+        <td>HEENT</td>
+        <td>{{ optional($patient->physicalExamination)->pe_heent }}</td>
+      </tr>
+      <tr>
+        <td>Neck</td>
+        <td>{{ optional($patient->physicalExamination)->pe_neck }}</td>
+      </tr>
+      <tr>
+        <td>Chest (Left)</td>
+        <td>{{ optional($patient->physicalExamination)->pe_chest_left }}</td>
+      </tr>
+      <tr>
+        <td>Chest (Right)</td>
+        <td>{{ optional($patient->physicalExamination)->pe_chest_right }}</td>
+      </tr>
+      <tr>
+        <td>Lungs</td>
+        <td>{{ optional($patient->physicalExamination)->pe_lungs }}</td>
+      </tr>
+      <tr>
+        <td>Heart</td>
+        <td>{{ optional($patient->physicalExamination)->pe_heart }}</td>
+      </tr>
+      <tr>
+        <td>Abdomen</td>
+        <td>{{ optional($patient->physicalExamination)->pe_abdomen }}</td>
+      </tr>
+      <tr>
+        <td>Breast</td>
+        <td>{{ optional($patient->physicalExamination)->pe_breast }}</td>
+      </tr>
+      <tr>
+        <td>Extremities</td>
+        <td>{{ optional($patient->physicalExamination)->pe_extremities }}</td>
+      </tr>
+      <tr>
+        <td>Internal Examination</td>
+        <td>{{ optional($patient->physicalExamination)->pe_internal_examination }}</td>
+      </tr>
+      <tr>
+        <td>Rectal Examination</td>
+        <td>{{ optional($patient->physicalExamination)->pe_rectal_examination }}</td>
+      </tr>
+    </table>   
     
-    <h2>Neurological Examinations</h2>
-    <p><strong>GCS:</strong> {{ optional($patient->neurologicalExamination)->neuro_gcs }}</p>
-    <p><strong>Cranial Nerve I:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_i }}</p>
-    <p><strong>Cranial Nerve II:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_ii }}</p>
-    <p><strong>Cranial Nerves III, IV, VI:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_iii_iv_vi }}</p>
-    <p><strong>Cranial Nerve V:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_v }}</p>
-    <p><strong>Cranial Nerve VII:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_vii }}</p>
-    <p><strong>Cranial Nerve VIII:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_viii }}</p>
-    <p><strong>Cranial Nerves IX, X:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_ix_x }}</p>
-    <p><strong>Cranial Nerve XI:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_xi }}</p>
-    <p><strong>Cranial Nerve XII:</strong> {{ optional($patient->neurologicalExamination)->neuro_cn_xii }}</p>
-    <p><strong>Babinski:</strong> {{ optional($patient->neurologicalExamination)->neuro_babinski ? 'Yes' : 'No' }}</p>
-    <p><strong>Motor Function:</strong> {{ optional($patient->neurologicalExamination)->neuro_motor }}</p>
-    <p><strong>Sensory Function:</strong> {{ optional($patient->neurologicalExamination)->neuro_sensory }}</p>
-    <p><strong>Clinical Impression:</strong> {{ optional($patient->neurologicalExamination)->clinical_impression }}</p>
-    <p><strong>Work-up:</strong> {{ optional($patient->neurologicalExamination)->work_up }}</p>
+    <h2>Neurological Examination</h2>
+    <table>
+      <tr>
+        <th>Test</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>GCS</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_gcs }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve I</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_i }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve II</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_ii }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerves III, IV, VI</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_iii_iv_vi }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve V</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_v }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve VII</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_vii }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve VIII</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_viii }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerves IX, X</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_ix_x }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve XI</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_xi }}</td>
+      </tr>
+      <tr>
+        <td>Cranial Nerve XII</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_cn_xii }}</td>
+      </tr>
+      <tr>
+        <td>Babinski</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_babinski ? 'Yes' : 'No' }}</td>
+      </tr>
+      <tr>
+        <td>Motor Function</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_motor }}</td>
+      </tr>
+      <tr>
+        <td>Sensory Function</td>
+        <td>{{ optional($patient->neurologicalExamination)->neuro_sensory }}</td>
+      </tr>
+      <tr>
+        <td>Clinical Impression</td>
+        <td>{{ optional($patient->neurologicalExamination)->clinical_impression }}</td>
+      </tr>
+      <tr>
+        <td>Work-up</td>
+        <td>{{ optional($patient->neurologicalExamination)->work_up }}</td>
+      </tr>
+    </table>
     
     <h2>Current Medications</h2>
-    <p><strong>Medications:</strong> {{ optional($patient->currentMedication)->current_medications }}</p>
-    <p><strong>Dosage:</strong> {{ optional($patient->currentMedication)->current_dosage }}</p>
-    <p><strong>Frequency:</strong> {{ optional($patient->currentMedication)->current_frequency }}</p>
-    <p><strong>Prescribing Physician:</strong> {{ optional($patient->currentMedication)->current_prescribing_physician }}</p>
-    
+    <table>
+      <tr>
+        <th>Medication</th>
+        <th>Dosage</th>
+        <th>Frequency</th>
+        <th>Prescribing Physician</th>
+      </tr>
+      <tr>
+        <td>{{ optional($patient->currentMedication)->current_medications }}</td>
+        <td>{{ optional($patient->currentMedication)->current_dosage }}</td>
+        <td>{{ optional($patient->currentMedication)->current_frequency }}</td>
+        <td>{{ optional($patient->currentMedication)->current_prescribing_physician }}</td>
+      </tr>
+    </table>
 
     <div>
         <h2>Vital Signs</h2>
@@ -243,11 +753,11 @@
                     <tr>
                         <th>Date</th>
                         <th>Time</th>
-                        <th>Temperature</th>
-                        <th>Pulse Rate</th>
-                        <th>Blood Pressure</th>
-                        <th>Respiratory Rate</th>
-                        <th>Oxygen Level</th>
+                        <th>T (°C)</th>
+                        <th>PR (bpm)</th>
+                        <th>BP (mmHg)</th>
+                        <th>RR (cpm)</th>
+                        <th>O<sub>2</sub> (%)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -255,11 +765,11 @@
                         <tr>
                             <td style="text-align: center;">{{ \Carbon\Carbon::parse($vitalSign->vital_date)->format('n/j/Y') }}</td>                            
                             <td style="text-align: center;">{{ \Carbon\Carbon::parse($vitalSign->vital_time)->format('h:i A') }}</td>                            
-                            <td style="text-align: center;">{{ $vitalSign->temperature }}°C</td>
-                            <td style="text-align: center;">{{ $vitalSign->pulse }} bpm</td>
-                            <td style="text-align: center;">{{ $vitalSign->blood_pressure }} mmHg</td>
-                            <td style="text-align: center;">{{ $vitalSign->respiratory_rate }} cpm</td>
-                            <td style="text-align: center;">{{ $vitalSign->oxygen }}%</td>
+                            <td style="text-align: center;">{{ $vitalSign->temperature }} </td>
+                            <td style="text-align: center;">{{ $vitalSign->pulse }} </td>
+                            <td style="text-align: center;">{{ $vitalSign->blood_pressure }} </td>
+                            <td style="text-align: center;">{{ $vitalSign->respiratory_rate }} </td>
+                            <td style="text-align: center;">{{ $vitalSign->oxygen }} </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -294,9 +804,9 @@
                             <td style="text-align: center;">{{ $medicationRemark->shift }}</td>                            
                             <td style="text-align: center;">{{ $medicationRemark->medication }}</td>
                             <td style="text-align: center;">{{ $medicationRemark->medication_dosage }}</td>
-                            <td style="text-align: center;">{{ $medicationRemark->treatment }}</td>
-                            <td style="text-align: center;">{{ $medicationRemark->dietary_information }}</td>
-                            <td style="text-align: center;">{{ $medicationRemark->remarks_notes }}</td>
+                            <td>{{ $medicationRemark->treatment }}</td>
+                            <td>{{ $medicationRemark->dietary_information }}</td>
+                            <td>{{ $medicationRemark->remarks_notes }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -324,8 +834,8 @@
                         <tr>
                             <td style="text-align: center;">{{ \Carbon\Carbon::parse($progressNote->medication_date)->format('n/j/Y') }}</td>                            
                             <td style="text-align: center;">{{ $progressNote->shift }}</td>                            
-                            <td style="text-align: center;">{{ $progressNote->focus }}</td>
-                            <td style="text-align: center;">{{ $progressNote->prog_notes }}</td>
+                            <td>{{ $progressNote->focus }}</td>
+                            <td>{{ $progressNote->prog_notes }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -339,33 +849,47 @@
     <div>
         <h2>Requests</h2>
         @if ($requests->isNotEmpty())
-            <ul style="list-style-type: none; padding: 0;">
-                @foreach ($requests as $request)
-                    @if ($request->status == 'completed')
-                        <li style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px;">
-                            <strong>Date & Time Completed:</strong> {{ \Carbon\Carbon::parse($request->updated_at)->format('n/j/Y h:i A') }}<br>
-                            {{-- <strong>Time Needed:</strong> {{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}<br> --}}
-                            <strong>Service Type:</strong> {{ $request->procedure_type }}<br>
-                            <strong>Service Test:</strong> {{ $request->sender_message }}<br>
-                            <strong>Message:</strong> {{ $request->message }}<br>
-                            <strong>Status:</strong> {{ strtoupper($request->status) }}<br>
-                            @if ($request->image)
-                                @foreach(json_decode($request->image) as $imagePath)
-                                    <div class="image-wrapper mb-16">
-                                        <img src="data:image/svg+xml;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $imagePath))) }}" alt="Request Image" style="margin-top: 10px; max-width: 100%; height: auto;">
-                                    </div>
-                                @endforeach
-                            @else
-                                No Image
-                            @endif
-                        </li>
-                    @endif
-                @endforeach
-            </ul>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <th>ID</th>
+                <th>Date Completed</th>
+                <th>Service Type</th>
+                <th>Service Test</th>
+                <th>Message</th>
+                <th>Status</th>
+            </tr>
+            @foreach ($requests as $request)
+            @if ($request->status == 'completed')
+            <tr style="border: 1px solid #ccc;">
+                <td style="text-align: center;">{{ $request->request_id }}</td>
+                <td style="text-align: center;">{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>
+                <td style="text-align: center;">{{ $request->procedure_type }}</td>
+                <td>{{ $request->sender_message }}</td>
+                <td>{{ $request->message }}</td>
+                <td>{{ strtoupper($request->status) }}</td>
+            </tr>
+            @endif
+            @endforeach
+        </table>
         @else
-            <p>No completed requests found.</p>
+        <p>No completed requests found.</p>
         @endif
+        
+        <!-- Images -->
+        @foreach ($requests as $request)
+        @if ($request->status == 'completed' && $request->image)
+        @foreach(json_decode($request->image) as $index => $imagePath)
+        <div class="image-wrapper mb-16" style="page-break-inside: avoid;">
+            <p style="font-weight: bold;">Request ID: {{ $request->request_id }}</p>
+            <img src="data:image/svg+xml;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $imagePath))) }}" alt="Request Image" style="margin-top: 10px; max-width: 100%; height: auto;">
+        </div>
+        @endforeach
+        @endif
+        @endforeach
     </div>
+    
+    
+    
     
     
 
