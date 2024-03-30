@@ -297,10 +297,10 @@ text-align: center;
     <table class="table table-striped mt-3 Add">
       <thead>
           <tr>
-              <th scope="col">Patient ID</th>
+              <th scope="col">Request ID</th>
               <th scope="col">Patient Name</th>
               <th scope="col">Service</th>
-              <th scope="col">Time Requested</th>
+              <th scope="col">Date Needed</th>
               <th scope="col"></th> <!-- Add a new column for approve action -->
               <th scope="col"></th> <!-- Add a new column for reject action -->
           </tr>
@@ -308,10 +308,17 @@ text-align: center;
       <tbody>
           @forelse ($requests as $request)
               <tr>
-                  <td>{{ $request->patient_id }}</td>
+                  <td>{{ $request->request_id }}</td>
                   <td style="min-width: 140px;">{{ $request->patient->first_name }} {{ $request->patient->last_name }}</td>
                   <td>{{ $request->procedure_type }}</td>
-                  <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>
+                  <td style="min-width: 140px;">
+                    @if($request->stat)
+                        <span class="badge bg-danger">STAT</span>
+                        {{ \Carbon\Carbon::parse($request->date_needed)->format('n/j/Y') }} 
+                    @else
+                        {{ \Carbon\Carbon::parse($request->date_needed . ' ' . $request->time_needed)->format('h:i A n/j/Y') }}
+                    @endif
+                </td>  
                   <td class="vertical-center">
                     <form id="acceptForm{{ $request->request_id }}" action="{{ route('medtech.accept', ['request_id' => $request->request_id]) }}" method="POST">
                       @csrf
