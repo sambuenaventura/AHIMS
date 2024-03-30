@@ -117,7 +117,7 @@ html {
                             <th scope="col">Patient Name</th>
                             <th scope="col">Service</th>
                             <th scope="col">Test</th>
-                            <th scope="col">Date Requested</th>
+                            <th scope="col">Date Needed</th>
                             @if($status == 'accepted')
                                 <th scope="col"></th>
                             @endif
@@ -142,9 +142,15 @@ html {
                                 <td>{{ $request->patient_id }}</td>
                                 <td style="min-width: 120px;">{{ optional($request->patient)->first_name }} {{ optional($request->patient)->last_name }}</td>
                                 <td style="max-width: 80px;">{{ ucfirst($request->procedure_type) }}</td>
-                               <td style="min-width: 180px;">{{ $request->sender_message }}</td>
-                                <td style="min-width: 140px;">{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>                            
-
+                                <td style="min-width: 180px;">{{ $request->sender_message }}</td>
+                                <td style="min-width: 140px;">
+                                    @if($request->stat)
+                                        <span class="badge bg-danger">STAT</span>
+                                        {{ \Carbon\Carbon::parse($request->date_needed)->format('n/j/Y') }} 
+                                    @else
+                                        {{ \Carbon\Carbon::parse($request->date_needed . ' ' . $request->time_needed)->format('h:i A n/j/Y') }}
+                                    @endif
+                                </td>  
                                 @if($status == 'completed')
                                 <td>{{ \Carbon\Carbon::parse($request->updated_at)->format('h:i A n/j/Y') }}</td>                            
 
@@ -173,7 +179,7 @@ html {
                                 @if(!$status)
                                 <td>
                                     <span class="badge @if($request->status == 'completed') bg-success @elseif($request->status == 'declined') bg-danger @elseif($request->status == 'accepted') bg-primary @elseif($request->status == 'pending') bg-secondary @endif">
-                                        {{ ucfirst($request->status) }}
+                                        {{ strtoupper($request->status) }}
                                     </span>
                                 </td>                    
                                 @endif
@@ -220,5 +226,23 @@ html {
             document.getElementById('archivePatientForm_' + patientId).submit();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const isActive = this.classList.contains('active');
+                if (isActive) {
+                    // If the clicked tab is already active, prevent the default link behavior
+                    e.preventDefault();
+                    // Reset URL to its original state
+                    const originalUrl = "{{ route('medtech.requests') }}";
+                    window.location.href = originalUrl;
+                }
+            });
+        });
+    });
+
 </script>
 @include('partials.footer')
