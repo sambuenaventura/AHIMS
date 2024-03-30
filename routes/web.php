@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\RadTechController;
 
 Route::get('/', function () {
@@ -40,10 +41,17 @@ Route::controller(UserController::class)->group(function() {
         // Show the login page for non-authenticated users
         return view('user.login');
     })->name('login');
+
+    Route::middleware(['auth', 'role:admission,admin,nurse,radtech,medtech'])->group(function () {
+        Route::get('/profile', 'viewProfile')->name('viewProfile');
+        Route::get('/edit-profile', 'editProfile')->name('editProfile');
+        Route::post('/edit-profile', 'updateProfile')->name('updateProfile');
+    });
     
     Route::post('/login/process', 'process');
     Route::post('/logout', 'logout');
     Route::post('/store', 'store');
+
 });
 
 
@@ -63,10 +71,14 @@ Route::controller(PatientController::class)->group(function () {
         Route::get('/admission/search/inpatient', 'searchInpatient')->name('admission.searchInpatient');
         Route::get('/admission/search/outpatient' ,'searchOutpatient')->name('admission.searchOutpatient');
         Route::get('/admission/search/archived', 'searchArchived')->name('admission.searchArchived');
+        
+        Route::post('/patients/{patient_id}/generate-pdf', 'generatePdf')->name('generate-pdf');
 
 
     });
 });
+
+
 Route::controller(AdminController::class)->group(function() {
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin-dashboard', 'index')->name('admin.index');
@@ -166,9 +178,18 @@ Route::controller(NurseController::class)->group(function() {
 
         Route::post('/nurse-patients/{id}/request-laboratory-services', 'requestLaboratoryServices')->name('nurse.requestLaboratoryServices');
         Route::post('/nurse-patients/{id}/request-imaging-services', 'requestImagingServices')->name('nurse.requestImagingServices');
+
+        Route::post('/nurse-patients/{patient_id}/generate-report', 'generatePdf')->name('generate_report');
+
+        Route::get('/nurse-patients/{patient_id}/nurse-history', 'viewHistory')->name('nurse.history');
+
+
     });
 });
 
+Route::controller(PDFController::class)->group(function() {
+        Route::get('/generate-pdf-report', 'generateReport');
+});
 
 Route::controller(MedTechController::class)->group(function() {
     Route::middleware(['auth', 'role:medtech'])->group(function () {
@@ -182,7 +203,7 @@ Route::controller(MedTechController::class)->group(function() {
         Route::post('/medtech/accept/{request_id}', 'acceptRequest')->name('medtech.accept');
         Route::post('/medtech/decline/{request_id}', 'declineRequest')->name('medtech.decline');
         
-        Route::get('/medtech-patients/{id}/requests/{request_id}', 'show');
+        Route::get('/medtech-patients/{id}/requests/{request_id}', 'show')->name('medtech.viewRequests');
         Route::post('/process-laboratory', 'processLabResult')->name('process.lab');
 
         Route::get('/medtech-patients/{patientId}/request/{requestId}', 'viewRequest')->name('medtech.viewRequest');
@@ -202,7 +223,7 @@ Route::controller(RadTechController::class)->group(function() {
         Route::post('/radtech/accept/{request_id}', 'acceptRequest')->name('radtech.accept');
         Route::post('/radtech/decline/{request_id}', 'declineRequest')->name('radtech.decline');
         
-        Route::get('/radtech-patients/{id}/requests/{request_id}', 'show');
+        Route::get('/radtech-patients/{id}/requests/{request_id}', 'show')->name('radtech.viewRequests');
         Route::post('/process-imaging', 'processResult')->name('process.imaging');
         
         Route::get('/radtech-patients/{patientId}/request/{requestId}', 'viewRequest')->name('radtech.viewRequest');
