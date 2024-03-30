@@ -18,10 +18,13 @@ use App\Models\Patients;
 use App\Models\PhysicalExamination;
 use App\Models\ProgressNotes;
 use App\Models\ReviewOfSystems;
+use App\Models\User;
 use App\Models\VitalSigns;
+use App\Notifications\NewServiceRequest;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Notifications\Notification;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -851,9 +854,16 @@ public function updateDischargeDate(Request $request, $id)
         // Log the nurse's update history
         $nurseHistory = new NurseHistory();
         $nurseHistory->nurse_id = auth()->user()->id; // Assuming you have access to the authenticated nurse's ID
-        $nurseHistory->medical_history_id = $patient->medicalHistory->history_id; // Assuming you have access to the medical history ID
         $nurseHistory->patient_id = $patient->patient_id; // Assign the patient_id
-        // Add any other necessary fields to the NurseHistory model and set their values
+
+        // Check if medical history exists before accessing its properties
+        if ($patient->medicalHistory) {
+            $nurseHistory->medical_history_id = $patient->medicalHistory->history_id; // Assuming you have access to the medical history ID
+            // Add any other necessary fields to the NurseHistory model and set their values
+        } else {
+            // Handle the case where medical history does not exist
+        }
+
         $nurseHistory->save();
 
         return back()->with('message', 'Data was successfully updated');
@@ -908,16 +918,40 @@ public function updateDischargeDate(Request $request, $id)
     }
     
     
-    public function viewHistory($patient_id)
+    public function viewHistory( Request $request, $patient_id)
     {
-        // Retrieve all nurse histories for the given patient_id
-        $nurseHistories = Patients::findOrFail($patient_id)->nurseHistories;
+        // Retrieve the patient for the given patient_id
+        $patient = Patients::findOrFail($patient_id);
+    
+        // Paginate the nurse histories for the given patient_id
+        $nurseHistories = $patient->nurseHistories();
+    
+        // Apply search filter if provided
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $terms = explode(' ', $search);
             
-        return view('patients.nurse-history', ['nurseHistories' => $nurseHistories]);
+            $nurseHistories->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->orWhere('created_at', 'like', '%' . $term . '%')
+                          ->orWhereHas('nurse', function ($subquery) use ($term) {
+                              $subquery->where('first_name', 'like', '%' . $term . '%')
+                                       ->orWhere('last_name', 'like', '%' . $term . '%');
+                          });
+                }
+            });
+            
+            
+        }
+    
+        $nurseHistories = $nurseHistories->paginate(10); // Change 10 to the desired number of items per page
+    
+        return view('patients.nurse-history', compact('patient', 'nurseHistories'));
     }
     
     
     
+
 
 
 
@@ -1298,51 +1332,127 @@ public function archivePatient(Request $request, $patient_id)
     
         // Save the laboratory service request
         $serviceRequest->save();
-    
+
+        // Notify the relevant medtech users based on their role
+        $medTechs = User::where('role', 'medtech')->get();
+        foreach ($medTechs as $medTech) {
+            // Construct notification message with nurse information and service request details
+            $message = $request->user()->first_name . ' ' . $request->user()->last_name . ' requested a ' . strtoupper($serviceRequest->procedure_type) . ' service';
+
+            // Insert notification into the database
+            DB::table('notifications')->insert([
+                'user_id' => $medTech->id,
+                'request_id' => $serviceRequest->request_id,
+                'type' => 'new_service_request',
+                'message' => $message,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+
         // Optionally, you can redirect the user after submitting the form
         return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
     }
     
     
     
-        public function requestImagingServices(Request $request)
-    {
-        // Validate the request data
-        $validatedData = $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-            'patient_id' => 'required|exists:patients,patient_id',
-            'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
-            'date_needed' => 'required|date', // Validation rule for the date_needed field
-            'sender_message' => 'required',
-            'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
-            'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
-            // Add more validation rules as needed
+    //     public function requestImagingServices(Request $request)
+    // {
+    //     // Validate the request data
+    //     $validatedData = $request->validate([
+    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //         'patient_id' => 'required|exists:patients,patient_id',
+    //         'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
+    //         'date_needed' => 'required|date', // Validation rule for the date_needed field
+    //         'sender_message' => 'required',
+    //         'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
+    //         'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
+    //         // Add more validation rules as needed
+    //     ]);
+
+    //     // Check if the password matches the user's password
+    //     if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     }   
+
+    //     // Create a new imaging service request
+    //     $serviceRequest = new ServiceRequest();
+    //     $serviceRequest->patient_id = $validatedData['patient_id'];
+    //     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+    //     $serviceRequest->procedure_type = $validatedData['procedure_type'];
+    //     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+
+    //     // Set time_needed based on STAT checkbox
+    //     $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
+
+    //     // Set STAT value
+    //     $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
+
+    //     // Save the imaging service request
+    //     $serviceRequest->save();
+
+    //     // Optionally, you can redirect the user after submitting the form
+    //     return redirect()->back()->with('message', 'Imaging service request submitted successfully');
+    // }
+
+
+
+    public function requestImagingServices(Request $request)
+{
+    // Validate the request data
+    $validatedData = $request->validate([
+        'password' => 'required|string', // Add any additional validation rules for the password
+        'patient_id' => 'required|exists:patients,patient_id',
+        'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
+        'date_needed' => 'required|date', // Validation rule for the date_needed field
+        'sender_message' => 'required',
+        'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
+        'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
+        // Add more validation rules as needed
+    ]);
+
+    // Check if the password matches the user's password
+    if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    }   
+
+    // Create a new imaging service request
+    $serviceRequest = new ServiceRequest();
+    $serviceRequest->patient_id = $validatedData['patient_id'];
+    $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+    $serviceRequest->procedure_type = $validatedData['procedure_type'];
+    $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+
+    // Set time_needed based on STAT checkbox
+    $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
+
+    // Set STAT value
+    $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
+
+    // Save the imaging service request
+    $serviceRequest->save();
+
+    // Notify the relevant radtech users based on their role
+    $radTechs = User::where('role', 'radtech')->get();
+    foreach ($radTechs as $radTech) {
+        // Construct notification message with nurse information and service request details
+        $message = $request->user()->first_name . ' ' . $request->user()->last_name . ' requested a ' . strtoupper($serviceRequest->procedure_type) . ' service';
+
+        // Insert notification into the database
+        DB::table('notifications')->insert([
+            'user_id' => $radTech->id,
+            'request_id' => $serviceRequest->request_id,
+            'type' => 'new_service_request',
+            'message' => $message,
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
-
-        // Check if the password matches the user's password
-        if (!Hash::check($validatedData['password'], Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }   
-
-        // Create a new imaging service request
-        $serviceRequest = new ServiceRequest();
-        $serviceRequest->patient_id = $validatedData['patient_id'];
-        $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
-        $serviceRequest->procedure_type = $validatedData['procedure_type'];
-        $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
-
-        // Set time_needed based on STAT checkbox
-        $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
-
-        // Set STAT value
-        $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
-
-        // Save the imaging service request
-        $serviceRequest->save();
-
-        // Optionally, you can redirect the user after submitting the form
-        return redirect()->back()->with('message', 'Imaging service request submitted successfully');
     }
+
+    // Optionally, you can redirect the user after submitting the form
+    return redirect()->back()->with('message', 'Imaging service request submitted successfully');
+}
 
     
     
@@ -1543,27 +1653,27 @@ public function showResults(Request $request, $id)
     $completedResultsQuery = ServiceRequest::where('patient_id', $id)
         ->where('status', 'completed');
 
-// Check if there is a search query
-if ($request->has('search')) {
-    $search = $request->search;
-    $completedResultsQuery->where(function ($query) use ($search) {
-        $query->where('image', 'LIKE', "%$search%")
-            ->orWhereHas('patient', function ($subquery) use ($search) {
-                $subquery->where('first_name', 'LIKE', "%$search%")
-                        ->orWhere('last_name', 'LIKE', "%$search%");
-            })
-            ->orWhereHas('medtech', function ($subquery) use ($search) {
-                $subquery->where('first_name', 'LIKE', "%$search%")
-                        ->orWhere('last_name', 'LIKE', "%$search%");
-            })
-            ->orWhereHas('radtech', function ($subquery) use ($search) {
-                $subquery->where('first_name', 'LIKE', "%$search%")
-                        ->orWhere('last_name', 'LIKE', "%$search%");
-            })
-            ->orWhere('request_id', 'LIKE', "%$search%")
-            ->orWhere('sender_message', 'LIKE', "%$search%"); // Add this line to search in sender_message column
-    });
-}
+    // Check if there is a search query
+    if ($request->has('search')) {
+        $search = $request->search;
+        $completedResultsQuery->where(function ($query) use ($search) {
+            $query->where('image', 'LIKE', "%$search%")
+                ->orWhereHas('patient', function ($subquery) use ($search) {
+                    $subquery->where('first_name', 'LIKE', "%$search%")
+                            ->orWhere('last_name', 'LIKE', "%$search%");
+                })
+                ->orWhereHas('medtech', function ($subquery) use ($search) {
+                    $subquery->where('first_name', 'LIKE', "%$search%")
+                            ->orWhere('last_name', 'LIKE', "%$search%");
+                })
+                ->orWhereHas('radtech', function ($subquery) use ($search) {
+                    $subquery->where('first_name', 'LIKE', "%$search%")
+                            ->orWhere('last_name', 'LIKE', "%$search%");
+                })
+                ->orWhere('request_id', 'LIKE', "%$search%")
+                ->orWhere('sender_message', 'LIKE', "%$search%"); // Add this line to search in sender_message column
+        });
+    }
 
 
     // Check if there is a procedure filter
