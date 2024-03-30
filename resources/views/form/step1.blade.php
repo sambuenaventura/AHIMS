@@ -1,6 +1,6 @@
 {{-- <section id="step1" class="step active hero"> --}}
     {{-- <form action="/nurse-patients/edit/{{$patient->patient_id}}" method="POST" class="flex flex-col" enctype="multipart/form-data"> --}}
-        <div class="">
+    <div class="">
             <div class="card-body m-1">
             <h4 class="font-bold" style="color:black;   ">Edit Patient Complete History</h4>
         <div class="card pe-0">
@@ -446,7 +446,7 @@
                                                 <p>First Pregnancy</p>
                                                 <div class="d-flex pregnancy mb-2">
                                                     <p>Delivered on</p>
-                                                    <input type="date" class="form-control rounded-4" placeholder="Date" id="obstetrical_first_pregnancy_delivered_on" name="obstetrical_first_pregnancy_delivered_on" value="{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivered_on }}"/>
+                                                    <input type="date" class="form-control rounded-4" max="{{ date('Y-m-d') }}" placeholder="Date" id="obstetrical_first_pregnancy_delivered_on" name="obstetrical_first_pregnancy_delivered_on" value="{{ optional($patient->medicalHistory)->obstetrical_first_pregnancy_delivered_on }}"/>
                                                     @error('obstetrical_first_pregnancy_delivered_on')
                                                     <p class="text-red-500 text-xs p-1">
                                                         {{ $message }}
@@ -658,7 +658,7 @@
 
                 </div>
             </div>
-        </div>
+    </div>
 
     {{-- </form> --}}
 
