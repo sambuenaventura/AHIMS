@@ -236,10 +236,37 @@ html {
                     </span>
                     <span class="p-1 rounded">View Results</span>
                 </a>
-                
+
+
+
+
+
+
+
                 {{-- <a href="{{ route('requestService', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit" style="width:auto;">Request a Service</a> --}}
                 {{-- <a href="{{ route('showResults', ['patientId' => $patient->patient_id]) }}" class="btn btn-success btn-custom-style btn-submit mt-2" style="width:auto;">View Results</a> --}}
             </div>
+
+            <div class="box box1 flex-col bg-white shadow-md" style="margin-top: -20px;">
+                <p class="font-bold">Generate Report</p>
+
+                <form action="{{ route('generate_report', ['patient_id' => $patient->patient_id]) }}" method="post">
+                    @csrf
+                    <!-- Add other form elements here -->
+                    <button type="submit" class="badge rounded-pill text-bg-success d-inline-flex align-items-center justify-content-center btn-submit" style="font-size: 1em; width:auto;">
+                        <span class="p-1 rounded">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#ffffff">
+                                <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                              </svg>
+                        </span>
+                        <span class="p-1 rounded">Download PDF</span>
+                    </button>
+                </form>
+                
+                
+            </div>
+
+
         @endif
             @if ($patient->admission_type === 'Inpatient')
             <div class="box box1 flex-col bg-custom-101 mt-10 shadow-md">
@@ -247,7 +274,7 @@ html {
                 <form action="{{ route('patients.updateDischargeDate', ['patient_id' => $patient->patient_id]) }}" method="POST" >
                     @csrf 
                     <div class="flex gap-4 mb-2">
-                        <input type="date" class="form-control rounded-4 m-0" placeholder="Date" id="discharge_date" name="discharge_date" value="{{ $patient->discharge_date ?? ''}}"/>
+                        <input type="date" min="{{ date('Y-m-d') }}" class="form-control rounded-4 m-0" placeholder="Date" id="discharge_date" name="discharge_date" value="{{ $patient->discharge_date ?? ''}}"/>
                         <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" onclick="showConfirmationModal()">Discharge</button>
                     </div>
                     
@@ -611,12 +638,24 @@ html {
                         <small class="text-muted">N/A</small>
                     @endif
                 </div>
-                            
+                                                    
                 <div class="flex-row">
                     <small class="text-muted">Date & Time:</small>
                     <small class="text-muted">{{ optional($medicalHistory)->updated_at ? \Carbon\Carbon::parse($medicalHistory->updated_at)->format('g:i A n/j/Y') : 'N/A' }}</small>
                 </div>
+                        
+                <!-- Addition of the button -->
+                <div class="flex-row">
+                    @if ($medicalHistory)
+                        <a href="{{ route('nurse.history', ['patient_id' => $patient->patient_id]) }}">View Nurse History</a>
+                    @else
+                        <p>No nurse history found for this patient.</p>
+                    @endif              
+                </div>
+                
             </div>
+            
+            
             
             
             
@@ -661,7 +700,7 @@ html {
                     @foreach ($patient->vitalSigns->take(2) as $key => $vitalSign)
                         <!-- 'take(2)' limits the number of records to two initially -->
                         <div class="col">
-                            <div class="card">
+                            <div class="card @if($patient->vitalSigns->count() <= 2) mb-4 @endif">
                                 <!-- Check if it's the latest entry to add the 'NEW' badge -->
                                 @if($key === 0)
                                     <div class="badge btn-submit" style="font-size: 0.65em; position: absolute; top: 0; right: 0; padding: 4px;">NEW</div>

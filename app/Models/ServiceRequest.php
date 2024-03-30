@@ -17,7 +17,9 @@ class ServiceRequest extends Model
         'sender_id', 'receiver_id', 'procedure_type', 'sender_message', 'message', 'image', 'status',
         'date_needed', 'time_needed', // Add date_needed and time_needed fields
     ];
-    
+    protected $casts = [
+        'stat' => 'boolean',
+    ];
 
     // Define the relationship with the user who sent the request
     public function sender()

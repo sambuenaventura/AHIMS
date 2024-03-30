@@ -8,6 +8,7 @@ use App\Models\ArchivedPatients;
 use App\Models\CurrentMedication;
 use App\Models\MedicalHistory;
 use App\Models\NeurologicalExamination;
+use App\Models\NurseHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -19,6 +20,8 @@ use App\Models\ProgressNotes;
 use App\Models\ReviewOfSystems;
 use App\Models\VitalSigns;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -392,6 +395,15 @@ public function updateDischargeDate(Request $request, $id)
         return redirect('/')->with('message', 'New patient was added successfully!');
     }
 
+
+
+
+
+
+
+
+    
+
     public function update(Request $request, Patients $patient)
     {    //dd($request->all());
 
@@ -518,114 +530,115 @@ public function updateDischargeDate(Request $request, $id)
 
         // Update the medical history with the validated data
         $patient->medicalHistory->update($validatedMedicalHistory);
+        
         }
                     
         else {
 
-            // Create new medical history if it doesn't exist
-            $medicalHistoryData = $request->validate([
-                'complete_history' => ['required', 'min:1'],
-                'hypertension_years' => $request->input('hypertension') ? ['min:1'] : [], // Validate only if hypertension is checked
-                'diabetes_years' => $request->input('diabetes') ? ['min:1'] : [], // Validate only if diabetes is checked
-                'stroke' => $request->input('stroke') ? ['min:1'] : [], // Validate only if stroke is checked
-                'stroke_year' => $request->input('stroke') ? ['min:1'] : [], // Validate only if stroke is checked
-                'asthma' => $request->input('asthma') ? ['min:1'] : [], // Validate only if asthma is checked
-                'asthma_years' => $request->input('asthma') ? ['min:1'] : [], // Validate only if asthma is checked
-                'mental_neuropsychiatric_illness' => $request->input('mental_neuropsychiatric_illness') ? ['min:1'] : [], // Validate only if mental_neuropsychiatric_illness is checked
-                'mental_neuropsychiatric_illness_details' => $request->input('mental_neuropsychiatric_illness') ? ['min:1'] : [], // Validate only if mental_neuropsychiatric_illness is checked
-                'previous_hospitalization' => $request->input('previous_hospitalization') ? ['min:1'] : [], // Validate only if previous_hospitalization is checked
-                'hospitalization_details' => $request->input('previous_hospitalization') ? ['min:1'] : [], // Validate only if previous_hospitalization is checked
-                'medications' => $request->input('medications') ? ['min:1'] : [], // Validate only if medications is checked
-                'medications_details' => $request->input('medications') ? ['min:1'] : [], // Validate only if medications is checked
-                'allergies' => $request->input('allergies') ? ['min:1'] : [], // Validate only if allergies is checked
-                'allergies_details' => $request->input('allergies') ? ['min:1'] : [], // Validate only if allergies is checked
-                'others_checkbox' => $request->input('others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
-                'others_details' => $request->input('others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
-                'family_hypertension' => ['nullable', 'min:1'],
-                'family_diabetes' => ['nullable', 'min:1'],
-                'family_cancer' => ['nullable', 'min:1'],
-                'family_asthma' => ['nullable', 'min:1'],
-                'family_heart_disease' => ['nullable', 'min:1'],
-                'family_others_checkbox' => $request->input('family_others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
-                'family_others_details' => $request->input('others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
-                'personal_smoker' => ['nullable', 'min:1'],
-                'personal_alcohol_drinker' => ['nullable', 'min:1'],
-                'personal_drug_abuse' => ['nullable', 'min:1'],
-                'menstrual_interval' => ['nullable', 'min:1'],
-                'menstrual_duration' => ['nullable', 'min:1'],
-                'menstrual_dysmenorrhea' => ['nullable', 'min:1'],
-                'obstetrical_lmp' => ['nullable', 'min:1'],
-                'obstetrical_aog' => ['nullable', 'min:1'],
-                'obstetrical_pmp' => ['nullable', 'min:1'],
-                'obstetrical_edc' => ['nullable', 'min:1'],
-                'obstetrical_prenatal_checkups' => ['nullable', 'min:1'],
-                'obstetrical_gravida' => ['nullable', 'min:1'],
-                'obstetrical_para' => ['nullable', 'min:1'],
-                "obstetrical_first_pregnancy_delivered_on" => ['nullable', 'date'], // Adjusted for the new field
-                'obstetrical_first_pregnancy_term_preterm' => ['nullable', Rule::in(['term', 'preterm'])],
-                'obstetrical_first_pregnancy_girl_boy' => ['nullable', Rule::in(['girl', 'boy'])],
-                'obstetrical_first_pregnancy_delivery_method' => ['nullable', Rule::in(['nsd', 'cs'])],
-                'obstetrical_first_pregnancy_delivery_place' => ['nullable', 'min:1'],
-                'pediatric_term' => ['nullable', 'min:1'],
-                'pediatric_preterm' => ['nullable', 'min:1'],
-                'pediatric_postterm' => ['nullable', 'min:1'],
-                'pediatric_birth_by' => ['nullable', 'min:1'],
-                'pediatric_nsd_cs' => ['nullable', 'min:1'],
-                'pediatric_age_of_mother_at_pregnancy' => ['nullable', 'min:1'],
-                'pediatric_no_of_pregnancy' => ['nullable', 'min:1'],
-                'pediatric_no_of_pregnancy_first' => ['nullable', 'min:1'],
-                'pediatric_no_of_pregnancy_second' => ['nullable', 'min:1'],
-                'pediatric_no_of_pregnancy_third' => ['nullable', 'min:1'],
-                'pediatric_no_of_pregnancy_others' => ['nullable', 'min:1'],
-                'pediatric_complications_during_pregnancy' => ['nullable', 'min:1'],
-                'pediatric_immunizations' => ['nullable', 'min:1'],
-                // Add other boolean columns here
-            ]);
-    
-            // Set checkbox values to false if not present in the request
-            $checkboxFields = [
-                'hypertension',
-                'cvd',
-                'diabetes',
-                'stroke',
-                'asthma',
-                'mental_neuropsychiatric_illness',
-                'previous_hospitalization',
-                'medications',
-                'allergies',
-                'others_checkbox',
-                'family_hypertension',
-                'family_diabetes',
-                'family_cancer',
-                'family_asthma',
-                'family_heart_disease',
-                'family_others_checkbox',
-                'personal_smoker',
-                'personal_alcohol_drinker',
-                'personal_drug_abuse',
-            ];
-    
-            foreach ($checkboxFields as $field) {
-                $medicalHistoryData[$field] = $request->has($field);
-            }
-    
-            // If checkbox is unchecked, set corresponding details to null
-            $yearFields = [
-                'hypertension_years',
-                'cvd_year',
-                'diabetes_years',
-                'stroke_year',
-                'asthma_years',
-                'others_details',
-                'family_others_details',
+        // Create new medical history if it doesn't exist
+        $medicalHistoryData = $request->validate([
+            'complete_history' => ['required', 'min:1'],
+            'hypertension_years' => $request->input('hypertension') ? ['min:1'] : [], // Validate only if hypertension is checked
+            'diabetes_years' => $request->input('diabetes') ? ['min:1'] : [], // Validate only if diabetes is checked
+            'stroke' => $request->input('stroke') ? ['min:1'] : [], // Validate only if stroke is checked
+            'stroke_year' => $request->input('stroke') ? ['min:1'] : [], // Validate only if stroke is checked
+            'asthma' => $request->input('asthma') ? ['min:1'] : [], // Validate only if asthma is checked
+            'asthma_years' => $request->input('asthma') ? ['min:1'] : [], // Validate only if asthma is checked
+            'mental_neuropsychiatric_illness' => $request->input('mental_neuropsychiatric_illness') ? ['min:1'] : [], // Validate only if mental_neuropsychiatric_illness is checked
+            'mental_neuropsychiatric_illness_details' => $request->input('mental_neuropsychiatric_illness') ? ['min:1'] : [], // Validate only if mental_neuropsychiatric_illness is checked
+            'previous_hospitalization' => $request->input('previous_hospitalization') ? ['min:1'] : [], // Validate only if previous_hospitalization is checked
+            'hospitalization_details' => $request->input('previous_hospitalization') ? ['min:1'] : [], // Validate only if previous_hospitalization is checked
+            'medications' => $request->input('medications') ? ['min:1'] : [], // Validate only if medications is checked
+            'medications_details' => $request->input('medications') ? ['min:1'] : [], // Validate only if medications is checked
+            'allergies' => $request->input('allergies') ? ['min:1'] : [], // Validate only if allergies is checked
+            'allergies_details' => $request->input('allergies') ? ['min:1'] : [], // Validate only if allergies is checked
+            'others_checkbox' => $request->input('others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
+            'others_details' => $request->input('others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
+            'family_hypertension' => ['nullable', 'min:1'],
+            'family_diabetes' => ['nullable', 'min:1'],
+            'family_cancer' => ['nullable', 'min:1'],
+            'family_asthma' => ['nullable', 'min:1'],
+            'family_heart_disease' => ['nullable', 'min:1'],
+            'family_others_checkbox' => $request->input('family_others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
+            'family_others_details' => $request->input('others_checkbox') ? ['min:1'] : [], // Validate only if others_checkbox is checked
+            'personal_smoker' => ['nullable', 'min:1'],
+            'personal_alcohol_drinker' => ['nullable', 'min:1'],
+            'personal_drug_abuse' => ['nullable', 'min:1'],
+            'menstrual_interval' => ['nullable', 'min:1'],
+            'menstrual_duration' => ['nullable', 'min:1'],
+            'menstrual_dysmenorrhea' => ['nullable', 'min:1'],
+            'obstetrical_lmp' => ['nullable', 'min:1'],
+            'obstetrical_aog' => ['nullable', 'min:1'],
+            'obstetrical_pmp' => ['nullable', 'min:1'],
+            'obstetrical_edc' => ['nullable', 'min:1'],
+            'obstetrical_prenatal_checkups' => ['nullable', 'min:1'],
+            'obstetrical_gravida' => ['nullable', 'min:1'],
+            'obstetrical_para' => ['nullable', 'min:1'],
+            "obstetrical_first_pregnancy_delivered_on" => ['nullable', 'date'], // Adjusted for the new field
+            'obstetrical_first_pregnancy_term_preterm' => ['nullable', Rule::in(['term', 'preterm'])],
+            'obstetrical_first_pregnancy_girl_boy' => ['nullable', Rule::in(['girl', 'boy'])],
+            'obstetrical_first_pregnancy_delivery_method' => ['nullable', Rule::in(['nsd', 'cs'])],
+            'obstetrical_first_pregnancy_delivery_place' => ['nullable', 'min:1'],
+            'pediatric_term' => ['nullable', 'min:1'],
+            'pediatric_preterm' => ['nullable', 'min:1'],
+            'pediatric_postterm' => ['nullable', 'min:1'],
+            'pediatric_birth_by' => ['nullable', 'min:1'],
+            'pediatric_nsd_cs' => ['nullable', 'min:1'],
+            'pediatric_age_of_mother_at_pregnancy' => ['nullable', 'min:1'],
+            'pediatric_no_of_pregnancy' => ['nullable', 'min:1'],
+            'pediatric_no_of_pregnancy_first' => ['nullable', 'min:1'],
+            'pediatric_no_of_pregnancy_second' => ['nullable', 'min:1'],
+            'pediatric_no_of_pregnancy_third' => ['nullable', 'min:1'],
+            'pediatric_no_of_pregnancy_others' => ['nullable', 'min:1'],
+            'pediatric_complications_during_pregnancy' => ['nullable', 'min:1'],
+            'pediatric_immunizations' => ['nullable', 'min:1'],
+            // Add other boolean columns here
+        ]);
 
-            ];
-    
-            foreach ($yearFields as $field) {
-                if (!$request->has($field)) {
-                    $medicalHistoryData[$field] = null;
-                }
+        // Set checkbox values to false if not present in the request
+        $checkboxFields = [
+            'hypertension',
+            'cvd',
+            'diabetes',
+            'stroke',
+            'asthma',
+            'mental_neuropsychiatric_illness',
+            'previous_hospitalization',
+            'medications',
+            'allergies',
+            'others_checkbox',
+            'family_hypertension',
+            'family_diabetes',
+            'family_cancer',
+            'family_asthma',
+            'family_heart_disease',
+            'family_others_checkbox',
+            'personal_smoker',
+            'personal_alcohol_drinker',
+            'personal_drug_abuse',
+        ];
+
+        foreach ($checkboxFields as $field) {
+            $medicalHistoryData[$field] = $request->has($field);
+        }
+
+        // If checkbox is unchecked, set corresponding details to null
+        $yearFields = [
+            'hypertension_years',
+            'cvd_year',
+            'diabetes_years',
+            'stroke_year',
+            'asthma_years',
+            'others_details',
+            'family_others_details',
+
+        ];
+
+        foreach ($yearFields as $field) {
+            if (!$request->has($field)) {
+                $medicalHistoryData[$field] = null;
             }
+        }
     
 
         // Set nurse ID in the medical history data
@@ -635,250 +648,325 @@ public function updateDischargeDate(Request $request, $id)
         $patient->medicalHistory()->create($medicalHistoryData); 
         }
 
-
-
-
-            //dd($request->all());
-
     
-            // Add the new code here for updating review of systems
-    $validatedReviewOfSystems = $request->validate([
-        'consti_fever' => ['boolean', 'nullable'],
-        'consti_anorexia' => ['boolean', 'nullable'],
-        'consti_weight_loss' => ['boolean', 'nullable'],
-        'consti_fatigue' => ['boolean', 'nullable'],
-        'hema_easy_bruisability' => ['boolean', 'nullable'],
-        'hema_abnormal_bleeding' => ['boolean', 'nullable'],
-        'eent_blurring_of_vision' => ['boolean', 'nullable'],
-        'eent_hearing_loss' => ['boolean', 'nullable'],
-        'eent_tinnitus' => ['boolean', 'nullable'],
-        'eent_ear_discharges' => ['boolean', 'nullable'],
-        'eent_nose_bleed' => ['boolean', 'nullable'],
-        'eent_mouth_snores' => ['boolean', 'nullable'],
-        'cns_headache' => ['boolean', 'nullable'],
-        'cns_dizziness' => ['boolean', 'nullable'],
-        'cns_seizures' => ['boolean', 'nullable'],
-        'cns_tremors' => ['boolean', 'nullable'],
-        'cns_paralysis' => ['boolean', 'nullable'],
-        'cns_numbness_or_tingling_of_sensations' => ['boolean', 'nullable'],
-        'respi_dyspnea' => ['boolean', 'nullable'],
-        'respi_cough' => ['boolean', 'nullable'],
-        'respi_colds' => ['boolean', 'nullable'],
-        'respi_orthopnea' => ['boolean', 'nullable'],
-        'respi_shortness_of_breath' => ['boolean', 'nullable'],
-        'respi_hemoptysis' => ['boolean', 'nullable'],
-        'cvs_chest_pain' => ['boolean', 'nullable'],
-        'cvs_palpitations' => ['boolean', 'nullable'],
-        'cvs_swelling_of_lower_extremities' => ['boolean', 'nullable'],
-        'git_diarrhea' => ['boolean', 'nullable'],
-        'git_constipation' => ['boolean', 'nullable'],
-        'git_abdominal_pain' => ['boolean', 'nullable'],
-        'git_loss_of_appetite' => ['boolean', 'nullable'],
-        'git_change_in_bowel_movement' => ['boolean', 'nullable'],
-        'git_nausea' => ['boolean', 'nullable'],
-        'git_vomiting' => ['boolean', 'nullable'],
-        'git_hematochezia' => ['boolean', 'nullable'],
-        'genittract_dysuria' => ['boolean', 'nullable'],
-        'genittract_urgency' => ['boolean', 'nullable'],
-        'genittract_frequency' => ['boolean', 'nullable'],
-        'genittract_flank_pain' => ['boolean', 'nullable'],
-        'genittract_vaginal_discharge' => ['boolean', 'nullable'],
-        'musculo_joint_pains' => ['boolean', 'nullable'],
-        'musculo_muscle_weakness' => ['boolean', 'nullable'],
-        'musculo_back_pains' => ['boolean', 'nullable'],
-        'musculo_difficulty_in_walking' => ['boolean', 'nullable'],
-        // Add validation for other review of systems fields as needed
-    ]);
+        // Add the new code here for updating review of systems
+        $validatedReviewOfSystems = $request->validate([
+            'consti_fever' => ['boolean', 'nullable'],
+            'consti_anorexia' => ['boolean', 'nullable'],
+            'consti_weight_loss' => ['boolean', 'nullable'],
+            'consti_fatigue' => ['boolean', 'nullable'],
+            'hema_easy_bruisability' => ['boolean', 'nullable'],
+            'hema_abnormal_bleeding' => ['boolean', 'nullable'],
+            'eent_blurring_of_vision' => ['boolean', 'nullable'],
+            'eent_hearing_loss' => ['boolean', 'nullable'],
+            'eent_tinnitus' => ['boolean', 'nullable'],
+            'eent_ear_discharges' => ['boolean', 'nullable'],
+            'eent_nose_bleed' => ['boolean', 'nullable'],
+            'eent_mouth_snores' => ['boolean', 'nullable'],
+            'cns_headache' => ['boolean', 'nullable'],
+            'cns_dizziness' => ['boolean', 'nullable'],
+            'cns_seizures' => ['boolean', 'nullable'],
+            'cns_tremors' => ['boolean', 'nullable'],
+            'cns_paralysis' => ['boolean', 'nullable'],
+            'cns_numbness_or_tingling_of_sensations' => ['boolean', 'nullable'],
+            'respi_dyspnea' => ['boolean', 'nullable'],
+            'respi_cough' => ['boolean', 'nullable'],
+            'respi_colds' => ['boolean', 'nullable'],
+            'respi_orthopnea' => ['boolean', 'nullable'],
+            'respi_shortness_of_breath' => ['boolean', 'nullable'],
+            'respi_hemoptysis' => ['boolean', 'nullable'],
+            'cvs_chest_pain' => ['boolean', 'nullable'],
+            'cvs_palpitations' => ['boolean', 'nullable'],
+            'cvs_swelling_of_lower_extremities' => ['boolean', 'nullable'],
+            'git_diarrhea' => ['boolean', 'nullable'],
+            'git_constipation' => ['boolean', 'nullable'],
+            'git_abdominal_pain' => ['boolean', 'nullable'],
+            'git_loss_of_appetite' => ['boolean', 'nullable'],
+            'git_change_in_bowel_movement' => ['boolean', 'nullable'],
+            'git_nausea' => ['boolean', 'nullable'],
+            'git_vomiting' => ['boolean', 'nullable'],
+            'git_hematochezia' => ['boolean', 'nullable'],
+            'genittract_dysuria' => ['boolean', 'nullable'],
+            'genittract_urgency' => ['boolean', 'nullable'],
+            'genittract_frequency' => ['boolean', 'nullable'],
+            'genittract_flank_pain' => ['boolean', 'nullable'],
+            'genittract_vaginal_discharge' => ['boolean', 'nullable'],
+            'musculo_joint_pains' => ['boolean', 'nullable'],
+            'musculo_muscle_weakness' => ['boolean', 'nullable'],
+            'musculo_back_pains' => ['boolean', 'nullable'],
+            'musculo_difficulty_in_walking' => ['boolean', 'nullable'],
+            // Add validation for other review of systems fields as needed
+        ]);
 
-    // If checkbox is unchecked, set corresponding values to false
-    $checkboxFields = [
-        'consti_fever',
-        'consti_anorexia',
-        'consti_weight_loss',
-        'consti_fatigue',
-        'hema_easy_bruisability',
-        'hema_abnormal_bleeding',
-        'eent_blurring_of_vision',
-        'eent_hearing_loss',
-        'eent_tinnitus',
-        'eent_ear_discharges',
-        'eent_nose_bleed',
-        'eent_mouth_snores',
-        'cns_headache',
-        'cns_dizziness',
-        'cns_seizures',
-        'cns_tremors',
-        'cns_paralysis',
-        'cns_numbness_or_tingling_of_sensations',
-        'respi_dyspnea',
-        'respi_cough',
-        'respi_colds',
-        'respi_orthopnea',
-        'respi_shortness_of_breath',
-        'respi_hemoptysis',
-        'cvs_chest_pain',
-        'cvs_palpitations',
-        'cvs_swelling_of_lower_extremities',
-        'git_diarrhea',
-        'git_constipation',
-        'git_abdominal_pain',
-        'git_loss_of_appetite',
-        'git_change_in_bowel_movement',
-        'git_nausea',
-        'git_vomiting',
-        'git_hematochezia',
-        'genittract_dysuria',
-        'genittract_urgency',
-        'genittract_frequency',
-        'genittract_flank_pain',
-        'genittract_vaginal_discharge',
-        'musculo_joint_pains',
-        'musculo_muscle_weakness',
-        'musculo_back_pains',
-        'musculo_difficulty_in_walking',
-        // Add other checkbox fields here
-    ];
+        // If checkbox is unchecked, set corresponding values to false
+        $checkboxFields = [
+            'consti_fever',
+            'consti_anorexia',
+            'consti_weight_loss',
+            'consti_fatigue',
+            'hema_easy_bruisability',
+            'hema_abnormal_bleeding',
+            'eent_blurring_of_vision',
+            'eent_hearing_loss',
+            'eent_tinnitus',
+            'eent_ear_discharges',
+            'eent_nose_bleed',
+            'eent_mouth_snores',
+            'cns_headache',
+            'cns_dizziness',
+            'cns_seizures',
+            'cns_tremors',
+            'cns_paralysis',
+            'cns_numbness_or_tingling_of_sensations',
+            'respi_dyspnea',
+            'respi_cough',
+            'respi_colds',
+            'respi_orthopnea',
+            'respi_shortness_of_breath',
+            'respi_hemoptysis',
+            'cvs_chest_pain',
+            'cvs_palpitations',
+            'cvs_swelling_of_lower_extremities',
+            'git_diarrhea',
+            'git_constipation',
+            'git_abdominal_pain',
+            'git_loss_of_appetite',
+            'git_change_in_bowel_movement',
+            'git_nausea',
+            'git_vomiting',
+            'git_hematochezia',
+            'genittract_dysuria',
+            'genittract_urgency',
+            'genittract_frequency',
+            'genittract_flank_pain',
+            'genittract_vaginal_discharge',
+            'musculo_joint_pains',
+            'musculo_muscle_weakness',
+            'musculo_back_pains',
+            'musculo_difficulty_in_walking',
+            // Add other checkbox fields here
+        ];
 
-    foreach ($checkboxFields as $field) {
-        if (!$request->has($field)) {
-            $validatedReviewOfSystems[$field] = false;
+        foreach ($checkboxFields as $field) {
+            if (!$request->has($field)) {
+                $validatedReviewOfSystems[$field] = false;
+            }
         }
-    }
 
-    // Update or create review of systems record
-    if ($patient->reviewOfSystems) {
-        // If the patient has existing review of systems, update it
-        $patient->reviewOfSystems->update($validatedReviewOfSystems);
-    } else {
-        // If no review of systems record exists, create a new one
-        $patient->reviewOfSystems()->create($validatedReviewOfSystems);
-    }        
-
-    
-    // Add the new code here for updating review of systems
-    $validatedPhysicalExamination = $request->validate([
-        'vitals_blood_pressure' => ['nullable', 'min:1'],
-        'vitals_respiratory_rate' => ['nullable', 'min:1'],
-        'vitals_pulse_rate' => ['nullable', 'min:1'],
-        'vitals_temperature' => ['nullable', 'min:1'],
-        'vitals_weight' => ['nullable', 'min:1'],
-        'pe_heent' => ['nullable', 'min:1'],
-        'pe_neck' => ['nullable', 'min:1'],
-        'pe_chest_left' => ['nullable', 'min:1'],
-        'pe_chest_right' => ['nullable', 'min:1'],
-        'pe_lungs' => ['nullable', 'min:1'],
-        'pe_heart' => ['nullable', 'min:1'],
-        'pe_abdomen' => ['nullable', 'min:1'],
-        'pe_breast' => ['nullable', 'min:1'],
-        'pe_extremities' => ['nullable', 'min:1'],
-        'pe_internal_examination' => ['nullable', 'min:1'],
-        'pe_rectal_examination' => ['nullable', 'min:1'],
-        // Add validation for other review of systems fields as needed
-    ]);
-
-    // Update or create review of systems record
-    if ($patient->physicalExamination) {
-        // If the patient has existing review of systems, update it
-        $patient->physicalExamination->update($validatedPhysicalExamination);
-    } else {
-        // If no review of systems record exists, create a new one
-        $patient->physicalExamination()->create($validatedPhysicalExamination);
-    }
-
-    // Add the new code here for updating review of systems
-    $validatedNeurologicalExamination = $request->validate([
-        'neuro_gcs' => ['nullable', 'min:1'],
-        'neuro_cn_i' => ['nullable', 'min:1'],
-        'neuro_cn_ii' => ['nullable', 'min:1'],
-        'neuro_cn_iii_iv_vi' => ['nullable', 'min:1'],
-        'neuro_cn_v' => ['nullable', 'min:1'],
-        'neuro_cn_vii' => ['nullable', 'min:1'],
-        'neuro_cn_viii' => ['nullable', 'min:1'],
-        'neuro_cn_ix_x' => ['nullable', 'min:1'],
-        'neuro_cn_xi' => ['nullable', 'min:1'],
-        'neuro_cn_xii' => ['nullable', 'min:1'],
-        'neuro_babinski' => ['boolean', 'nullable'],
-        'neuro_motor' => ['nullable', 'min:1'],
-        'neuro_sensory' => ['nullable', 'min:1'],
-        'clinical_impression' => ['nullable', 'min:1'],
-        'work_up' => ['nullable', 'min:1'],
-
-        // Add validation for other review of systems fields as needed
-    ]);
-
-    $validatedNeurologicalExamination['neuro_babinski'] = $request->has('neuro_babinski') ? 1 : 0;
-
-
-    // Update or create review of systems record
-    if ($patient->neurologicalExamination) {
-        // If the patient has existing review of systems, update it
-        $patient->neurologicalExamination->update($validatedNeurologicalExamination);
-    } else {
-        // If no review of systems record exists, create a new one
-        $patient->neurologicalExamination()->create($validatedNeurologicalExamination);
-    }      
-    // dd($request->all());
-
-
-
-    // Add the new code here for updating review of systems
-    $validatedcurrentMedication = $request->validate([
-        'current_medications' => ['nullable', 'min:1'],
-        'current_dosage' => ['nullable', 'min:1'],
-        'current_medication_image' => ['nullable', 'min:1'],
-        'current_frequency' => ['nullable', 'min:1'],
-        'current_prescribing_physician' => ['nullable', 'min:1'],
-        // Add validation for other review of systems fields as needed
-    ]);
-
-    // Update or create review of systems record
-    if ($patient->currentMedication) {
-        // If the patient has existing review of systems, update it
-        $patient->currentMedication->update($validatedcurrentMedication);
-    } else {
-        // If no review of systems record exists, create a new one
-        $patient->currentMedication()->create($validatedcurrentMedication);
-    }
-
-
-    // $validatedObstetricalHistory = $request->validate([
-    //     'obstetrical_pregnancy_delivered_on' => ['nullable', 'date'], // Validation for delivered on date
-    //     'obstetrical_pregnancy_term_preterm' => ['nullable', Rule::in(['term', 'preterm'])],
-    //     'obstetrical_pregnancy_girl_boy' => ['nullable', Rule::in(['girl', 'boy'])],
-    //     'obstetrical_pregnancy_delivery_method' => ['nullable', Rule::in(['nsd', 'cs'])],
-    //     'obstetrical_pregnancy_delivery_place' => ['nullable', 'string', 'min:1'], // Validation for place of delivery
-    //     // Add validation for other obstetrical history fields as needed
-    // ]);
-    
-    //     // Update or create obstetrical history record
-    //     if ($patient->obstetricalHistory) {
-    //         // If the patient has existing obstetrical history, update it
-    //         foreach ($patient->obstetricalHistory as $history) {
-    //             $history->update($validatedObstetricalHistory);
-    //         }
-    //     } else {
-    //         // If no obstetrical history record exists, create a new one
-    //         $patient->obstetricalHistories()->create($validatedObstetricalHistory);
-    //     }
-    
+        // Update or create review of systems record
+        if ($patient->reviewOfSystems) {
+            // If the patient has existing review of systems, update it
+            $patient->reviewOfSystems->update($validatedReviewOfSystems);
+        } else {
+            // If no review of systems record exists, create a new one
+            $patient->reviewOfSystems()->create($validatedReviewOfSystems);
+        }        
 
         
+        // Add the new code here for updating review of systems
+        $validatedPhysicalExamination = $request->validate([
+            'vitals_blood_pressure' => ['nullable', 'min:1'],
+            'vitals_respiratory_rate' => ['nullable', 'min:1'],
+            'vitals_pulse_rate' => ['nullable', 'min:1'],
+            'vitals_temperature' => ['nullable', 'min:1'],
+            'vitals_weight' => ['nullable', 'min:1'],
+            'pe_heent' => ['nullable', 'min:1'],
+            'pe_neck' => ['nullable', 'min:1'],
+            'pe_chest_left' => ['nullable', 'min:1'],
+            'pe_chest_right' => ['nullable', 'min:1'],
+            'pe_lungs' => ['nullable', 'min:1'],
+            'pe_heart' => ['nullable', 'min:1'],
+            'pe_abdomen' => ['nullable', 'min:1'],
+            'pe_breast' => ['nullable', 'min:1'],
+            'pe_extremities' => ['nullable', 'min:1'],
+            'pe_internal_examination' => ['nullable', 'min:1'],
+            'pe_rectal_examination' => ['nullable', 'min:1'],
+            // Add validation for other review of systems fields as needed
+        ]);
+
+        // Update or create review of systems record
+        if ($patient->physicalExamination) {
+            // If the patient has existing review of systems, update it
+            $patient->physicalExamination->update($validatedPhysicalExamination);
+        } else {
+            // If no review of systems record exists, create a new one
+            $patient->physicalExamination()->create($validatedPhysicalExamination);
+        }
+
+        // Add the new code here for updating review of systems
+        $validatedNeurologicalExamination = $request->validate([
+            'neuro_gcs' => ['nullable', 'min:1'],
+            'neuro_cn_i' => ['nullable', 'min:1'],
+            'neuro_cn_ii' => ['nullable', 'min:1'],
+            'neuro_cn_iii_iv_vi' => ['nullable', 'min:1'],
+            'neuro_cn_v' => ['nullable', 'min:1'],
+            'neuro_cn_vii' => ['nullable', 'min:1'],
+            'neuro_cn_viii' => ['nullable', 'min:1'],
+            'neuro_cn_ix_x' => ['nullable', 'min:1'],
+            'neuro_cn_xi' => ['nullable', 'min:1'],
+            'neuro_cn_xii' => ['nullable', 'min:1'],
+            'neuro_babinski' => ['boolean', 'nullable'],
+            'neuro_motor' => ['nullable', 'min:1'],
+            'neuro_sensory' => ['nullable', 'min:1'],
+            'clinical_impression' => ['nullable', 'min:1'],
+            'work_up' => ['nullable', 'min:1'],
+
+            // Add validation for other review of systems fields as needed
+        ]);
+
+        $validatedNeurologicalExamination['neuro_babinski'] = $request->has('neuro_babinski') ? 1 : 0;
+
+
+        // Update or create review of systems record
+        if ($patient->neurologicalExamination) {
+            // If the patient has existing review of systems, update it
+            $patient->neurologicalExamination->update($validatedNeurologicalExamination);
+        } else {
+            // If no review of systems record exists, create a new one
+            $patient->neurologicalExamination()->create($validatedNeurologicalExamination);
+        }      
+        // dd($request->all());
+
+
+
+        // Add the new code here for updating review of systems
+        $validatedcurrentMedication = $request->validate([
+            'current_medications' => ['nullable', 'min:1'],
+            'current_dosage' => ['nullable', 'min:1'],
+            'current_medication_image' => ['nullable', 'min:1'],
+            'current_frequency' => ['nullable', 'min:1'],
+            'current_prescribing_physician' => ['nullable', 'min:1'],
+            // Add validation for other review of systems fields as needed
+        ]);
+
+        // Update or create review of systems record
+        if ($patient->currentMedication) {
+            // If the patient has existing review of systems, update it
+            $patient->currentMedication->update($validatedcurrentMedication);
+        } else {
+            // If no review of systems record exists, create a new one
+            $patient->currentMedication()->create($validatedcurrentMedication);
+        }
+
+        // Log the nurse's update history
+        $nurseHistory = new NurseHistory();
+        $nurseHistory->nurse_id = auth()->user()->id; // Assuming you have access to the authenticated nurse's ID
+        $nurseHistory->medical_history_id = $patient->medicalHistory->history_id; // Assuming you have access to the medical history ID
+        $nurseHistory->patient_id = $patient->patient_id; // Assign the patient_id
+        // Add any other necessary fields to the NurseHistory model and set their values
+        $nurseHistory->save();
+
         return back()->with('message', 'Data was successfully updated');
+
     }
-   
+
+
+
+
+    
+    
+    
+    
+        public function generatePdf(Request $request, $patient_id)
+    {
+        // Retrieve patient by ID
+        $patient = Patients::findOrFail($patient_id);
+    
+        // Get the data for the PDF
+        $medicalHistory = $patient->medicalHistory;
+        $reviewOfSystems = $patient->reviewOfSystems;
+        $physicalExamination = $patient->physicalExamination;
+        $neurologicalExamination = $patient->neurologicalExamination;
+        $currentMedication = $patient->currentMedication;
+        $vitalSigns = $patient->vitalSigns;
+        $medicationRemarks = $patient->medicationRemarks;
+        $progressNotes = $patient->progressNotes;
+        $requests = $patient->requests; // Fetch requests data
+
+    
+        // Prepare the HTML content for the PDF
+        $html = view('pdf.complete_history', compact('patient', 'medicalHistory', 'reviewOfSystems', 'physicalExamination', 'neurologicalExamination', 'currentMedication', 'vitalSigns', 'medicationRemarks', 'progressNotes', 'requests'))->render();
+    
+        // Configure DomPDF options
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+    
+        // Instantiate DomPDF with options
+        $dompdf = new Dompdf($options);
+    
+        // Load HTML content for the PDF
+        $dompdf->loadHtml($html);
+    
+        // Set paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+    
+        // Render the PDF
+        $dompdf->render();
+    
+        // Output the generated PDF (inline or download)
+        return $dompdf->stream('patient_data.pdf');
+    }
+    
+    
+    public function viewHistory($patient_id)
+    {
+        // Retrieve all nurse histories for the given patient_id
+        $nurseHistories = Patients::findOrFail($patient_id)->nurseHistories;
+            
+        return view('patients.nurse-history', ['nurseHistories' => $nurseHistories]);
+    }
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function updateVitalSigns(Request $request, Patients $patient)
     {
+        // Get the authenticated user
+        $user = Auth::user();
+        
+        // Check if the user has a PIN
+        if ($user->pin) {
+            // Validate the request data with 'pin' instead of 'password'
+            $request->validate([
+                'credential' => 'required|string', // assuming the input field is named 'credential'
+            ]);
 
-        // Validate the request data
-        $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
+            $credential = $request->input('credential');
 
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }   
+            // Check if the PIN matches the user's PIN
+            if ($credential !== $user->pin) {
+                return redirect()->back()->with('error', 'Incorrect PIN. Please try again.'); // Redirect back with an error message
+            }
+        } else {
+            // Validate the request data with 'password'
+            $request->validate([
+                'credential' => 'required|string', // assuming the input field is named 'credential'
+            ]);
+
+            $credential = $request->input('credential');
+
+            // Check if the password matches the user's password
+            if (!Hash::check($credential, $user->password)) {
+                return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+            }
+        }
+
+
         
         // Validate the request for vital signs
         $validatedVitalSigns = $request->validate([
@@ -1131,6 +1219,48 @@ public function archivePatient(Request $request, $patient_id)
     }
     
 
+    // public function requestLaboratoryServices(Request $request)
+    // {
+    //     // Validate the request data
+    //     $validatedData = $request->validate([
+    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //         'patient_id' => 'required|exists:patients,patient_id',
+    //         'procedure_type' => 'required',
+    //         'sender_message' => 'required',
+    //         'date_needed' => 'required|date', // Validation rule for the date_needed field
+    //         'time_needed' => 'required|date_format:H:i', // Validation rule for the time_needed field
+    //         // Add more validation rules as needed
+    //     ]);
+    
+    //     // Check if the password matches the user's password
+    //     if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     }   
+        
+    //     // Create a new laboratory service request
+    //     $serviceRequest = new ServiceRequest();
+    //     $serviceRequest->patient_id = $validatedData['patient_id'];
+    //     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+    //     $serviceRequest->procedure_type = $validatedData['procedure_type'];
+    //     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+        
+    //     // Set date_needed and time_needed if provided
+    //     if ($request->filled('date_needed')) {
+    //         $serviceRequest->date_needed = $validatedData['date_needed'];
+    //     }
+    //     if ($request->filled('time_needed')) {
+    //         $serviceRequest->time_needed = $validatedData['time_needed'];
+    //     }
+    
+    //     // Save the laboratory service request
+    //     $serviceRequest->save();
+    
+    //     // Optionally, you can redirect the user after submitting the form
+    //     return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
+    // }
+    
+
+
     public function requestLaboratoryServices(Request $request)
     {
         // Validate the request data
@@ -1140,7 +1270,8 @@ public function archivePatient(Request $request, $patient_id)
             'procedure_type' => 'required',
             'sender_message' => 'required',
             'date_needed' => 'required|date', // Validation rule for the date_needed field
-            'time_needed' => 'required|date_format:H:i', // Validation rule for the time_needed field
+            'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
+            'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
             // Add more validation rules as needed
         ]);
     
@@ -1148,21 +1279,22 @@ public function archivePatient(Request $request, $patient_id)
         if (!Hash::check($validatedData['password'], Auth::user()->password)) {
             return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
         }   
-        
+    
         // Create a new laboratory service request
         $serviceRequest = new ServiceRequest();
         $serviceRequest->patient_id = $validatedData['patient_id'];
         $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
         $serviceRequest->procedure_type = $validatedData['procedure_type'];
         $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
-        
-        // Set date_needed and time_needed if provided
-        if ($request->filled('date_needed')) {
-            $serviceRequest->date_needed = $validatedData['date_needed'];
-        }
-        if ($request->filled('time_needed')) {
-            $serviceRequest->time_needed = $validatedData['time_needed'];
-        }
+    
+        // Set date_needed
+        $serviceRequest->date_needed = $validatedData['date_needed'];
+    
+        // Set time_needed based on STAT checkbox
+        $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
+    
+        // Set STAT value
+        $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
     
         // Save the laboratory service request
         $serviceRequest->save();
@@ -1171,60 +1303,105 @@ public function archivePatient(Request $request, $patient_id)
         return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
     }
     
+    
+    
+        public function requestImagingServices(Request $request)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'password' => 'required|string', // Add any additional validation rules for the password
+            'patient_id' => 'required|exists:patients,patient_id',
+            'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
+            'date_needed' => 'required|date', // Validation rule for the date_needed field
+            'sender_message' => 'required',
+            'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
+            'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
+            // Add more validation rules as needed
+        ]);
 
+        // Check if the password matches the user's password
+        if (!Hash::check($validatedData['password'], Auth::user()->password)) {
+            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        }   
 
-public function requestImagingServices(Request $request)
-{
-    // Validate the request data
-    $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
-    ]);
+        // Create a new imaging service request
+        $serviceRequest = new ServiceRequest();
+        $serviceRequest->patient_id = $validatedData['patient_id'];
+        $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+        $serviceRequest->procedure_type = $validatedData['procedure_type'];
+        $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
 
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    }   
+        // Set time_needed based on STAT checkbox
+        $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
 
-    // Validate the form input
-    $validatedData = $request->validate([
-        'patient_id' => 'required|exists:patients,patient_id',
-        'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
-        'sender_message' => 'required',
-    ]);
+        // Set STAT value
+        $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
 
-    // Check if the procedure_type is empty or not valid
-    if (empty($validatedData['procedure_type']) || !in_array($validatedData['procedure_type'], ['xray', 'ultrasound', 'ctscan'])) {
-        return redirect()->back()->with('error', 'Please select a valid procedure type.');
+        // Save the imaging service request
+        $serviceRequest->save();
+
+        // Optionally, you can redirect the user after submitting the form
+        return redirect()->back()->with('message', 'Imaging service request submitted successfully');
     }
 
-    // Check if the sender_message is empty
-    if (empty($validatedData['sender_message'])) {
-        return redirect()->back()->with('error', 'Sender message cannot be empty.');
-    }
+    
+    
+    
 
 
-    // Ensure at least one checkbox is selected for the corresponding procedure type
-    $checkboxFieldName = $validatedData['procedure_type'] . '_tests';
-    if (!$request->has($checkboxFieldName)) {
-        return redirect()->back()->with('error', 'Please select at least one option for ' . strtoupper($validatedData['procedure_type']));
-    }
+
+    // public function requestImagingServices(Request $request)
+    // {
+    //     // Validate the request data
+    //     $request->validate([
+    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //     ]);
+
+    //     // Check if the password matches the user's password
+    //     if (!Hash::check($request->password, Auth::user()->password)) {
+    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     }   
+
+    //     // Validate the form input
+    //     $validatedData = $request->validate([
+    //         'patient_id' => 'required|exists:patients,patient_id',
+    //         'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
+    //         'sender_message' => 'required',
+    //     ]);
+
+    //     // Check if the procedure_type is empty or not valid
+    //     if (empty($validatedData['procedure_type']) || !in_array($validatedData['procedure_type'], ['xray', 'ultrasound', 'ctscan'])) {
+    //         return redirect()->back()->with('error', 'Please select a valid procedure type.');
+    //     }
+
+    //     // Check if the sender_message is empty
+    //     if (empty($validatedData['sender_message'])) {
+    //         return redirect()->back()->with('error', 'Sender message cannot be empty.');
+    //     }
 
 
-    // Create a new imaging service request
-    $serviceRequest = new ServiceRequest();
-    $serviceRequest->patient_id = $validatedData['patient_id'];
-    $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
-    $serviceRequest->procedure_type = $validatedData['procedure_type'];
-    $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+    //     // Ensure at least one checkbox is selected for the corresponding procedure type
+    //     $checkboxFieldName = $validatedData['procedure_type'] . '_tests';
+    //     if (!$request->has($checkboxFieldName)) {
+    //         return redirect()->back()->with('error', 'Please select at least one option for ' . strtoupper($validatedData['procedure_type']));
+    //     }
 
-    // Set other attributes as needed
 
-    // Save the imaging service request
-    $serviceRequest->save();
+    //     // Create a new imaging service request
+    //     $serviceRequest = new ServiceRequest();
+    //     $serviceRequest->patient_id = $validatedData['patient_id'];
+    //     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+    //     $serviceRequest->procedure_type = $validatedData['procedure_type'];
+    //     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
 
-    // Optionally, you can redirect the user after submitting the form
-    return redirect()->back()->with('message', 'Imaging service request submitted successfully');
-}
+    //     // Set other attributes as needed
+
+    //     // Save the imaging service request
+    //     $serviceRequest->save();
+
+    //     // Optionally, you can redirect the user after submitting the form
+    //     return redirect()->back()->with('message', 'Imaging service request submitted successfully');
+    // }
 
 
 

@@ -100,7 +100,7 @@ class MedicalHistory extends Model
         // Add other boolean columns here
     ];
 
-    protected $primaryKey = 'patient_id';
+    protected $primaryKey = 'history_id'; // Correcting the primary key definition
 
     public function setAttribute($key, $value)
     {
@@ -175,4 +175,10 @@ class MedicalHistory extends Model
     {
         return $this->belongsTo(User::class, 'nurse_id', 'id');
     }
+    public function nurseHistory()
+    {
+        return $this->hasOne(NurseHistory::class, 'medical_history_id', 'history_id');
+    }
+    
+    
 }

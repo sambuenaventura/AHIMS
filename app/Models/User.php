@@ -70,6 +70,9 @@ class User extends Authenticatable
         return $this->hasMany(ServiceRequest::class, 'receiver_id');
     }
 
-
+    public function medicalHistory()
+    {
+        return $this->hasOne(MedicalHistory::class, 'patient_id', 'patient_id');
+    }
 
 }
