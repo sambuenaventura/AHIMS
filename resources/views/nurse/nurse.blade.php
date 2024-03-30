@@ -308,18 +308,15 @@ html {
                                       <form id="acceptForm{{ $patient->patient_id }}" action="{{ route('archive.patient', ['patient_id' => $patient->patient_id]) }}" method="POST">
                                         @csrf
                                           {{-- <button type="button" class="" onclick="showConfirmationModal()"> --}}
-                                            <button type="button" class="decline badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5 @if($patient->archived) no-hover @endif" style="font-size: 1em;" onclick="showConfirmationModalForAccept({{ $patient->patient_id }})" @if($patient->archived) disabled @endif>
+                                            <button type="button" class="decline badge rounded-pill text-bg-danger d-inline-flex align-items-center gap-0.5 @if($patient->archived || !$patient->discharge_date) no-hover @endif" style="font-size: 1em;" onclick="showConfirmationModalForAccept({{ $patient->patient_id }})" @if($patient->archived || !$patient->discharge_date) disabled @endif>
                                                 <span class="p-1 rounded">
-                                                    {{-- btn btn-success ms-2 btn-custom-style btn-submit --}}
-                                                <svg width="18" height="18" viewBox="0 0 17 16" fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg">
-                                                    <path  fill="#FFFFFF" d="M9 1.50098C9 1.10315 9.15804 0.721621 9.43934 0.440316C9.72064 0.159012 10.1022 0.000976563 10.5 0.000976563L14.5 0.000976562C15.0304 0.000976563 15.5391 0.21169 15.9142 0.586763C16.2893 0.961836 16.5 1.47054 16.5 2.00098V14.001C16.5 14.5314 16.2893 15.0401 15.9142 15.4152C15.5391 15.7903 15.0304 16.001 14.5 16.001H2.5C1.96957 16.001 1.46086 15.7903 1.08579 15.4152C0.710714 15.0401 0.5 14.5314 0.5 14.001V2.00098C0.5 1.47054 0.710714 0.961836 1.08579 0.586763C1.46086 0.21169 1.96957 0.000976563 2.5 0.000976563L8.5 0.000976562C8.186 0.418977 8 0.937977 8 1.50098V7.50098H6C5.90098 7.5008 5.80414 7.53003 5.72175 7.58496C5.63936 7.63988 5.57513 7.71804 5.53722 7.80951C5.4993 7.90099 5.4894 8.00166 5.50876 8.09877C5.52813 8.19588 5.57589 8.28505 5.646 8.35498L8.146 10.855C8.19245 10.9015 8.24762 10.9385 8.30837 10.9637C8.36911 10.9889 8.43423 11.0019 8.5 11.0019C8.56577 11.0019 8.63089 10.9889 8.69163 10.9637C8.75238 10.9385 8.80755 10.9015 8.854 10.855L11.354 8.35498C11.4241 8.28505 11.4719 8.19588 11.4912 8.09877C11.5106 8.00166 11.5007 7.90099 11.4628 7.80951C11.4249 7.71804 11.3606 7.63988 11.2783 7.58496C11.1959 7.53003 11.099 7.5008 11 7.50098H9V1.50098Z" />
-                                                </svg>
+                                                    <svg width="18" height="18" viewBox="0 0 17 16" fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg">
+                                                        <path  fill="#FFFFFF" d="M9 1.50098C9 1.10315 9.15804 0.721621 9.43934 0.440316C9.72064 0.159012 10.1022 0.000976563 10.5 0.000976563L14.5 0.000976562C15.0304 0.000976563 15.5391 0.21169 15.9142 0.586763C16.2893 0.961836 16.5 1.47054 16.5 2.00098V14.001C16.5 14.5314 16.2893 15.0401 15.9142 15.4152C15.5391 15.7903 15.0304 16.001 14.5 16.001H2.5C1.96957 16.001 1.46086 15.7903 1.08579 15.4152C0.710714 15.0401 0.5 14.5314 0.5 14.001V2.00098C0.5 1.47054 0.710714 0.961836 1.08579 0.586763C1.46086 0.21169 1.96957 0.000976563 2.5 0.000976563L8.5 0.000976562C8.186 0.418977 8 0.937977 8 1.50098V7.50098H6C5.90098 7.5008 5.80414 7.53003 5.72175 7.58496C5.63936 7.63988 5.57513 7.71804 5.53722 7.80951C5.4993 7.90099 5.4894 8.00166 5.50876 8.09877C5.52813 8.19588 5.57589 8.28505 5.646 8.35498L8.146 10.855C8.19245 10.9015 8.24762 10.9385 8.30837 10.9637C8.36911 10.9889 8.43423 11.0019 8.5 11.0019C8.56577 11.0019 8.63089 10.9889 8.69163 10.9637C8.75238 10.9385 8.80755 10.9015 8.854 10.855L11.354 8.35498C11.4241 8.28505 11.4719 8.19588 11.4912 8.09877C11.5106 8.00166 11.5007 7.90099 11.4628 7.80951C11.4249 7.71804 11.3606 7.63988 11.2783 7.58496C11.1959 7.53003 11.099 7.5008 11 7.50098H9V1.50098Z" />
+                                                    </svg>
                                                 </span>
                                                 <span class="p-1 rounded">Archive</span>
-                                      
-                                      
-                                      
                                             </button>
+                                            
                                       
                                           <!-- First Modal - Confirmation -->
                                           {{-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> --}}
@@ -489,5 +486,22 @@ function showConfirmationModalForAccept(requestId) {
         // Submit the form with the password
         document.getElementById('passwordFormAccept' + requestId).submit();
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const isActive = this.classList.contains('active');
+            if (isActive) {
+                // If the clicked tab is already active, prevent the default link behavior
+                e.preventDefault();
+                // Reset URL to its original state
+                const originalUrl = "{{ route('nurse.view') }}";
+                window.location.href = originalUrl;
+            }
+        });
+    });
+});
 </script>
 @include('partials.footer')
