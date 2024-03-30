@@ -201,8 +201,15 @@ html {
                                 <td>{{ $request->procedure_type }}</td>
                                 <td>{{ $request->sender_message }}</td>
                                 {{-- <td>{{ \Carbon\Carbon::parse($request->created_at)->format('h:i A n/j/Y') }}</td>          --}}
-                                <td>{{ \Carbon\Carbon::parse($request->date_needed . ' ' . $request->time_needed)->format('h:i A n/j/Y') }}</td>
-
+                                <td>
+                                    @if($request->stat)
+                                        <span class="badge bg-danger">STAT</span>
+                                        {{ \Carbon\Carbon::parse($request->date_needed)->format('n/j/Y') }} 
+                                    @else
+                                        {{ \Carbon\Carbon::parse($request->date_needed . ' ' . $request->time_needed)->format('h:i A n/j/Y') }}
+                                    @endif
+                                </td>  
+                                
                                 @if(request('status') === 'pending')
                                 <td>{{ optional($request->nurse)->first_name }} {{ optional($request->nurse)->last_name }}</td>
                                 @endif                   
@@ -238,7 +245,7 @@ html {
                                 @if(!$status)
                                 <td>
                                     <span class="badge @if($request->status == 'completed') bg-success @elseif($request->status == 'declined') bg-danger @elseif($request->status == 'accepted') bg-primary @elseif($request->status == 'pending') bg-secondary @endif">
-                                        {{ ucfirst($request->status) }}
+                                        {{ strtoupper($request->status) }}
                                     </span>
                                 </td>                    
                                 @endif
@@ -281,5 +288,22 @@ html {
             document.getElementById('archivePatientForm_' + patientId).submit();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const isActive = this.classList.contains('active');
+                if (isActive) {
+                    // If the clicked tab is already active, prevent the default link behavior
+                    e.preventDefault();
+                    // Reset URL to its original state
+                    const originalUrl = "{{ route('nurse.viewRequestLab') }}";
+                    window.location.href = originalUrl;
+                }
+            });
+        });
+    });
 </script>
 @include('partials.footer')

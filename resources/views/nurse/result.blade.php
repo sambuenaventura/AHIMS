@@ -165,7 +165,14 @@ html {
                         </div>
                         <div class="left-top-1 flex-row">
                             <p class="">Time:</p>
-                            <p class="">{{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}</p>               
+                            <p class="">                            
+                                @if($request->stat)
+                                <span class="badge bg-danger">STAT</span>
+                                @else
+                                    {{ \Carbon\Carbon::parse($request->time_needed)->format('h:i A') }}
+                                @endif
+                            </p>     
+
                         </div>
                         <div class="left-top-1 flex-row">
                             <p class="">Type of Service:</p>
@@ -230,16 +237,11 @@ html {
                     <p><strong>On Duty:</strong> {{ $request->medtech->first_name }} {{ $request->medtech->last_name }}</p>
                     <p><strong>Date Completed:</strong> {{ $request->updated_at->format('h:i A n/j/Y') }}</p>
                 </div>
-                {{-- <p><strong>File name:</strong> --}}
-                    {{-- <ul> --}}
+
                         @php
                             $images = json_decode($request->image);
                         @endphp
                         
-                        {{-- @foreach ($images as $image)
-                            <li>{{ basename($image) }}</li>
-                        @endforeach
-                    </ul> --}}
      
                 <p><strong>Message:</strong> {{ $request->message }}</p>
                 <div class="image-container bg-[#DCEDDD] px-24 py-12 rounded d-flex flex-wrap">

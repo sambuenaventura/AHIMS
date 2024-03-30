@@ -380,31 +380,31 @@ html {
                 </div>
                 <ul class="nav nav-underline overflow-x-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Chemistry' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Chemistry']) }}">Chemistry</a>
+                        <a class="nav-link {{ request('procedure') === 'Chemistry' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Chemistry')">Chemistry</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Hematology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Hematology']) }}">Hematology</a>
+                        <a class="nav-link {{ request('procedure') === 'Hematology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Hematology')">Hematology</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Bbis' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Bbis']) }}">BB-IS</a>
+                        <a class="nav-link {{ request('procedure') === 'Bbis' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Bbis')">BB-IS</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Parasitology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Parasitology']) }}">Parasitology</a>
+                        <a class="nav-link {{ request('procedure') === 'Parasitology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Parasitology')">Parasitology</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Microbiology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Microbiology']) }}">Microbiology</a>
+                        <a class="nav-link {{ request('procedure') === 'Microbiology' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Microbiology')">Microbiology</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Microscopy' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Microscopy']) }}">Microscopy</a>
+                        <a class="nav-link {{ request('procedure') === 'Microscopy' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Microscopy')">Microscopy</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Xray' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Xray']) }}">X-Ray</a>
+                        <a class="nav-link {{ request('procedure') === 'Xray' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Xray')">X-Ray</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Ultrasound' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Ultrasound']) }}">Ultrasound</a>
+                        <a class="nav-link {{ request('procedure') === 'Ultrasound' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Ultrasound')">Ultrasound</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request('procedure') === 'Ctscan' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="{{ route('showResults', ['patientId' => $patient->patient_id, 'procedure' => 'Ctscan']) }}">CT Scan</a>
+                        <a class="nav-link {{ request('procedure') === 'Ctscan' ? 'active btn-submit text-white rounded px-3 py-2' : 'text-secondary' }}" href="javascript:void(0)" onclick="toggleProcedure('Ctscan')">CT Scan</a>
                     </li>
                 </ul>
                 
@@ -413,7 +413,7 @@ html {
                         <tr>
                             <th scope="col">File</th>
                             <th scope="col">Test</th>
-                            <th scope="col">Date Requested</th>
+                            <th scope="col">Date Needed</th>
                             <th scope="col">Date Completed</th>
                             <th scope="col">Staff on duty</th>
                         </tr>
@@ -448,7 +448,16 @@ html {
                                 </td>
                                 <td>{{ $result->sender_message }}</td>
 
-                                <td>{{ $result->created_at->format('h:i A n/j/Y' ) }}</td>
+                                <td>
+                                    @if($result->stat)
+                                        <span class="badge bg-danger">STAT</span>
+                                        {{ \Carbon\Carbon::parse($result->date_needed)->format('n/j/Y') }} 
+                                    @else
+                                        {{ \Carbon\Carbon::parse($result->date_needed . ' ' . $result->time_needed)->format('h:i A n/j/Y') }}
+                                    @endif
+                                </td>  
+                                
+
                                 <td>{{ $result->updated_at->format('h:i A n/j/Y' ) }}</td>
                                 <td>
                                     @if($result->receiver->role == 'medtech')
@@ -780,8 +789,18 @@ document.getElementById('submitButton').addEventListener('click', function() {
     myModal.show();
 });
 
-
-
+function toggleProcedure(procedure) {
+        var currentURL = window.location.href;
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('procedure') === procedure) {
+            params.delete('procedure');
+        } else {
+            params.set('procedure', procedure);
+        }
+        var newParams = params.toString() === '' ? '' : '?' + params.toString();
+        var baseURL = currentURL.split('?')[0];
+        window.location.href = baseURL + newParams;
+    }
 </script>
 
 @include('partials.footer ')
