@@ -210,7 +210,7 @@ html {
                 <h4 class="font-bold">Nurse Remarks</h4>
                 @if(!$patient->archived)
 
-                <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
+                <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Record Vital Signs</a>
               @endif                
               </div>  
 
@@ -236,13 +236,13 @@ html {
                                         <!-- Vital sign fields -->
                                         <table class="table table-bordered mb-0">
                                             <tr>
-                                                <th>Date:</th>
-                                                <th>Time:</th>
-                                                <th>Blood Pressure:</th>
-                                                <th>Respiratory Rate:</th>
-                                                <th>Pulse:</th>
-                                                <th>Temperature:</th>
-                                                <th>Oxygen:</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Blood Pressure</th>
+                                                <th>Respiratory Rate</th>
+                                                <th>Pulse Rate</th>
+                                                <th>Temperature</th>
+                                                <th>Oxygen Level</th>
                                             </tr>
                                             <tr>
                                                 <td>{{ \Carbon\Carbon::parse($vitalSign->vital_date)->format('n/j/Y') }}</td>
