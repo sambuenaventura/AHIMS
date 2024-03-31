@@ -369,16 +369,16 @@ text-align: center;
                                         <p class="mb-4">Password is required to proceed.</p>
                                     </div>
                                     <div class="d-flex justify-content-evenly mt-5">
-                                        <form id="passwordFormAccept">
-                                            <div class="col-auto">
-                                                <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
-                                            </div>
-                                            <div class="col-auto">
-                                                <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                      <form id="passwordFormAccept">
+                                          <div class="col-auto">
+                                              <label for="inputPassword2" class="visually-hidden">Password or PIN</label>
+                                              <input type="password" class="form-control" id="inputPassword2" name="credential" placeholder="Password or PIN" required>
+                                          </div>
+                                          <div class="col-auto">
+                                              <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
+                                          </div>
+                                      </form>
+                                  </div>
                                 </div>
                             </div>
                         </div>
@@ -450,17 +450,17 @@ text-align: center;
                                                     <label for="inputReason" class="visually-hidden">Reason for Decline</label>
                                                     <textarea class="form-control" id="inputReason" name="reason" placeholder="Reason for Decline" rows="3" required></textarea>
                                                 </div>
-                                                    <div class="d-flex justify-content-evenly mt-5">
-                                                        <form id="passwordFormDecline{{ $request->request_id }}">
-                                                            <div class="col-auto">
-                                                                <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                                <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
-                                                            </div>
-                                                            <div class="col-auto">
-                                                                <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                                                <div class="d-flex justify-content-evenly mt-5">
+                                                  <form id="passwordFormDecline{{ $request->request_id }}">
+                                                      <div class="col-auto">
+                                                          <label for="inputPassword2" class="visually-hidden">Password or PIN</label>
+                                                          <input type="password" class="form-control" id="inputPassword2" name="credential" placeholder="Password or PIN" required>
+                                                      </div>
+                                                      <div class="col-auto">
+                                                          <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
+                                                      </div>
+                                                  </form>
+                                              </div>
                                                 </div>
                                             </div>
                                         </div>

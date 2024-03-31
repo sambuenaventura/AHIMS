@@ -31,7 +31,7 @@
                                 <label for="vital_date">Vital Sign Date:</label>
                                 @error('vital_date')
                                 <p class="text-red-500 text-xs p-1">
-                                    {{ $message }}
+                                    {{ 'The vital sign date is required.' }}
                                 </p>
                                 @enderror                                              
                             </div>
@@ -42,7 +42,7 @@
                                 <label for="vital_time">Vital Sign Time:</label>
                                 @error('vital_time')
                                 <p class="text-red-500 text-xs p-1">
-                                    {{ $message }}
+                                    {{ 'The vital sign time is required.' }}
                                 </p>
                                 @enderror                                                
                             </div>
@@ -147,14 +147,15 @@
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
-                                                    <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <label for="inputPassword2" class="visually-hidden">Password or PIN</label>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="credential" placeholder="Password or PIN" required>
                                                 </div>
                                                 <div class="col-auto">
                                                     <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
                                                 </div>
                                             </form>
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>
