@@ -11,6 +11,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Facades\Image;
 use App\Models\Patients;
 use App\Models\Physicians;
+use App\Services\CredentialValidationService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
@@ -364,11 +365,19 @@ public function store(Request $request)
     //     return redirect()->back()->with('error', 'Incorrect password. Please try again.');
     // }
     
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        // If the password doesn't match, return back with an error message
-        return redirect()->back()->withInput()->with('error', 'Incorrect password. Please try again.');
+    // // Check if the password matches the user's password
+    // if (!Hash::check($request->password, Auth::user()->password)) {
+    //     // If the password doesn't match, return back with an error message
+    //     return redirect()->back()->withInput()->with('error', 'Incorrect password. Please try again.');
+    // }
+
+
+    $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+    if ($validationResponse) {
+        return $validationResponse; // Return the response when credentials are incorrect
     }
+
 
     // Validate physician selection
     $physicianId = $request->input('specialist');

@@ -23,6 +23,7 @@ use App\Models\ProgressNotes;
 use App\Models\ReviewOfSystems;
 use App\Models\User;
 use App\Models\VitalSigns;
+use App\Services\CredentialValidationService;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -313,20 +314,55 @@ class AdminController extends Controller
         return view('admin.create-doctor');
     }
 
+    // public function storeDoctor(Request $request)
+    // {
+
+    //     //    // Validate the request data
+    //     //    $request->validate([
+    //     //     'password' => 'required|string', // Add any additional validation rules for the password
+    //     //     ]);
+
+    //     //     // Check if the password matches the user's password
+    //     //     if (!Hash::check($request->password, Auth::user()->password)) {
+    //     //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     //     }
+
+    //     $validationResponse = CredentialValidationService::validateCredentials($request);
+
+    //     if ($validationResponse) {
+    //         return $validationResponse; // Return the response when credentials are incorrect
+    //     }
+
+    //     $validatedData = $request->validate([
+    //         'phy_first_name' => 'required|string|max:255',
+    //         'phy_last_name' => 'required|string|max:255',
+    //         'availability' => 'required|string|max:255',
+    //         'specialty' => 'required|string|in:Internal_Medicine,Gastroenterology,Neurology,Cardiology,Pulmonology,Pediatrics,Endocrinology,Otolaryngology', // Validate against the provided specialties
+    //         // Add validation rules for other fields as needed
+    //     ]);
+
+    //     // Create a new physician instance
+    //     $physician = new Physicians(); // Use Physicians instead of Doctor
+    //     $physician->phy_first_name = $validatedData['phy_first_name'];
+    //     $physician->phy_last_name = $validatedData['phy_last_name'];
+    //     $physician->availability = $validatedData['availability'];
+    //     $physician->specialty = $validatedData['specialty']; // Assign selected specialty
+    //     // Set other fields as needed
+    //     $physician->save();
+
+    //     // Redirect back with a success message
+    //     return redirect()->back()->with('message', 'Physician registered successfully!');
+    // }
+
+
     public function storeDoctor(Request $request)
     {
-
-       // Validate the request data
-       $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
-
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
         }
-
-
+    
         $validatedData = $request->validate([
             'phy_first_name' => 'required|string|max:255',
             'phy_last_name' => 'required|string|max:255',
@@ -334,7 +370,17 @@ class AdminController extends Controller
             'specialty' => 'required|string|in:Internal_Medicine,Gastroenterology,Neurology,Cardiology,Pulmonology,Pediatrics,Endocrinology,Otolaryngology', // Validate against the provided specialties
             // Add validation rules for other fields as needed
         ]);
-
+    
+        // Check if the physician already exists based on first and last names
+        $existingPhysician = Physicians::where('phy_first_name', $validatedData['phy_first_name'])
+            ->where('phy_last_name', $validatedData['phy_last_name'])
+            ->exists();
+    
+        // If the physician already exists, return back with an error message
+        if ($existingPhysician) {
+            return redirect()->back()->withInput()->with('error', 'Physician with the same name already exists.');
+        }
+    
         // Create a new physician instance
         $physician = new Physicians(); // Use Physicians instead of Doctor
         $physician->phy_first_name = $validatedData['phy_first_name'];
@@ -343,23 +389,30 @@ class AdminController extends Controller
         $physician->specialty = $validatedData['specialty']; // Assign selected specialty
         // Set other fields as needed
         $physician->save();
-
+    
         // Redirect back with a success message
         return redirect()->back()->with('message', 'Physician registered successfully!');
     }
+    
+
 
     public function importDoctor(Request $request)
     {
+
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
         // Validate the request data
         $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
+            // 'password' => 'required|string', // Add any additional validation rules for the password
             'import_file' => 'required|file', // Allow only files
         ]);
     
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }
+
     
         // Ensure the file is a valid Excel file (xlsx)
         $fileExtension = $request->file('import_file')->getClientOriginalExtension();
@@ -384,10 +437,18 @@ class AdminController extends Controller
         return view('admin.create-nurse');
     }
 
-    public function storeNurse(Request $request) {
+    public function storeNurse(Request $request) 
+    {
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
+
         // Validate the request data
         $request->validate([
-            'admin_password' => 'required|string', // Validate the admin's password
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
             "student_number" => ['required', 'min:1', 'max:255', Rule::unique('users', 'student_number')],
@@ -395,11 +456,7 @@ class AdminController extends Controller
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
     
-        // Check if the admin password matches the user's password
-        if (!Hash::check($request->admin_password, Auth::user()->password)) {
-            // If the password doesn't match, return back with an error message
-            return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
-        }
+
     
         // Create a new nurse instance
         $nurse = new User();
@@ -416,16 +473,25 @@ class AdminController extends Controller
 
     public function importNurse(Request $request)
     {
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
+
+
         // Validate the request data
         $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
+            // 'password' => 'required|string', // Add any additional validation rules for the password
             'import_file' => 'required|file', // Allow only files
         ]);
     
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }
+        // // Check if the password matches the user's password
+        // if (!Hash::check($request->password, Auth::user()->password)) {
+        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        // }
     
         // Ensure the file is a valid Excel file (xlsx)
         $fileExtension = $request->file('import_file')->getClientOriginalExtension();
@@ -450,10 +516,20 @@ class AdminController extends Controller
         return view('admin.create-medtech');
     }
 
-    public function storeMedtech(Request $request) {
+    public function storeMedtech(Request $request) 
+    {
+
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
+
         // Validate the request data
         $request->validate([
-            'admin_password' => 'required|string', // Validate the admin's password
+            // 'admin_password' => 'required|string', // Validate the admin's password
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
             "student_number" => ['required', 'min:1', 'max:255', Rule::unique('users', 'student_number')],
@@ -461,11 +537,11 @@ class AdminController extends Controller
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
         
-        // Check if the admin password matches the user's password
-        if (!Hash::check($request->admin_password, Auth::user()->password)) {
-            // If the password doesn't match, return back with an error message
-            return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
-        }
+        // // Check if the admin password matches the user's password
+        // if (!Hash::check($request->admin_password, Auth::user()->password)) {
+        //     // If the password doesn't match, return back with an error message
+        //     return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
+        // }
     
         // Create a new nurse instance
         $medtech = new User();
@@ -482,16 +558,24 @@ class AdminController extends Controller
 
     public function importMedtech(Request $request)
     {
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
+
         // Validate the request data
         $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
+            // 'password' => 'required|string', // Add any additional validation rules for the password
             'import_file' => 'required|file', // Allow only files
         ]);
     
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }
+        // // Check if the password matches the user's password
+        // if (!Hash::check($request->password, Auth::user()->password)) {
+        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        // }
     
         // Ensure the file is a valid Excel file (xlsx)
         $fileExtension = $request->file('import_file')->getClientOriginalExtension();
@@ -516,10 +600,18 @@ class AdminController extends Controller
         return view('admin.create-radtech');
     }
 
-    public function storeRadtech(Request $request) {
+    public function storeRadtech(Request $request) 
+    {
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
         // Validate the request data
         $request->validate([
-            'admin_password' => 'required|string', // Validate the admin's password
+            // 'admin_password' => 'required|string', // Validate the admin's password
             "first_name" => ['required', 'min:1', 'max:255'],
             "last_name" => ['required', 'min:1', 'max:255'],
             "student_number" => ['required', 'min:1', 'max:255', Rule::unique('users', 'student_number')],
@@ -527,11 +619,11 @@ class AdminController extends Controller
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
         
-        // Check if the admin password matches the user's password
-        if (!Hash::check($request->admin_password, Auth::user()->password)) {
-            // If the password doesn't match, return back with an error message
-            return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
-        }
+        // // Check if the admin password matches the user's password
+        // if (!Hash::check($request->admin_password, Auth::user()->password)) {
+        //     // If the password doesn't match, return back with an error message
+        //     return redirect()->back()->withInput($request->except('password'))->with('error', 'Incorrect admin password. Please try again.');
+        // }
     
         // Create a new nurse instance
         $radtech = new User();
@@ -548,16 +640,23 @@ class AdminController extends Controller
 
     public function importRadtech(Request $request)
     {
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
         // Validate the request data
         $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
+            // 'password' => 'required|string', // Add any additional validation rules for the password
             'import_file' => 'required|file', // Allow only files
         ]);
     
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }
+        // // Check if the password matches the user's password
+        // if (!Hash::check($request->password, Auth::user()->password)) {
+        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        // }
     
         // Ensure the file is a valid Excel file (xlsx)
         $fileExtension = $request->file('import_file')->getClientOriginalExtension();

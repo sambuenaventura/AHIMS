@@ -21,6 +21,7 @@ use App\Models\ReviewOfSystems;
 use App\Models\User;
 use App\Models\VitalSigns;
 use App\Notifications\NewServiceRequest;
+use App\Services\CredentialValidationService;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -323,14 +324,10 @@ public function showCurrentMedications()
 public function updateDischargeDate(Request $request, $id)
 {
 
-    // Validate the request data
-    $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
-    ]);
-
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+    if ($validationResponse) {
+        return $validationResponse; // Return the response when credentials are incorrect
     }
 
 
@@ -338,7 +335,7 @@ public function updateDischargeDate(Request $request, $id)
     $patient = Patients::findOrFail($id);
     
     $request->validate([
-        'discharge_date' => 'required|date',
+        'discharge_date' => 'nullable|date',
     ]);
 
     $patient->update([
@@ -410,15 +407,21 @@ public function updateDischargeDate(Request $request, $id)
     public function update(Request $request, Patients $patient)
     {    //dd($request->all());
 
-        // Validate the request data
-        $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
+        // // Validate the request data
+        // $request->validate([
+        //     'password' => 'required|string', // Add any additional validation rules for the password
+        // ]);
 
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }   
+        // // Check if the password matches the user's password
+        // if (!Hash::check($request->password, Auth::user()->password)) {
+        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        // }   
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
 
         $nurseId = auth()->user()->id;
 
@@ -879,6 +882,15 @@ public function updateDischargeDate(Request $request, $id)
     
         public function generatePdf(Request $request, $patient_id)
     {
+
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+    
+
         // Retrieve patient by ID
         $patient = Patients::findOrFail($patient_id);
     
@@ -968,44 +980,127 @@ public function updateDischargeDate(Request $request, $id)
 
 
 
+    // public function updateVitalSigns(Request $request, Patients $patient)
+    // {
+    //     // // Get the authenticated user
+    //     // $user = Auth::user();
+        
+    //     // // Check if the user has a PIN
+    //     // if ($user->pin) {
+    //     //     // Validate the request data with 'pin' instead of 'password'
+    //     //     $request->validate([
+    //     //         'credential' => 'required|string', // assuming the input field is named 'credential'
+    //     //     ]);
+
+    //     //     $credential = $request->input('credential');
+
+    //     //     // Check if the PIN matches the user's PIN
+    //     //     if ($credential !== $user->pin) {
+    //     //         return redirect()->back()->with('error', 'Incorrect PIN. Please try again.'); // Redirect back with an error message
+    //     //     }
+    //     // } else {
+    //     //     // Validate the request data with 'password'
+    //     //     $request->validate([
+    //     //         'credential' => 'required|string', // assuming the input field is named 'credential'
+    //     //     ]);
+
+    //     //     $credential = $request->input('credential');
+
+    //     //     // Check if the password matches the user's password
+    //     //     if (!Hash::check($credential, $user->password)) {
+    //     //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     //     }
+    //     // }
+
+    //     // Validate the request data
+    //     $request->validate([
+    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //     ]);
+
+    //     // Check if the password matches the user's password
+    //     if (!Hash::check($request->password, Auth::user()->password)) {
+    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    //     }   
+        
+    //     // Validate the request for vital signs
+    //     $validatedVitalSigns = $request->validate([
+    //         'vital_date' => ['required', 'date'],
+    //          'vital_time' => ['required', 'date_format:H:i', 'nullable'],
+    //         //'vital_time' => ['required',  'nullable'],
+    //         'temperature' => ['numeric', 'nullable'],
+    //         'heart_rate' => ['integer', 'nullable'],
+    //         'pulse' => ['integer', 'nullable'],
+    //         'blood_pressure' => ['string', 'nullable', 'max:20'],
+    //         'respiratory_rate' => ['integer', 'nullable'],
+    //         'oxygen' => ['numeric', 'nullable'],
+    //         'hypertension_years' => ['integer', 'nullable'],
+    //         // Add validation for other vital signs fields as needed
+    //     ]);
+    
+    //     // If 'vital_time' is not provided, set it to the current time
+    //     $validatedVitalSigns['vital_time'] = $validatedVitalSigns['vital_time'] ?? now()->format('H:i');
+    
+    //     // Get the ID of the authenticated user (assuming nurse user)
+    //     $nurseId = auth()->user()->id;
+    
+    //     // Create the vital signs record and associate the nurse user with it
+    //     $vitalSign = new VitalSigns($validatedVitalSigns);
+    //     $vitalSign->nurse_user_id = $nurseId;
+    //     $patient->vitalSigns()->save($vitalSign);
+    
+    //     // return Redirect::route('nurse.edit', ['id' => $patient->patient_id])->with('message', 'Vital signs were successfully recorded');
+       
+    //     return back()->with('message', 'Vital signs were successfully recorded');
+
+    
+    // }
+
+
+
     public function updateVitalSigns(Request $request, Patients $patient)
     {
-        // Get the authenticated user
-        $user = Auth::user();
-        
-        // Check if the user has a PIN
-        if ($user->pin) {
-            // Validate the request data with 'pin' instead of 'password'
-            $request->validate([
-                'credential' => 'required|string', // assuming the input field is named 'credential'
-            ]);
+        // // Get the authenticated user
+        // $user = Auth::user();
+    
+        // // Check if the user has a PIN and use it for validation if available
+        // if ($user->pin) {
+        //     // Validate the request data with 'pin' instead of 'password'
+        //     $request->validate([
+        //         'credential' => 'required|string', // Assuming the input field is named 'credential'
+        //     ]);
+    
+        //     $credential = $request->input('credential');
+    
+        //     // Check if the PIN matches the user's PIN
+        //     if ($credential !== $user->pin) {
+        //         return redirect()->back()->with('error', 'Incorrect PIN. Please try again.'); // Redirect back with an error message
+        //     }
+        // } else {
+        //     // Validate the request data with 'password'
+        //     $request->validate([
+        //         'credential' => 'required|string', // Assuming the input field is named 'credential'
+        //     ]);
+    
+        //     $credential = $request->input('credential');
+    
+        //     // Check if the password matches the user's password
+        //     if (!Hash::check($credential, $user->password)) {
+        //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        //     }
+        // }
+            
 
-            $credential = $request->input('credential');
-
-            // Check if the PIN matches the user's PIN
-            if ($credential !== $user->pin) {
-                return redirect()->back()->with('error', 'Incorrect PIN. Please try again.'); // Redirect back with an error message
-            }
-        } else {
-            // Validate the request data with 'password'
-            $request->validate([
-                'credential' => 'required|string', // assuming the input field is named 'credential'
-            ]);
-
-            $credential = $request->input('credential');
-
-            // Check if the password matches the user's password
-            if (!Hash::check($credential, $user->password)) {
-                return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-            }
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
         }
 
 
-        
         // Validate the request for vital signs
         $validatedVitalSigns = $request->validate([
             'vital_date' => ['required', 'date'],
-             'vital_time' => ['required', 'date_format:H:i', 'nullable'],
+            'vital_time' => ['required', 'date_format:H:i', 'nullable'],
             //'vital_time' => ['required',  'nullable'],
             'temperature' => ['numeric', 'nullable'],
             'heart_rate' => ['integer', 'nullable'],
@@ -1029,25 +1124,32 @@ public function updateDischargeDate(Request $request, $id)
         $patient->vitalSigns()->save($vitalSign);
     
         // return Redirect::route('nurse.edit', ['id' => $patient->patient_id])->with('message', 'Vital signs were successfully recorded');
-       
-        return back()->with('message', 'Vital signs were successfully recorded');
-
     
+        return back()->with('message', 'Vital signs were successfully recorded');
     }
+    
+
 
 
     public function updateMedicationRemark(Request $request, Patients $patient)
 {
 
-        // Validate the request data
-        $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
-        ]);
+        // // Validate the request data
+        // $request->validate([
+        //     'password' => 'required|string', // Add any additional validation rules for the password
+        // ]);
 
-        // Check if the password matches the user's password
-        if (!Hash::check($request->password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }   
+        // // Check if the password matches the user's password
+        // if (!Hash::check($request->password, Auth::user()->password)) {
+        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+        // }   
+
+
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
 
     
     // Validate the request for medication remark
@@ -1103,15 +1205,22 @@ public function updateProgressNotes(Request $request, Patients $patient)
 {
 
 
-    // Validate the request data
-    $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
-    ]);
+    // // Validate the request data
+    // $request->validate([
+    //     'password' => 'required|string', // Add any additional validation rules for the password
+    // ]);
 
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    }   
+    // // Check if the password matches the user's password
+    // if (!Hash::check($request->password, Auth::user()->password)) {
+    //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    // }   
+
+
+    $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+    if ($validationResponse) {
+        return $validationResponse; // Return the response when credentials are incorrect
+    }
 
 
     // Validate the request for progress notes
@@ -1222,15 +1331,22 @@ public function viewNotes($id)
 
 public function archivePatient(Request $request, $patient_id)
 {
-    // Validate the request data
-    $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
-    ]);
+    // // Validate the request data
+    // $request->validate([
+    //     'password' => 'required|string', // Add any additional validation rules for the password
+    // ]);
 
-    // Check if the password matches the user's password
-    if (!Hash::check($request->password, Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    // // Check if the password matches the user's password
+    // if (!Hash::check($request->password, Auth::user()->password)) {
+    //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+    // }
+
+    $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+    if ($validationResponse) {
+        return $validationResponse; // Return the response when credentials are incorrect
     }
+
 
     // Retrieve the patient from the 'patients' table
     $patient = Patients::findOrFail($patient_id);
@@ -1297,9 +1413,16 @@ public function archivePatient(Request $request, $patient_id)
 
     public function requestLaboratoryServices(Request $request)
     {
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
+
+
         // Validate the request data
         $validatedData = $request->validate([
-            'password' => 'required|string', // Add any additional validation rules for the password
+            // 'password' => 'required|string', // Add any additional validation rules for the password
             'patient_id' => 'required|exists:patients,patient_id',
             'procedure_type' => 'required',
             'sender_message' => 'required',
@@ -1308,12 +1431,7 @@ public function archivePatient(Request $request, $patient_id)
             'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
             // Add more validation rules as needed
         ]);
-    
-        // Check if the password matches the user's password
-        if (!Hash::check($validatedData['password'], Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        }   
-    
+
         // Create a new laboratory service request
         $serviceRequest = new ServiceRequest();
         $serviceRequest->patient_id = $validatedData['patient_id'];
@@ -1321,9 +1439,11 @@ public function archivePatient(Request $request, $patient_id)
         $serviceRequest->procedure_type = $validatedData['procedure_type'];
         $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
     
-        // Set date_needed
-        $serviceRequest->date_needed = $validatedData['date_needed'];
-    
+        // Set date_needed and time_needed if provided
+        if ($request->filled('date_needed')) {
+            $serviceRequest->date_needed = $validatedData['date_needed'];
+        }    
+
         // Set time_needed based on STAT checkbox
         $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
     
@@ -1400,9 +1520,15 @@ public function archivePatient(Request $request, $patient_id)
 
     public function requestImagingServices(Request $request)
 {
+    $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+    if ($validationResponse) {
+        return $validationResponse; // Return the response when credentials are incorrect
+    }
+
     // Validate the request data
     $validatedData = $request->validate([
-        'password' => 'required|string', // Add any additional validation rules for the password
+        // 'password' => 'required|string', // Add any additional validation rules for the password
         'patient_id' => 'required|exists:patients,patient_id',
         'procedure_type' => 'required|in:xray,ultrasound,ctscan', // Ensure the procedure type is one of these values
         'date_needed' => 'required|date', // Validation rule for the date_needed field
@@ -1412,10 +1538,6 @@ public function archivePatient(Request $request, $patient_id)
         // Add more validation rules as needed
     ]);
 
-    // Check if the password matches the user's password
-    if (!Hash::check($validatedData['password'], Auth::user()->password)) {
-        return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    }   
 
     // Create a new imaging service request
     $serviceRequest = new ServiceRequest();
@@ -1423,6 +1545,12 @@ public function archivePatient(Request $request, $patient_id)
     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
     $serviceRequest->procedure_type = $validatedData['procedure_type'];
     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+
+    // Set date_needed and time_needed if provided
+    if ($request->filled('date_needed')) {
+        $serviceRequest->date_needed = $validatedData['date_needed'];
+    }    
+
 
     // Set time_needed based on STAT checkbox
     $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
