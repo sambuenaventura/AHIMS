@@ -4,7 +4,6 @@ namespace App\Imports;
 
 use App\Models\Physicians;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -23,8 +22,8 @@ class PhysicianImport implements ToCollection, WithHeadingRow
 
         // Check if the actual headers match the expected headers
         if ($actualHeaders !== $expectedHeaders) {
-            // Redirect back with an error message
-            return Redirect::back()->with('error', 'Incorrect headers. Please make sure the Excel file has the correct headers.');
+            // Throw an exception with an error message
+            throw new \Exception('Incorrect headers. Please make sure the Excel file has the correct headers.');
         }
 
         // Process the rows if the headers are correct

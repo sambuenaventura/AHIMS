@@ -4,7 +4,6 @@ namespace App\Imports;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -23,14 +22,15 @@ class RadtechImport implements ToCollection, WithHeadingRow
 
         // Check if the actual headers match the expected headers
         if ($actualHeaders !== $expectedHeaders) {
-            // Redirect back with an error message
-            return Redirect::back()->with('error', 'Incorrect headers. Please make sure the Excel file has the correct headers.');
+            // Throw an exception with an error message
+            throw new \Exception('Incorrect headers. Please make sure the Excel file has the correct headers.');
         }
 
         // Check if all role values are "radtech"
         $roles = $rows->pluck('role')->unique();
         if ($roles->count() !== 1 || $roles->first() !== 'radtech') {
-            return Redirect::back()->with('error', 'Invalid role values. All role values should be "radtech".');
+            // Throw an exception with an error message
+            throw new \Exception('Invalid role values. All role values should be "radtech".');
         }
 
         foreach ($rows as $row) 
