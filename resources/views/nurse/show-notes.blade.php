@@ -208,7 +208,7 @@ html {
             <div class="card-body m-2">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="font-bold">Progress Notes</h4>
-                    <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Progress Note</a>
+                    <a href="/nurse-patients/add-progress-note/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Record Progress Note</a>
                 </div>   
                 
                 

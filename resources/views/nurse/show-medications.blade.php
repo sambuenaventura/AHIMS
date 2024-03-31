@@ -210,7 +210,7 @@ html {
                     <h4 class="font-bold">Nurse Remarks</h4>
                     @if(!$patient->archived)
 
-                    <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Remark</a>
+                    <a href="/nurse-patients/add-remark/{{$patient->patient_id}}" class="btn btn-success ms-2 btn-custom-style btn-submit" style="width: auto;" type="submit">+ Record Medications</a>
                     @endif
                 </div>   
                 
