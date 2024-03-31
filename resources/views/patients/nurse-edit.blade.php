@@ -64,7 +64,7 @@ html {
   color: black;
   display: flex;
   justify-content: center;
-  font-family: sans-serif;
+  /* font-family: sans-serif; */
   gap: 1.25rem;
   width: 22rem; /* Set a fixed width */
   /*height: 14rem;  Set a fixed height 
@@ -159,18 +159,17 @@ html {
       <div class="left">
         <div class="boxes">
             <div class="box box1 flex-col bg-custom-101 shadow-md" style="z-index: 999; position: relative;">
-                @if ($patient->admission_type === 'archived')
-                    <div class="left-top-1">
+                
+                <div class="left-top-1">
+                    @if($patient->archived && $patient->admission_type != 'archived')
+                        <span class="badge bg-warning text-black position-absolute top-0 start-0">TO BE ARCHIVED</span>
+                    @elseif ($patient->admission_type === 'archived')
                         <span class="badge bg-secondary position-absolute top-0 start-0">ARCHIVED</span>
-                        <p class="font-bold">ID{{  $patient->patient_id }}</p>
-                        <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
-                    </div>
-                @else
-                    <div class="left-top-1">
-                        <p class="font-bold">ID{{  $patient->patient_id }}</p>
-                        <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
-                    </div>
-                @endif
+                    @endif
+                    <p class="font-bold">ID{{  $patient->patient_id }}</p>
+                    <h4 class="font-bold">{{  $patient->first_name }} {{  $patient->last_name }}</h4>
+                </div>
+                
                 <div class="left-top-2 flexi">
                     <p class="font-bold">{{ Carbon\Carbon::parse($patient->date_of_birth)->age }} y/o</p>
                     <p class="font-bold">{{ optional($patient->physicalExamination)->vitals_weight }} kg</p>
@@ -253,7 +252,7 @@ html {
                 <form action="{{ route('generate_report', ['patient_id' => $patient->patient_id]) }}" method="post">
                     @csrf
                     <!-- Add other form elements here -->
-                    <button type="submit" class="badge rounded-pill text-bg-success d-flex align-items-center justify-content-center btn-submit" style="font-size: 1em; width:100%; display: flex;">
+                    <button type="submit" onclick="showConfirmationVitalsModal()" class="badge rounded-pill text-bg-success d-flex align-items-center justify-content-center btn-submit" style="font-size: 1em; width:100%; display: flex;">
                         <span class="p-1 rounded">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#ffffff">
                                 <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
@@ -261,6 +260,74 @@ html {
                         </span>
                         <span class="p-1 rounded">Download PDF</span>
                     </button>
+
+                    <!-- First Modal - Confirmation -->
+                    <div class="modal fade" id="modalForPDF" tabindex="-1" aria-labelledby="modalForPDFLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body m-3">
+                                    <div class="modalContent">
+                                        <h1 class="text-center text-success">
+                                            <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" style="fill: white;">
+                                                    <path d="M480-120q-33 0-56.5-23.5T400-200q0-33 23.5-56.5T480-280q33 0 56.5 23.5T560-200q0 33-23.5 56.5T480-120Zm-80-240v-480h160v480H400Z"/>
+                                                </svg>
+                                                
+                                                
+                                            </span>
+                                        </h1>
+                                        <div class="text-center mt-4">
+                                            <h4 class="font-bold">Confirm Submission</h4>
+                                            <p class="mb-4">The information entered in this form will be saved. <br> Are you sure you want to save this?</p>
+                                        </div>
+                                        <div class="d-flex justify-content-evenly mt-5">
+                                            <button type="button" class="btn btn-light ms-2 btn-custom-style btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-success ms-2 btn-custom-style btn-submit" data-bs-toggle="modal" data-bs-target="#modalForPDF2">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                                    <!-- Second Modal - Password Entry -->
+                    <div class="modal fade" id="modalForPDF2" tabindex="-1" aria-labelledby="modalForPDFLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body m-3">
+                                    <div class="modalContent">
+                                        <h1 class="text-center text-success">
+                                            <span class="material-symbols-outlined bg-custom-color text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                                    <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" fill="white"/>
+                                                </svg>
+                                                
+                                            </span>
+                                        </h1>
+                                        <div class="text-center mt-4">
+                                            <h4 class="font-bold">Enter Password</h4>
+                                            <p class="mb-4">Password is required to proceed.</p>
+                                        </div>
+                                        <div class="d-flex justify-content-evenly mt-5">
+                                            <form id="passwordForm">
+                                                <div class="col-auto">
+                                                    <label for="inputPassword2" class="visually-hidden">Password or PIN</label>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="credential" placeholder="Password or PIN" required>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </form>
                 
                 
@@ -335,8 +402,8 @@ html {
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
-                                                    <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <label for="inputPassword2" class="visually-hidden">Password or PIN</label>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="credential" placeholder="Password or PIN" required>
                                                 </div>
                                                 <div class="col-auto">
                                                     <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
@@ -1248,6 +1315,29 @@ document.getElementById('submitButton').addEventListener('click', function() {
     myModal.show();
 });
 
+
+
+function showConfirmationVitalsModal() {
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('modalForPDF'), {
+            keyboard: false
+        });
+        myModal.show();
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('myForm').addEventListener('submit', function () {
+        // Disable the submit button to prevent multiple form submissions
+        document.querySelector('button[type="submit"]').setAttribute('disabled', 'disabled');
+    });
+});
+
+document.getElementById('submitButton').addEventListener('click', function() {
+    // Trigger the modal
+    var myModal = new bootstrap.Modal(document.getElementById('modalForPDF'), {
+        keyboard: false
+    });
+    myModal.show();
+});
 
 </script>
 @include('partials.footer')
