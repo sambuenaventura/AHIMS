@@ -323,6 +323,8 @@ input[type=number] {
                                     @enderror
                                 </div>
                                 <h6 class="text-success">III. Admit Person Information</h6>
+                                <!-- Checkbox for "Same as above" -->
+
                                 <div class="row g-3 align-items-end mb-3">
                                     <div class="col">
                                         <div class="form-floating">
@@ -352,7 +354,10 @@ input[type=number] {
                                         </p>
                                     </div>
                                     @enderror
-                                </div>
+                                </div>                                
+
+
+                                
                                 <h6 class="text-success">IV. Attending Physician</h6>
                                 <div class="form-floating">
                                     <select required id="specialist" name="specialist" class="form-select bg-light" aria-label="Specialist">
@@ -550,8 +555,8 @@ input[type=number] {
                                         <div class="d-flex justify-content-evenly mt-5">
                                             <form id="passwordForm">
                                                 <div class="col-auto">
-                                                    <label for="inputPassword2" class="visually-hidden">Password</label>
-                                                    <input type="password" class="form-control" id="inputPassword2" name="password" placeholder="Password" required>
+                                                    <label for="inputPassword2" class="visually-hidden">Password or PIN</label>
+                                                    <input type="password" class="form-control" id="inputPassword2" name="credential" placeholder="Password or PIN" required>
                                                 </div>
                                                 <div class="col-auto">
                                                     <button type="submit" class="btn btn-success ms-2 btn-custom-style btn-submit" id="submitWithPassword">Proceed</button>
