@@ -289,6 +289,7 @@ public function deleteNotification(Notification $notification)
 {
     // Debugging: Check if the authenticated user ID matches the notification's user ID
     // dd(auth()->id(), $notification->notifiable_id);
+    //
 
     // Check if the authenticated user owns the notification
     if ($notification->notifiable_id === auth()->id()) {
