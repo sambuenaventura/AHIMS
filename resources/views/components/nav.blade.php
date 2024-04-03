@@ -10,6 +10,7 @@
     z-index: 1000;
   }
 
+
   #sidebar {
     z-index: 1001;
   }
@@ -147,8 +148,8 @@
     min-width: 160px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     z-index: 9999;
-    top: 50px;
-    right: 20px;
+    top: 60px;
+    right: 30px;
     max-height: 300px; /* Add max-height for scrolling */
     overflow-y: auto; /* Enable scrolling */
 }
@@ -157,7 +158,7 @@
     color: black;
     padding: 12px 16px;
     text-decoration: none;
-    display: block;
+    /* display: block; */
 }
 
 .dropdown-content a:hover {
@@ -168,7 +169,87 @@
     display: block;
 }
 
+/* Notification container styles */
+.notification-dropdown {
+    width: 22rem; /* Adjust width as needed */
+    max-height: 400px; /* Adjust max height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
+/* Notification item styles */
+.notification-item {
+    display: flex;
+    /* align-items: center; */
+    padding: 2rem;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #333;
+    gap: 1rem;
+}
+
+/* Notification image styles */
+.notification-image img {
+    width: 80px; /* Adjust image width as needed */
+    /*height: 60px;  Adjust image height as needed */
+    border-radius: 50%; /* Make the image circular */
+    /* margin-right: 10px; */
+}
+
+/* Notification details styles */
+.notification-details p {
+    margin: 0;
+    font-size: 14px;
+    margin-right: 2rem;
+
+}
+.notification-message {
+  margin-bottom: 0 !important;
+}
+
+.notification-item a:hover {
+  background-color: red !important;
+}
+
+.notif-count {
+  --bs-badge-padding-x: 0.30em !important;
+  --bs-badge-padding-y: 0.10em !important;
+}
+
+.notification-details {
+    position: relative;
+}
+
+.delete-notification-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: red; /* Adjust color as needed */
+    font-size: 16px; /* Adjust font size as needed */
+}
+.delete-notification-btn:hover {
+  background-color:   #c0c0c0 !important;
+}
+
+.help {
+  font-size: 0.45em;
+  color: grey;
+  border-radius: 10px; /* Make it round */
+  padding: 0 5px;
+  text-decoration: underline;
+
+
+}
+.help:hover {
+  color: #418363;
+
+}
   </style>
 
 <div class="hamburger-menu">
@@ -279,7 +360,8 @@
   <div class="flex justify-center flex-grow">
       <h1 class="mb-0" style="font-size: 2em;">
           <span class="text-success font-bold">Welcome, {{ auth()->user()->first_name }}!</span>
-      </h1>
+          <a href="https://www.youtube.com/watch?v=pFJFVquU_Qo" class="help" target="_blank">Need help?</a>
+        </h1>
   </div>
 
   <!-- Navbar buttons and notification icon (right end) -->
@@ -302,27 +384,284 @@
 
 
       <!-- Notification icon -->
-      <button class="notif ml-4" id="notificationIcon">
+      {{-- <button class="notif ml-4" id="notificationIcon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M20.6286 15.9989C20.5508 15.9052 20.4744 15.8114 20.3994 15.7209C19.3682 14.4736 18.7443 13.7208 18.7443 10.1897C18.7443 8.36156 18.3069 6.86156 17.4449 5.73656C16.8093 4.90547 15.9501 4.275 14.8176 3.80906C14.803 3.80096 14.79 3.79032 14.7791 3.77766C14.3718 2.41359 13.2571 1.5 11.9999 1.5C10.7427 1.5 9.62849 2.41359 9.22115 3.77625C9.21027 3.78845 9.19744 3.79875 9.18318 3.80672C6.54036 4.89469 5.25599 6.98203 5.25599 10.1883C5.25599 13.7208 4.63302 14.4736 3.60083 15.7195C3.52583 15.81 3.44943 15.9019 3.37161 15.9975C3.17061 16.2399 3.04326 16.5348 3.00464 16.8473C2.96601 17.1598 3.01772 17.4769 3.15365 17.7609C3.44286 18.3703 4.05927 18.7486 4.76286 18.7486H19.2421C19.9424 18.7486 20.5546 18.3708 20.8447 17.7642C20.9813 17.4801 21.0335 17.1628 20.9952 16.8499C20.9569 16.537 20.8297 16.2417 20.6286 15.9989ZM11.9999 22.5C12.6773 22.4995 13.3418 22.3156 13.9232 21.9679C14.5045 21.6202 14.9809 21.1217 15.3018 20.5252C15.3169 20.4966 15.3244 20.4646 15.3234 20.4322C15.3225 20.3999 15.3133 20.3684 15.2966 20.3407C15.2799 20.313 15.2563 20.2901 15.2281 20.2742C15.2 20.2583 15.1682 20.25 15.1358 20.25H8.8649C8.83252 20.2499 8.80066 20.2582 8.77243 20.274C8.7442 20.2899 8.72055 20.3128 8.7038 20.3405C8.68704 20.3682 8.67774 20.3997 8.67682 20.4321C8.67588 20.4645 8.68335 20.4965 8.69849 20.5252C9.01936 21.1216 9.49567 21.6201 10.0769 21.9678C10.6581 22.3155 11.3226 22.4994 11.9999 22.5Z" fill="#808080"></path>
         </svg>
-      </button>
-      @php
-        // Fetch notifications from the database
-        $notifications = App\Models\Notification::all();
+      </button> --}}
+    {{-- @php
+      // Fetch notifications from the database
+      $user = Auth::user();
+  
+      // Identify the role of the user (medtech or radtech)
+      $role = $user->role;
+  
+      // Filter notifications based on the procedure type requested by the nurse
+      $notifications = $user->notifications->filter(function ($notification) use ($role) {
+          // Check if the notification is relevant to the user's role
+          if ($role === 'medtech') {
+              return in_array($notification->data['procedure_type'], ['chemistry', 'hematology', 'bbis', 'parasitology', 'microbiology', 'microscopy']);
+          } elseif ($role === 'radtech') {
+              return in_array($notification->data['procedure_type'], ['xray', 'ultrasound', 'ctscan']);
+          }
+      });
+  
+      // Fetch requesters for notifications
+      $requesterIds = $notifications->pluck('data.requester_id')->unique()->toArray();
+      $requesters = \App\Models\User::whereIn('id', $requesterIds)->get();
     @endphp
 
+    <button class="notif ml-4 position-relative" id="notificationIcon">
+      <span class="badge bg-danger notif-count position-absolute top-0 end-0">{{ $notifications->count() }}</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.6286 15.9989C20.5508 15.9052 20.4744 15.8114 20.3994 15.7209C19.3682 14.4736 18.7443 13.7208 18.7443 10.1897C18.7443 8.36156 18.3069 6.86156 17.4449 5.73656C16.8093 4.90547 15.9501 4.275 14.8176 3.80906C14.803 3.80096 14.79 3.79032 14.7791 3.77766C14.3718 2.41359 13.2571 1.5 11.9999 1.5C10.7427 1.5 9.62849 2.41359 9.22115 3.77625C9.21027 3.78845 9.19744 3.79875 9.18318 3.80672C6.54036 4.89469 5.25599 6.98203 5.25599 10.1883C5.25599 13.7208 4.63302 14.4736 3.60083 15.7195C3.52583 15.81 3.44943 15.9019 3.37161 15.9975C3.17061 16.2399 3.04326 16.5348 3.00464 16.8473C2.96601 17.1598 3.01772 17.4769 3.15365 17.7609C3.44286 18.3703 4.05927 18.7486 4.76286 18.7486H19.2421C19.9424 18.7486 20.5546 18.3708 20.8447 17.7642C20.9813 17.4801 21.0335 17.1628 20.9952 16.8499C20.9569 16.537 20.8297 16.2417 20.6286 15.9989ZM11.9999 22.5C12.6773 22.4995 13.3418 22.3156 13.9232 21.9679C14.5045 21.6202 14.9809 21.1217 15.3018 20.5252C15.3169 20.4966 15.3244 20.4646 15.3234 20.4322C15.3225 20.3999 15.3133 20.3684 15.2966 20.3407C15.2799 20.313 15.2563 20.2901 15.2281 20.2742C15.2 20.2583 15.1682 20.25 15.1358 20.25H8.8649C8.83252 20.2499 8.80066 20.2582 8.77243 20.274C8.7442 20.2899 8.72055 20.3128 8.7038 20.3405C8.68704 20.3682 8.67774 20.3997 8.67682 20.4321C8.67588 20.4645 8.68335 20.4965 8.69849 20.5252C9.01936 21.1216 9.49567 21.6201 10.0769 21.9678C10.6581 22.3155 11.3226 22.4994 11.9999 22.5Z" fill="#808080"></path>
+      </svg>
+    </button>
 
-    {{-- <div class="dropdown-content" id="notificationDropdown">
+    
+
+
+  
+    <div class="dropdown-content notification-dropdown" id="notificationDropdown">
       @foreach($notifications as $notification)
-          @if($notification->user_id === auth()->user()->id)
-              <a href="#">{{ $notification->message }}</a>
+          @php
+              $requesterId = $notification->data['requester_id'];
+              $requester = $requesters->firstWhere('id', $requesterId);
+              $timeAgo = \Carbon\Carbon::parse($notification->created_at)->diffForHumans();
+              $procedureType = $notification->data['procedure_type'] ?? null; // Get procedure_type if present
+          @endphp
+          @if($requester && $procedureType)
+              <a href="#" class="notification-item">
+                  <div class="notification-image">
+                      <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ substr($requester->first_name ?? '', 0, 1) . substr($requester->last_name ?? '', 0, 1) }}" alt="Avatar" width="60" height="60" style="border-radius: 50%;">
+                  </div>
+                  <div class="notification-details">
+                    <p class="notification-message">{{ $notification->data['message'] }}</p>
+                    <p class="notification-time text-success">{{ $timeAgo }}</p>
+                    <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" class="delete-notification-form">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="delete-notification-btn delete">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16">
+                              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                          </svg>
+                      </button>
+                  </form>
+                  
+                    <!-- Add more fields as needed -->
+                </div>
+                
+              </a>
           @endif
       @endforeach
     </div> --}}
 
 
-    <!-- Notification dropdown -->
+    @php
+    // Fetch notifications from the database
+    $user = Auth::user();
+  
+    // Identify the role of the user (medtech, radtech, or nurse)
+    $role = $user->role;
+  
+    // Filter notifications based on the procedure type requested by the user
+    $notifications = $user->notifications->filter(function ($notification) use ($role) {
+        if ($role === 'nurse') {
+            // For nurses, include notifications with the 'accepted', 'declined', and 'completed' statuses
+            return isset($notification->data['status']) && in_array($notification->data['status'], ['accepted', 'declined', 'completed']);
+        } else {
+            // For medtechs and radtechs, filter notifications based on procedure type
+            return isset($notification->data['procedure_type']) && (
+                ($role === 'medtech' && in_array($notification->data['procedure_type'], ['chemistry', 'hematology', 'bbis', 'parasitology', 'microbiology', 'microscopy'])) ||
+                ($role === 'radtech' && in_array($notification->data['procedure_type'], ['xray', 'ultrasound', 'ctscan']))
+            );
+        }
+    });
+  
+    // Fetch requesters for notifications
+    $requesterIds = $notifications->pluck('data.requester_id')->unique()->toArray();
+    $requesters = \App\Models\User::whereIn('id', $requesterIds)->get();
+  
+    // Fetch performers for notifications (if applicable)
+    $performerIds = $notifications->pluck('data.performer_id')->unique()->toArray();
+    $performers = \App\Models\User::whereIn('id', $performerIds)->get();
+  @endphp
+
+@php
+    $userRoles = Auth::user()->role; // Get the role of the authenticated user
+@endphp
+
+
+@if($userRoles === 'nurse' || $userRoles === 'medtech' || $userRoles === 'radtech')
+
+<button class="notif ml-4 position-relative" id="notificationIcon">
+    @if($notifications->count() > 0)
+        <span class="badge bg-danger notif-count position-absolute top-0 end-0">{{ $notifications->count() }}</span>
+    @endif
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.6286 15.9989C20.5508 15.9052 20.4744 15.8114 20.3994 15.7209C19.3682 14.4736 18.7443 13.7208 18.7443 10.1897C18.7443 8.36156 18.3069 6.86156 17.4449 5.73656C16.8093 4.90547 15.9501 4.275 14.8176 3.80906C14.803 3.80096 14.79 3.79032 14.7791 3.77766C14.3718 2.41359 13.2571 1.5 11.9999 1.5C10.7427 1.5 9.62849 2.41359 9.22115 3.77625C9.21027 3.78845 9.19744 3.79875 9.18318 3.80672C6.54036 4.89469 5.25599 6.98203 5.25599 10.1883C5.25599 13.7208 4.63302 14.4736 3.60083 15.7195C3.52583 15.81 3.44943 15.9019 3.37161 15.9975C3.17061 16.2399 3.04326 16.5348 3.00464 16.8473C2.96601 17.1598 3.01772 17.4769 3.15365 17.7609C3.44286 18.3703 4.05927 18.7486 4.76286 18.7486H19.2421C19.9424 18.7486 20.5546 18.3708 20.8447 17.7642C20.9813 17.4801 21.0335 17.1628 20.9952 16.8499C20.9569 16.537 20.8297 16.2417 20.6286 15.9989ZM11.9999 22.5C12.6773 22.4995 13.3418 22.3156 13.9232 21.9679C14.5045 21.6202 14.9809 21.1217 15.3018 20.5252C15.3169 20.4966 15.3244 20.4646 15.3234 20.4322C15.3225 20.3999 15.3133 20.3684 15.2966 20.3407C15.2799 20.313 15.2563 20.2901 15.2281 20.2742C15.2 20.2583 15.1682 20.25 15.1358 20.25H8.8649C8.83252 20.2499 8.80066 20.2582 8.77243 20.274C8.7442 20.2899 8.72055 20.3128 8.7038 20.3405C8.68704 20.3682 8.67774 20.3997 8.67682 20.4321C8.67588 20.4645 8.68335 20.4965 8.69849 20.5252C9.01936 21.1216 9.49567 21.6201 10.0769 21.9678C10.6581 22.3155 11.3226 22.4994 11.9999 22.5Z" fill="#808080"></path>
+    </svg>
+</button>
+
+
+<div class="dropdown-content notification-dropdown" id="notificationDropdown">
+  @php
+  // Log nurse notifications
+  logger('Nurse Notifications: ' . $notifications->toJson());
+@endphp
+  @foreach($notifications as $notification)
+      @php
+          $requesterId = $notification->data['requester_id'] ?? null;
+          $performerId = $notification->data['performer_id'] ?? null;
+          $requester = $requesters->firstWhere('id', $requesterId);
+          $performer = $performers->firstWhere('id', $performerId); // Updated variable name
+          $timeAgo = \Carbon\Carbon::parse($notification->created_at)->diffForHumans();
+          $procedureType = $notification->data['procedure_type'] ?? null; // Get procedure_type if present
+          $status = $notification->data['status'] ?? null; //
+      @endphp
+      @if($requester && $procedureType)
+          <a href="#" class="notification-item">
+              <div class="notification-image">
+                  <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ substr($requester->first_name ?? '', 0, 1) . substr($requester->last_name ?? '', 0, 1) }}" alt="Avatar" width="60" height="60" style="border-radius: 50%;">
+              </div>
+              <div class="notification-details">
+                  <p class="notification-message">{{ $notification->data['message'] }}</p>
+                  <p class="notification-time text-success">{{ $timeAgo }}</p>
+                  <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" class="delete-notification-form">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="delete-notification-btn delete">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16">
+                              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                          </svg>
+                      </button>
+                  </form>
+              </div>
+          </a>
+      @elseif($performer && $status)
+          <a href="#" class="notification-item">
+              <div class="notification-image">
+                  <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ substr($performer->first_name ?? '', 0, 1) . substr($performer->last_name ?? '', 0, 1) }}" alt="Avatar" width="60" height="60" style="border-radius: 50%;">
+              </div>
+              <div class="notification-details">
+                  <p class="notification-message">{{ $notification->data['message'] }}</p>
+                  <p class="notification-time text-success">{{ $timeAgo }}</p>
+                  <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" class="delete-notification-form">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="delete-notification-btn delete">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16">
+                              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                          </svg>
+                      </button>
+                  </form>
+              </div>
+          </a>
+      @endif
+  @endforeach
+</div>
+
+@endif
+
+
+{{-- <div class="dropdown-content notification-dropdown" id="notificationDropdown">
+  @php
+  // Log nurse notifications
+  logger('Nurse Notifications: ' . $notifications->toJson());
+@endphp
+  @foreach($notifications as $notification)
+      @php
+          $requesterId = $notification->data['requester_id'] ?? null;
+          $acceptorId = $notification->data['acceptor_id'] ?? null;
+          $requester = $requesters->firstWhere('id', $requesterId);
+          $acceptor = $acceptors->firstWhere('id', $acceptorId);
+          $timeAgo = \Carbon\Carbon::parse($notification->created_at)->diffForHumans();
+          $procedureType = $notification->data['procedure_type'] ?? null; // Get procedure_type if present
+          $status = $notification->data['status'] ?? null; //
+      @endphp
+      @if($requester && $procedureType)
+          <a href="#" class="notification-item">
+              <div class="notification-image">
+                  <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ substr($requester->first_name ?? '', 0, 1) . substr($requester->last_name ?? '', 0, 1) }}" alt="Avatar" width="60" height="60" style="border-radius: 50%;">
+              </div>
+              <div class="notification-details">
+                  <p class="notification-message">{{ $notification->data['message'] }}</p>
+                  <p class="notification-time text-success">{{ $timeAgo }}</p>
+                  <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" class="delete-notification-form">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="delete-notification-btn delete">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16">
+                              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                          </svg>
+                      </button>
+                  </form>
+              </div>
+          </a>
+      @elseif($acceptor && $status)
+          <a href="#" class="notification-item">
+              <div class="notification-image">
+                  <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ substr($acceptor->first_name ?? '', 0, 1) . substr($acceptor->last_name ?? '', 0, 1) }}" alt="Avatar" width="60" height="60" style="border-radius: 50%;">
+              </div>
+              <div class="notification-details">
+                  <p class="notification-message">{{ $notification->data['message'] }}</p>
+                  <p class="notification-time text-success">{{ $timeAgo }}</p>
+                  <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" class="delete-notification-form">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="delete-notification-btn delete">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16">
+                              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+                          </svg>
+                      </button>
+                  </form>
+              </div>
+          </a>
+      @endif
+  @endforeach
+</div> --}}
+
+
+
+
+
+
+
+
+
+  </div>
+  
+{{-- <div class="dropdown-content notification-dropdown" id="notificationDropdown">
+  @foreach($notifications as $notification)
+      <a href="#" class="notification-item">
+          <div class="notification-image">
+            <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ substr($notification->data['sender_first_name'], 0, 1) . substr($notification->data['sender_last_name'], 0, 1) }}" alt="Avatar" width="60" height="60" style="border-radius: 50%;">
+          </div>
+          <div class="notification-details">
+              <p>{{ $notification->data['message'] }}</p>
+              <!-- Add more fields as needed -->
+          </div>
+      </a>
+  @endforeach
+</div> --}}
+      
+{{-- <!-- Notification icon -->
+<div class="dropdown">
+  <button class="notif ml-4" id="notificationIcon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.6286 15.9989C20.5508 15.9052 20.4744 15.8114 20.3994 15.7209C19.3682 14.4736 18.7443 13.7208 18.7443 10.1897C18.7443 8.36156 18.3069 6.86156 17.4449 5.73656C16.8093 4.90547 15.9501 4.275 14.8176 3.80906C14.803 3.80096 14.79 3.79032 14.7791 3.77766C14.3718 2.41359 13.2571 1.5 11.9999 1.5C10.7427 1.5 9.62849 2.41359 9.22115 3.77625C9.21027 3.78845 9.19744 3.79875 9.18318 3.80672C6.54036 4.89469 5.25599 6.98203 5.25599 10.1883C5.25599 13.7208 4.63302 14.4736 3.60083 15.7195C3.52583 15.81 3.44943 15.9019 3.37161 15.9975C3.17061 16.2399 3.04326 16.5348 3.00464 16.8473C2.96601 17.1598 3.01772 17.4769 3.15365 17.7609C3.44286 18.3703 4.05927 18.7486 4.76286 18.7486H19.2421C19.9424 18.7486 20.5546 18.3708 20.8447 17.7642C20.9813 17.4801 21.0335 17.1628 20.9952 16.8499C20.9569 16.537 20.8297 16.2417 20.6286 15.9989ZM11.9999 22.5C12.6773 22.4995 13.3418 22.3156 13.9232 21.9679C14.5045 21.6202 14.9809 21.1217 15.3018 20.5252C15.3169 20.4966 15.3244 20.4646 15.3234 20.4322C15.3225 20.3999 15.3133 20.3684 15.2966 20.3407C15.2799 20.313 15.2563 20.2901 15.2281 20.2742C15.2 20.2583 15.1682 20.25 15.1358 20.25H8.8649C8.83252 20.2499 8.80066 20.2582 8.77243 20.274C8.7442 20.2899 8.72055 20.3128 8.7038 20.3405C8.68704 20.3682 8.67774 20.3997 8.67682 20.4321C8.67588 20.4645 8.68335 20.4965 8.69849 20.5252C9.01936 21.1216 9.49567 21.6201 10.0769 21.9678C10.6581 22.3155 11.3226 22.4994 11.9999 22.5Z" fill="#808080"></path>
+      </svg>
+  </button>
+  <div class="dropdown-content" id="notificationDropdown">
+      <!-- Notification Items Will Be Rendered Here -->
+      @foreach($notifications as $notification)
+          <a href="#">{{ $notification->message }}</a>
+      @endforeach
+  </div>
+</div> --}}
+
+
+    {{-- <!-- Notification dropdown -->
     @if(auth()->user()->hasRole('medtech'))
         <div class="dropdown-content" id="notificationDropdown">
             <!-- Notification items go here -->
@@ -332,9 +671,9 @@
                 @endif
             @endforeach
         </div>
-    @endif
+    @endif --}}
 
-    <!-- Notification dropdown -->
+    {{-- <!-- Notification dropdown -->
     @if(auth()->user()->hasRole('radtech'))
         <div class="dropdown-content" id="notificationDropdown">
             <!-- Notification items go here -->
@@ -344,7 +683,7 @@
                 @endif
             @endforeach
         </div>
-    @endif
+    @endif --}}
 
 
 
@@ -563,6 +902,16 @@ document.getElementById("notificationIcon").addEventListener("click", function()
 
 // Add event listener to the SVG element to toggle dropdown visibility
 var svgElement = document.querySelector(".notif svg");
+svgElement.addEventListener("click", function(event) {
+    // Prevent the click event from bubbling up to the button
+    event.stopPropagation();
+    // Toggle dropdown visibility
+    var dropdown = document.getElementById("notificationDropdown");
+    dropdown.classList.toggle("show");
+});
+
+// Add event listener to the SVG element to toggle dropdown visibility
+var svgElement = document.querySelector(".notif notif-count");
 svgElement.addEventListener("click", function(event) {
     // Prevent the click event from bubbling up to the button
     event.stopPropagation();
