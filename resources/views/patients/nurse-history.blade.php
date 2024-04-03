@@ -267,7 +267,7 @@ html {
                 <div id="completedResults" class="card pe-0 mb-4 shadow-md">
                     <div class="card-body m-1">
                         <div class="d-flex justify-content-between mb-4">
-                            <h4 class="font-bold">Audit Logs</h4>
+                            <h4 class="font-bold">Activity Logs for {{ $patient->first_name }} {{ $patient->last_name }}</h4>
                             <form class="d-flex" action="{{ route('nurse.history', ['patient_id' => $patient->patient_id]) }}" method="GET">
                                 <div class="input-group mb-3">
                                     <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request('search') }}">
@@ -281,7 +281,7 @@ html {
                         {{-- @if($nurseHistories->isEmpty())
                             <p>No nurse history found.</p>
                         @else --}}
-                        <table class="table table-striped mt-3 Add">
+                        {{-- <table class="table table-striped mt-3 Add">
                             <thead>
                                 <tr>                                    
                                     <th>Date</th>
@@ -305,13 +305,39 @@ html {
                                     </tr>
                                 @endforelse
                             </tbody>
+                        </table> --}}
+                        <table class="table table-striped mt-3 Add">
+                            <thead>
+                                <tr>                                    
+                                    <th>Date</th>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($logs as $log)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($log->created_at)->format('g:i A n/j/Y') }}</td>
+                                        <td>{{ $log->first_name . ' ' . $log->last_name }}</td>
+                                        <td>{{ strtoupper($log->role) }}</td>
+                                        <td>{{ $log->description }}</td>              
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">No available logs</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                            
                         </table>
+                        
                         
                         
                         {{-- @endif --}}
 
                         <div class="mt-4">
-                            {{ $nurseHistories->links() }} <!-- Render pagination links -->        
+                            {{ $logs->links() }} <!-- Render pagination links -->
                         </div>
                     </div>
                 </div>
