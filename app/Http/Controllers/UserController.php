@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
@@ -127,7 +128,111 @@ class UserController extends Controller
     // }
     
     
-    public function updateProfile(Request $request)
+//     public function updateProfile(Request $request)
+// {
+//     $request->validate([
+//         'first_name' => 'required|string|max:255',
+//         'last_name' => 'required|string|max:255',
+//         'email' => [
+//             'required',
+//             'string',
+//             'email',
+//             'max:255',
+//             Rule::unique('users')->ignore(auth()->user()->id),
+//         ],
+//         'student_number' => [
+//             'nullable',
+//             'string',
+//             'max:255',
+//             Rule::unique('users')->ignore(auth()->user()->id),
+//         ],
+//         'old_password' => 'nullable|string', // Make old password nullable
+//         'new_password' => 'nullable|string|min:8|confirmed', // Include validation rules for new password
+//         'pin' => 'nullable|string|digits:4', // Validate PIN format
+//     ]);
+
+//     $user = auth()->user();
+
+//     // Validate old password
+//     if ($request->filled('old_password')) {
+//         if (!Hash::check($request->input('old_password'), $user->password)) {
+//             return redirect()->back()->withErrors(['old_password' => 'The old password is incorrect.'])->withInput();
+//         }
+//     }
+
+//     // Update user profile fields
+//     $user->update([
+//         'first_name' => $request->input('first_name'),
+//         'last_name' => $request->input('last_name'),
+//         'email' => $request->input('email'),
+//         'student_number' => $request->input('student_number'),
+//         'pin' => $request->input('pin'), // Update PIN from the form
+//         // Update other fields as needed
+//     ]);
+
+//     // Update password if provided
+//     if ($request->filled('new_password')) {
+//         $user->password = Hash::make($request->input('new_password'));
+//         $user->save();
+//     }
+
+//     return redirect()->route('editProfile')->with('message', 'Profile updated successfully');
+// }
+
+    
+// public function updateProfile(Request $request)
+// {
+//     $request->validate([
+//         'first_name' => 'required|string|max:255',
+//         'last_name' => 'required|string|max:255',
+//         'email' => [
+//             'required',
+//             'string',
+//             'email',
+//             'max:255',
+//             Rule::unique('users')->ignore(auth()->user()->id),
+//         ],
+//         'student_number' => [
+//             'nullable',
+//             'string',
+//             'max:255',
+//             Rule::unique('users')->ignore(auth()->user()->id),
+//         ],
+//         'old_password' => 'nullable|string', // Make old password nullable
+//         'new_password' => 'nullable|string|min:8', // Make new password nullable with min length of 8
+//         'pin' => 'nullable|string|digits:4', // Validate PIN format
+//     ]);
+
+//     $user = auth()->user();
+
+//     // Validate old password if provided
+//     if ($request->filled('old_password')) {
+//         if (!Hash::check($request->input('old_password'), $user->password)) {
+//             return redirect()->back()->withErrors(['old_password' => 'The old password is incorrect.'])->withInput();
+//         }
+
+//         // Update password only if new password is provided
+//         if ($request->filled('new_password')) {
+//             $user->password = Hash::make($request->input('new_password'));
+//         }
+//     }
+
+//     // Update user profile fields
+//     $user->update([
+//         'first_name' => $request->input('first_name'),
+//         'last_name' => $request->input('last_name'),
+//         'email' => $request->input('email'),
+//         'student_number' => $request->input('student_number'),
+//         'pin' => $request->input('pin'), // Update PIN from the form
+//         // Update other fields as needed
+//     ]);
+
+//     $user->save();
+
+//     return redirect()->route('editProfile')->with('message', 'Profile updated successfully');
+// }
+
+public function updateProfile(Request $request)
 {
     $request->validate([
         'first_name' => 'required|string|max:255',
@@ -140,22 +245,27 @@ class UserController extends Controller
             Rule::unique('users')->ignore(auth()->user()->id),
         ],
         'student_number' => [
-            'required',
+            'nullable',
             'string',
             'max:255',
             Rule::unique('users')->ignore(auth()->user()->id),
         ],
         'old_password' => 'nullable|string', // Make old password nullable
-        'new_password' => 'nullable|string|min:8|confirmed', // Include validation rules for new password
+        'new_password' => 'nullable|string|min:8', // Make new password nullable with min length of 8
         'pin' => 'nullable|string|digits:4', // Validate PIN format
     ]);
 
     $user = auth()->user();
 
-    // Validate old password
+    // Validate old password if provided
     if ($request->filled('old_password')) {
         if (!Hash::check($request->input('old_password'), $user->password)) {
             return redirect()->back()->withErrors(['old_password' => 'The old password is incorrect.'])->withInput();
+        }
+
+        // Update password only if new password is provided
+        if ($request->filled('new_password')) {
+            $user->password = Hash::make($request->input('new_password'));
         }
     }
 
@@ -169,16 +279,27 @@ class UserController extends Controller
         // Update other fields as needed
     ]);
 
-    // Update password if provided
-    if ($request->filled('new_password')) {
-        $user->password = Hash::make($request->input('new_password'));
-        $user->save();
-    }
+    $user->save();
 
     return redirect()->route('editProfile')->with('message', 'Profile updated successfully');
 }
 
-    
+
+public function deleteNotification(Notification $notification)
+{
+    // Debugging: Check if the authenticated user ID matches the notification's user ID
+    // dd(auth()->id(), $notification->notifiable_id);
+
+    // Check if the authenticated user owns the notification
+    if ($notification->notifiable_id === auth()->id()) {
+        $notification->delete();
+        return back()->with('success', '');
+    } else {
+        return back()->with('error', 'You do not have permission to delete this notification.');
+    }
+}
+
+
 
 
 
