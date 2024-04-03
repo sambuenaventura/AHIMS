@@ -18,6 +18,8 @@ use App\Models\Patients;
 use App\Models\PhysicalExamination;
 use App\Models\ReviewOfSystems;
 use App\Models\ServiceRequest;
+use App\Notifications\RequestAccepted;
+use App\Notifications\ServiceStatus;
 use App\Services\CredentialValidationService;
 use Illuminate\Support\Facades\Redirect;
 
@@ -116,30 +118,84 @@ class MedTechController extends Controller
     //     return redirect()->back()->with('message', 'Request accepted successfully');
     // }
 
-    public function acceptRequest(Request $request, $request_id)
+//     public function acceptRequest(Request $request, $request_id)
+// {
+
+
+//     $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+//     if ($validationResponse) {
+//         return $validationResponse; // Return the response when credentials are incorrect
+//     }
+
+//     // // Validate the request data
+//     // $request->validate([
+//     //     'password' => 'required|string', // Add any additional validation rules for the password
+//     // ]);
+
+//     // // Check if the password matches the user's password
+//     // if (!Hash::check($request->password, Auth::user()->password)) {
+//     //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+//     // }
+
+//     $serviceRequest = ServiceRequest::findOrFail($request_id);
+//     $serviceRequest->status = 'accepted';
+//     $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
+//     $serviceRequest->save();
+
+//     // Generate the URL for the specific request
+//     $redirectUrl = route('medtech.viewRequests', ['id' => $serviceRequest->patient_id, 'request_id' => $serviceRequest->request_id]);
+
+//     // Redirect the user to the specific request URL
+//     return Redirect::to($redirectUrl)->with('message', 'Request accepted successfully');
+// }
+
+// public function acceptRequest(Request $request, $request_id)
+// {
+//     $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+//     if ($validationResponse) {
+//         return $validationResponse; // Return the response when credentials are incorrect
+//     }
+
+//     $serviceRequest = ServiceRequest::findOrFail($request_id);
+//     $serviceRequest->status = 'accepted';
+//     $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
+//     $serviceRequest->save();
+
+//     // Get the requester
+//     $requester = $serviceRequest->sender;
+
+//     // Send notification to the requester
+//     $requester->notify(new ServiceStatus($serviceRequest, auth()->user()));
+
+//     // Generate the URL for the specific request
+//     $redirectUrl = route('medtech.viewRequests', ['id' => $serviceRequest->patient_id, 'request_id' => $serviceRequest->request_id]);
+
+//     // Redirect the user to the specific request URL
+//     return Redirect::to($redirectUrl)->with('message', 'Request accepted successfully');
+// }
+
+public function acceptRequest(Request $request, $request_id)
 {
-
-
     $validationResponse = CredentialValidationService::validateCredentials($request);
     
     if ($validationResponse) {
         return $validationResponse; // Return the response when credentials are incorrect
     }
 
-    // // Validate the request data
-    // $request->validate([
-    //     'password' => 'required|string', // Add any additional validation rules for the password
-    // ]);
-
-    // // Check if the password matches the user's password
-    // if (!Hash::check($request->password, Auth::user()->password)) {
-    //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    // }
-
     $serviceRequest = ServiceRequest::findOrFail($request_id);
     $serviceRequest->status = 'accepted';
     $serviceRequest->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
     $serviceRequest->save();
+
+    // Get the requester of the service request
+    $requester = $serviceRequest->sender;
+
+    // Send notification to the requester
+    $performer = auth()->user(); // Assuming the current user is the performer
+    $notification = new ServiceStatus($serviceRequest, $performer, 'accepted');
+    $requester->notify($notification);
 
     // Generate the URL for the specific request
     $redirectUrl = route('medtech.viewRequests', ['id' => $serviceRequest->patient_id, 'request_id' => $serviceRequest->request_id]);
@@ -147,37 +203,83 @@ class MedTechController extends Controller
     // Redirect the user to the specific request URL
     return Redirect::to($redirectUrl)->with('message', 'Request accepted successfully');
 }
+
+
     
+
+//     public function declineRequest(Request $request, $request_id)
+// {
+
+//     $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+//     if ($validationResponse) {
+//         return $validationResponse; // Return the response when credentials are incorrect
+//     }
+
+
+//     // Validate the request data
+//     $request->validate([
+//         // 'password' => 'required|string',
+//         'reason' => 'required|string', // Add validation for the reason
+//     ]);
+
+//     // // Check if the password matches the user's password
+//     // if (!Hash::check($request->password, Auth::user()->password)) {
+//     //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
+//     // }
+
+//     $requestModel = ServiceRequest::where('request_id', $request_id)->firstOrFail();
+//     $requestModel->status = 'declined';
+//     $requestModel->receiver_id = auth()->id();
+//     $requestModel->message = $request->reason; // Update the message column with the reason
+//     $requestModel->save();
+
+//     // Get the requester
+//     $requester = $requestModel->sender;
+
+//     // Send notification to the requester
+//     $requester->notify(new ServiceStatus($requestModel, auth()->user()));
+
+
+
+    
+//     return redirect()->back()->with('message', 'Request declined successfully');
+// }
+
 
     public function declineRequest(Request $request, $request_id)
-{
+    {
+        $validationResponse = CredentialValidationService::validateCredentials($request);
+        
+        if ($validationResponse) {
+            return $validationResponse; // Return the response when credentials are incorrect
+        }
 
-    $validationResponse = CredentialValidationService::validateCredentials($request);
-    
-    if ($validationResponse) {
-        return $validationResponse; // Return the response when credentials are incorrect
+        // Validate the request data
+        $request->validate([
+            'reason' => 'required|string', // Add validation for the reason
+        ]);
+
+        // Find the service request by its ID
+        $requestModel = ServiceRequest::where('request_id', $request_id)->firstOrFail();
+
+        // Update the status and message of the service request
+        $requestModel->status = 'declined';
+        $requestModel->receiver_id = auth()->id();
+        $requestModel->message = $request->reason; // Update the message column with the reason
+        $requestModel->save();
+
+        // Get the requester of the service request
+        $requester = $requestModel->sender;
+
+        // Send notification to the requester
+        $performer = auth()->user(); // Assuming the current user is the performer
+        $notification = new ServiceStatus($requestModel, $performer, 'declined');
+        $requester->notify($notification);
+
+        return redirect()->back()->with('message', 'Request declined successfully');
     }
 
-
-    // Validate the request data
-    $request->validate([
-        // 'password' => 'required|string',
-        'reason' => 'required|string', // Add validation for the reason
-    ]);
-
-    // // Check if the password matches the user's password
-    // if (!Hash::check($request->password, Auth::user()->password)) {
-    //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    // }
-
-    $requestModel = ServiceRequest::where('request_id', $request_id)->firstOrFail();
-    $requestModel->status = 'declined';
-    $requestModel->receiver_id = auth()->id();
-    $requestModel->message = $request->reason; // Update the message column with the reason
-    $requestModel->save();
-
-    return redirect()->back()->with('message', 'Request declined successfully');
-}
 
     public function viewRequests(Request $request)
 {
@@ -251,22 +353,6 @@ class MedTechController extends Controller
             return $validationResponse; // Return the response when credentials are incorrect
         }
 
-        // // Validate the request data
-        // $request->validate([
-        //     'password' => 'required|string',
-        // ]);
-
-        // // Check if the password matches the user's password
-        // if (!Hash::check($request->password, Auth::user()->password)) {
-        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        // }
-
-        // // Check if the password matches the user's password
-        // if (!Hash::check($request->password, Auth::user()->password)) {
-        //     // If the password doesn't match, return back with an error message
-        //     return redirect()->back()->withInput()->with('error', 'Incorrect password. Please try again.');
-        // }
-
         // Validate the request data
         $validatedData = $request->validate([
             'message' => ['required', 'string'],
@@ -293,6 +379,14 @@ class MedTechController extends Controller
             $requestEntry->image = json_encode($imagePaths); // Save the image paths as JSON array
             $requestEntry->save();
     
+            // Get the requester of the service request
+            $requester = $requestEntry->sender;
+
+            // Send notification to the requester
+            $performer = auth()->user(); // Assuming the current user is the performer
+            $notification = new ServiceStatus($requestEntry, $performer, 'completed');
+            $requester->notify($notification);
+
             // Redirect back to the previous page after processing the result
             return redirect()->route('medtech.requests', ['status' => 'accepted'])
                             ->with('message', 'Results sent successfully');

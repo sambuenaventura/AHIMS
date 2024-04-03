@@ -18,6 +18,7 @@ use App\Models\Patients;
 use App\Models\PhysicalExamination;
 use App\Models\ReviewOfSystems;
 use App\Models\ServiceRequest;
+use App\Notifications\ServiceStatus;
 use App\Services\CredentialValidationService;
 use Illuminate\Support\Facades\Redirect;
 
@@ -122,47 +123,28 @@ $query = ServiceRequest::query()
             return $validationResponse; // Return the response when credentials are incorrect
         }
 
-        // // Validate the request data
-        // $request->validate([
-        //     'password' => 'required|string', // Add any additional validation rules for the password
-        // ]);
-    
-        // // Check if the password matches the user's password
-        // if (!Hash::check($request->password, Auth::user()->password)) {
-        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        // }
     
         $request = ServiceRequest::where('request_id', $request_id)->firstOrFail();
         $request->status = 'accepted';
         $request->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
         $request->save();
     
+        // Get the requester of the service request
+        $requester = $request->sender;
+
+        // Send notification to the requester
+        $performer = auth()->user(); // Assuming the current user is the performer
+        $notification = new ServiceStatus($request, $performer, 'accepted');
+        $requester->notify($notification);
+
+
         // Generate the URL for the specific request
         $redirectUrl = route('radtech.viewRequests', ['id' => $request->patient_id, 'request_id' => $request->request_id]);
 
         // Redirect the user to the specific request URL
         return Redirect::to($redirectUrl)->with('message', 'Request accepted successfully');
     }
-    
-    // public function declineRequest(Request $request, $request_id)
-    // {
-    //     // Validate the request data
-    //     $request->validate([
-    //         'password' => 'required|string', // Add any additional validation rules for the password
-    //     ]);
-    
-    //     // Check if the password matches the user's password
-    //     if (!Hash::check($request->password, Auth::user()->password)) {
-    //         return redirect()->back()->with('message', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    //     }
-    
-    //     $request = ServiceRequest::where('request_id', $request_id)->firstOrFail();
-    //     $request->status = 'declined';
-    //     $request->receiver_id = auth()->id(); // Set the receiver_id to the authenticated user's ID
-    //     $request->save();
-    
-    //     return redirect()->back()->with('message', 'Request declined successfully');
-    // }
+
 
 
     public function declineRequest(Request $request, $request_id)
@@ -191,6 +173,15 @@ $query = ServiceRequest::query()
         $requestModel->receiver_id = auth()->id();
         $requestModel->message = $request->reason; // Update the message column with the reason
         $requestModel->save();
+
+        // Get the requester of the service request
+        $requester = $requestModel->sender;
+
+        // Send notification to the requester
+        $performer = auth()->user(); // Assuming the current user is the performer
+        $notification = new ServiceStatus($requestModel, $performer, 'declined');
+        $requester->notify($notification);    
+
     
         return redirect()->back()->with('message', 'Request declined successfully');
     }
@@ -338,6 +329,14 @@ $query = ServiceRequest::query()
             $requestEntry->image = json_encode($imagePaths); // Save the image paths as JSON array
             $requestEntry->save();
     
+            // Get the requester of the service request
+            $requester = $requestEntry->sender;
+
+            // Send notification to the requester
+            $performer = auth()->user(); // Assuming the current user is the performer
+            $notification = new ServiceStatus($requestEntry, $performer, 'completed');
+            $requester->notify($notification);
+
             // Redirect back to the previous page after processing the result
             return redirect()->route('radtech.requests', ['status' => 'accepted'])
                             ->with('message', 'Results sent successfully');

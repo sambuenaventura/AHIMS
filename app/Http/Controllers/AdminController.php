@@ -443,9 +443,8 @@ class AdminController extends Controller
         $validationResponse = CredentialValidationService::validateCredentials($request);
     
         if ($validationResponse) {
-            return $validationResponse; // Return the response when credentials are incorrect
+            return $validationResponse;
         }
-
 
         // Validate the request data
         $request->validate([
@@ -455,8 +454,6 @@ class AdminController extends Controller
             "email" => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'max:255'] // Add password validation rules as needed
         ]);
-    
-
     
         // Create a new nurse instance
         $nurse = new User();
