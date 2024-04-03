@@ -75,8 +75,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(MedicalHistory::class, 'patient_id', 'patient_id');
     }
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
+    // public function notifications()
+    // {
+    //     return $this->hasMany(Notification::class);
+    // }
 }
