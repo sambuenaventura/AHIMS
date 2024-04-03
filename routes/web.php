@@ -52,6 +52,9 @@ Route::controller(UserController::class)->group(function() {
     Route::post('/logout', 'logout');
     Route::post('/store', 'store');
 
+    Route::delete('/notifications/{notification}', 'deleteNotification')->name('notifications.delete');
+
+    
 });
 
 
@@ -183,6 +186,7 @@ Route::controller(NurseController::class)->group(function() {
 
         Route::get('/nurse-patients/{patient_id}/nurse-history/', 'viewHistory')->name('nurse.history');
 
+        Route::get('/nurse-patients/{patient_id}/view-logs', 'viewLogs')->name('patients.logs');
 
     });
 });
