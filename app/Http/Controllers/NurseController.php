@@ -23,6 +23,7 @@ use App\Models\VitalSigns;
 use App\Notifications\NewServiceRequest;
 use App\Services\CredentialValidationService;
 use Carbon\Carbon;
+use DateTime;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Notifications\Notification;
@@ -31,6 +32,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\Activitylog\Models\Activity;
+use App\Notifications\ServiceRequested;
 
 class NurseController extends Controller
 {
@@ -342,6 +345,22 @@ public function updateDischargeDate(Request $request, $id)
         'discharge_date' => $request->input('discharge_date'),
     ]);
 
+        // Log the update action with the user information
+        $user = auth()->user();
+        $discharge_date = new DateTime($patient->discharge_date);
+
+        $log_message = "Set discharge date to " . $discharge_date->format('n/j/Y');
+
+        // $userName = $user ? $user->first_name . ' ' . $user->last_name : 'Guest';
+        activity()
+            ->causedBy($user)
+            ->performedOn($patient)
+            // ->log("{$userName} updated patient record: {$patient->name}");
+            ->log($log_message);
+
+    
+
+
     return redirect()->back()->with('message', 'Discharge date updated successfully.');
 }
 
@@ -407,16 +426,7 @@ public function updateDischargeDate(Request $request, $id)
     public function update(Request $request, Patients $patient)
     {    //dd($request->all());
 
-        // // Validate the request data
-        // $request->validate([
-        //     'password' => 'required|string', // Add any additional validation rules for the password
-        // ]);
-
-        // // Check if the password matches the user's password
-        // if (!Hash::check($request->password, Auth::user()->password)) {
-        //     return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-        // }   
-
+  
         $validationResponse = CredentialValidationService::validateCredentials($request);
     
         if ($validationResponse) {
@@ -854,20 +864,14 @@ public function updateDischargeDate(Request $request, $id)
             $patient->currentMedication()->create($validatedcurrentMedication);
         }
 
-        // Log the nurse's update history
-        $nurseHistory = new NurseHistory();
-        $nurseHistory->nurse_id = auth()->user()->id; // Assuming you have access to the authenticated nurse's ID
-        $nurseHistory->patient_id = $patient->patient_id; // Assign the patient_id
-
-        // Check if medical history exists before accessing its properties
-        if ($patient->medicalHistory) {
-            $nurseHistory->medical_history_id = $patient->medicalHistory->history_id; // Assuming you have access to the medical history ID
-            // Add any other necessary fields to the NurseHistory model and set their values
-        } else {
-            // Handle the case where medical history does not exist
-        }
-
-        $nurseHistory->save();
+        // Log the update action with the user information
+        $user = auth()->user();
+        // $userName = $user ? $user->first_name . ' ' . $user->last_name : 'Guest';
+        activity()
+            ->causedBy($user)
+            ->performedOn($patient)
+            // ->log("{$userName} updated patient record: {$patient->name}");
+            ->log("Updated patient complete history");
 
         return back()->with('message', 'Data was successfully updated');
 
@@ -925,45 +929,72 @@ public function updateDischargeDate(Request $request, $id)
         // Render the PDF
         $dompdf->render();
     
+
+        // Log the update action with the user information
+        $user = auth()->user();
+        // $userName = $user ? $user->first_name . ' ' . $user->last_name : 'Guest';
+        activity()
+            ->causedBy($user)
+            ->performedOn($patient)
+            // ->log("{$userName} updated patient record: {$patient->name}");
+            ->log("Generated pdf report");
+
         // Output the generated PDF (inline or download)
-        return $dompdf->stream('patient_data.pdf');
+        $dompdf->stream("Patient-{$patient_id}_data.pdf");
+
     }
     
     
-    public function viewHistory( Request $request, $patient_id)
+    public function viewHistory(Request $request, $patient_id)
     {
         // Retrieve the patient for the given patient_id
         $patient = Patients::findOrFail($patient_id);
     
-        // Paginate the nurse histories for the given patient_id
-        $nurseHistories = $patient->nurseHistories();
+        // Construct the base query for activity logs
+        $logsQuery = DB::table('activity_log')
+            ->join('users', 'activity_log.causer_id', '=', 'users.id')
+            ->select('activity_log.*', 'users.first_name', 'users.last_name', 'users.role')
+            ->where('activity_log.subject_type', 'App\Models\Patients')
+            ->where('activity_log.subject_id', $patient_id)
+            ->orderBy('activity_log.created_at', 'desc');
     
         // Apply search filter if provided
         if ($request->has('search')) {
             $search = $request->input('search');
             $terms = explode(' ', $search);
-            
-            $nurseHistories->where(function ($query) use ($terms) {
+    
+            $logsQuery->where(function ($query) use ($terms) {
                 foreach ($terms as $term) {
-                    $query->orWhere('created_at', 'like', '%' . $term . '%')
-                          ->orWhereHas('nurse', function ($subquery) use ($term) {
-                              $subquery->where('first_name', 'like', '%' . $term . '%')
-                                       ->orWhere('last_name', 'like', '%' . $term . '%');
-                          });
+                    $query->orWhere('users.first_name', 'like', '%' . $term . '%')
+                          ->orWhere('users.last_name', 'like', '%' . $term . '%')
+                          ->orWhere('activity_log.description', 'like', '%' . $term . '%')
+                          ->orWhere('activity_log.created_at', 'like', '%' . $term . '%'); // Search by date and time created
                 }
             });
-            
-            
         }
     
-        $nurseHistories = $nurseHistories->paginate(10); // Change 10 to the desired number of items per page
+        // Paginate the logs
+        $logs = $logsQuery->paginate(10);
     
-        return view('patients.nurse-history', compact('patient', 'nurseHistories'));
+        return view('patients.nurse-history', compact('patient', 'logs'));
     }
     
     
     
-
+    
+    public function viewLogs($patient_id)
+    {
+        // Retrieve the patient for the given patient_id
+        $patient = Patients::findOrFail($patient_id);
+    
+        // Fetch the activity logs for the patient
+        $logs = Activity::where('subject_type', 'App\Models\Patients')
+                        ->where('subject_id', $patient_id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+    
+        return view('patients.logs', compact('patient', 'logs'));
+    }
 
 
 
@@ -1123,6 +1154,29 @@ public function updateDischargeDate(Request $request, $id)
         $vitalSign->nurse_user_id = $nurseId;
         $patient->vitalSigns()->save($vitalSign);
     
+        // Get the ID of the authenticated user (assuming nurse user)
+        $nurseId = auth()->user()->id;
+
+        // Create the vital signs record and associate the nurse user with it
+        $vitalSign = new VitalSigns($validatedVitalSigns);
+        $vitalSign->nurse_user_id = $nurseId;
+        $patient->vitalSigns()->save($vitalSign);
+
+        // Log the update action with the user information
+        $user = auth()->user();
+        $vitalDate = $validatedVitalSigns['vital_date']; // Get the recorded date from the validated data
+        $vitalTime = $validatedVitalSigns['vital_time']; // Get the recorded time from the validated data
+
+        // Format date and time separately
+        $formattedTime = \Carbon\Carbon::createFromFormat('H:i', $vitalTime)->format('g:i A');
+        $formattedDate = \Carbon\Carbon::createFromFormat('Y-m-d', $vitalDate)->format('n/j/Y');
+
+        // Log message with formatted date and time
+        activity()
+            ->causedBy($user)
+            ->performedOn($patient)
+            ->log("Recorded vital signs at $formattedTime on $formattedDate");
+
         // return Redirect::route('nurse.edit', ['id' => $patient->patient_id])->with('message', 'Vital signs were successfully recorded');
     
         return back()->with('message', 'Vital signs were successfully recorded');
@@ -1195,6 +1249,21 @@ public function updateDischargeDate(Request $request, $id)
         // return back()->with('message', $message)->with('existingRemark', $existingRemark);
     }
 
+    // Log the update action with the user information
+    $user = auth()->user();
+    $medicationDate = $validatedMedicationRemark['medication_date']; // Get the medication date from the validated data
+    $shift = $validatedMedicationRemark['shift']; // Get the shift from the validated data
+
+    // Format medication date separately
+    $formattedMedicationDate = \Carbon\Carbon::createFromFormat('Y-m-d', $medicationDate)->format('n/j/Y');
+
+    // Log message with formatted medication date and shift
+    activity()
+        ->causedBy($user)   
+        ->performedOn($patient)
+        ->log("Recorded medication on $formattedMedicationDate during the $shift shift");
+
+
     
     // return redirect()->route('nurse.edit', ['id' => $patient->patient_id])->with('message', $message);
 
@@ -1254,15 +1323,51 @@ public function updateProgressNotes(Request $request, Patients $patient)
         $existingProgressNote->update($validatedProgressNotes);
         $message = 'Progress note was successfully updated';
         // return back()->with('message', $message)->with('existingProgressNote', $existingProgressNote);
+
+        // Log the update action with the user information
+        $user = auth()->user();
+        $progress_date = $validatedProgressNotes['progress_date']; // Get the medication date from the validated data
+        $shift = $validatedProgressNotes['shift']; // Get the shift from the validated data
+
+        // Format medication date separately
+        $formattedProgressDate = \Carbon\Carbon::createFromFormat('Y-m-d', $progress_date)->format('n/j/Y');
+
+        // Log message with formatted medication date and shift
+        activity()
+            ->causedBy($user)   
+            ->performedOn($patient)
+            ->log("Recorded progress note on $formattedProgressDate during the $shift shift");
+
+
+
+
     } else {
         // Create a new progress note record
         $patient->progressNotes()->create($validatedProgressNotes);
         $message = 'Progress note was successfully created';
         // return back()->with('message', $message);
+
+        // Log the update action with the user information
+        $user = auth()->user();
+        $progress_date = $validatedProgressNotes['progress_date']; // Get the medication date from the validated data
+        $shift = $validatedProgressNotes['shift']; // Get the shift from the validated data
+
+        // Format medication date separately
+        $formattedProgressDate = \Carbon\Carbon::createFromFormat('Y-m-d', $progress_date)->format('n/j/Y');
+
+        // Log message with formatted medication date and shift
+        activity()
+            ->causedBy($user)   
+            ->performedOn($patient)
+            ->log("Recorded progress note on $formattedProgressDate during the $shift shift");
+
+
+
+
     }
     return back()->with('message', $message);
 
-
+    
 }
 
 
@@ -1358,6 +1463,18 @@ public function archivePatient(Request $request, $patient_id)
     $patient->archived = true;
     $patient->save();
 
+    // Log the update action with the user information
+    $user = auth()->user();
+    // $userName = $user ? $user->first_name . ' ' . $user->last_name : 'Guest';
+    $patientName = $patient->first_name . ' ' . $patient->last_name; // Concatenate first and last names
+    activity()
+        ->causedBy($user)
+        ->performedOn($patient)
+        // ->log("{$userName} updated patient record: {$patient->name}");
+        ->log("Archived {$patientName}");
+
+
+
     return redirect()->back()->with('message', 'Patient archive scheduled successfully. It will take effect after 2 minutes.');
 }
 
@@ -1367,115 +1484,151 @@ public function archivePatient(Request $request, $patient_id)
         $patient->delete();
         return redirect('/admission')->with('message', 'Data was successfully deleted');
     }
-    
+
 
     // public function requestLaboratoryServices(Request $request)
     // {
+    //     $validationResponse = CredentialValidationService::validateCredentials($request);
+    
+    //     if ($validationResponse) {
+    //         return $validationResponse; // Return the response when credentials are incorrect
+    //     }
+
+
     //     // Validate the request data
     //     $validatedData = $request->validate([
-    //         'password' => 'required|string', // Add any additional validation rules for the password
+    //         // 'password' => 'required|string', // Add any additional validation rules for the password
     //         'patient_id' => 'required|exists:patients,patient_id',
     //         'procedure_type' => 'required',
     //         'sender_message' => 'required',
     //         'date_needed' => 'required|date', // Validation rule for the date_needed field
-    //         'time_needed' => 'required|date_format:H:i', // Validation rule for the time_needed field
+    //         'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
+    //         'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
     //         // Add more validation rules as needed
     //     ]);
-    
-    //     // Check if the password matches the user's password
-    //     if (!Hash::check($validatedData['password'], Auth::user()->password)) {
-    //         return redirect()->back()->with('error', 'Incorrect password. Please try again.'); // Redirect back with an error message
-    //     }   
-        
+
+    //     $patientId = $validatedData['patient_id'];
+
     //     // Create a new laboratory service request
     //     $serviceRequest = new ServiceRequest();
     //     $serviceRequest->patient_id = $validatedData['patient_id'];
     //     $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
     //     $serviceRequest->procedure_type = $validatedData['procedure_type'];
     //     $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
-        
+    
     //     // Set date_needed and time_needed if provided
     //     if ($request->filled('date_needed')) {
     //         $serviceRequest->date_needed = $validatedData['date_needed'];
-    //     }
-    //     if ($request->filled('time_needed')) {
-    //         $serviceRequest->time_needed = $validatedData['time_needed'];
-    //     }
+    //     }    
+
+    //     // Set time_needed based on STAT checkbox
+    //     $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
+    
+    //     // Set STAT value
+    //     $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
     
     //     // Save the laboratory service request
     //     $serviceRequest->save();
-    
+
+
+        
+    //     $patient = Patients::findOrFail($patientId);
+
+        
+    //     // UPDATE THIS
+    //     $user = auth()->user();
+    //     // $userName = $user ? $user->first_name . ' ' . $user->last_name : 'Guest';
+    //     activity()
+    //         ->causedBy($user)
+    //         ->performedOn($patient)
+    //         // ->log("{$userName} updated patient record: {$patient->name}");
+    //         ->log("Requested {$validatedData['procedure_type']} service for '{$validatedData['sender_message']}' tests");
+
+
+
+
+
+
+    //     // Notify the relevant medtech users based on their role
+    //     $medTechs = User::where('role', 'medtech')->get();
+    //     foreach ($medTechs as $medTech) {
+    //         // Construct notification message with nurse information and service request details
+    //         $message = $request->user()->first_name . ' ' . $request->user()->last_name . ' requested a ' . strtoupper($serviceRequest->procedure_type) . ' service';
+
+    //         // Insert notification into the database
+    //         DB::table('notifications')->insert([
+    //             'user_id' => $medTech->id,
+    //             'request_id' => $serviceRequest->request_id,
+    //             'type' => 'new_service_request',
+    //             'message' => $message,
+    //             'created_at' => now(),
+    //             'updated_at' => now()
+    //         ]);
+    //     }
+
+
     //     // Optionally, you can redirect the user after submitting the form
     //     return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
     // }
-    
-
-
-    public function requestLaboratoryServices(Request $request)
+    public function requestLaboratoryServices(Request $request, $patient_id)
     {
         $validationResponse = CredentialValidationService::validateCredentials($request);
     
         if ($validationResponse) {
             return $validationResponse; // Return the response when credentials are incorrect
         }
-
-
+    
         // Validate the request data
         $validatedData = $request->validate([
-            // 'password' => 'required|string', // Add any additional validation rules for the password
             'patient_id' => 'required|exists:patients,patient_id',
             'procedure_type' => 'required',
             'sender_message' => 'required',
-            'date_needed' => 'required|date', // Validation rule for the date_needed field
-            'stat' => 'nullable|boolean', // Add validation rule for the STAT checkbox
-            'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'], // Validate time_needed only if stat is unchecked or not provided
-            // Add more validation rules as needed
+            'date_needed' => 'required|date',
+            'stat' => 'nullable|boolean',
+            'time_needed' => ['required_if:stat,null,false', 'date_format:H:i'],
         ]);
-
+    
         // Create a new laboratory service request
         $serviceRequest = new ServiceRequest();
         $serviceRequest->patient_id = $validatedData['patient_id'];
-        $serviceRequest->sender_id = Auth::id(); // Assuming sender ID is the currently authenticated user
+        $serviceRequest->sender_id = Auth::id();
         $serviceRequest->procedure_type = $validatedData['procedure_type'];
-        $serviceRequest->sender_message = $validatedData['sender_message']; // Add sender message to the request
+        $serviceRequest->sender_message = $validatedData['sender_message'];
     
-        // Set date_needed and time_needed if provided
         if ($request->filled('date_needed')) {
             $serviceRequest->date_needed = $validatedData['date_needed'];
-        }    
-
-        // Set time_needed based on STAT checkbox
+        }
+    
         $serviceRequest->time_needed = $request->filled('stat') && $request->boolean('stat') ? null : $validatedData['time_needed'];
-    
-        // Set STAT value
         $serviceRequest->stat = $request->filled('stat') && $request->boolean('stat');
-    
-        // Save the laboratory service request
         $serviceRequest->save();
+    
+        // Get the requester
+        $requester = Auth::user();
 
-        // Notify the relevant medtech users based on their role
-        $medTechs = User::where('role', 'medtech')->get();
-        foreach ($medTechs as $medTech) {
-            // Construct notification message with nurse information and service request details
-            $message = $request->user()->first_name . ' ' . $request->user()->last_name . ' requested a ' . strtoupper($serviceRequest->procedure_type) . ' service';
+        // Identify the medtech users
+        $medtechUsers = User::where('role', 'medtech')->get();
 
-            // Insert notification into the database
-            DB::table('notifications')->insert([
-                'user_id' => $medTech->id,
-                'request_id' => $serviceRequest->request_id,
-                'type' => 'new_service_request',
-                'message' => $message,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+        // Send notification to each medtech user
+        foreach ($medtechUsers as $medtechUser) {
+            $medtechUser->notify(new ServiceRequested($serviceRequest, $requester));
         }
 
+        // Retrieve the patient from the 'patients' table
+        $patient = Patients::findOrFail($patient_id);
 
+        $user = auth()->user();
+        //$patientName = $patient->first_name . ' ' . $patient->last_name; // Concatenate first and last names
+
+        // Log activity
+        activity()
+            ->causedBy($user)
+            ->performedOn($patient)
+            ->log("Requested {$validatedData['procedure_type']} service for '{$validatedData['sender_message']}' tests");
+    
         // Optionally, you can redirect the user after submitting the form
         return redirect()->back()->with('message', 'Laboratory service request submitted successfully');
     }
-    
-    
     
     //     public function requestImagingServices(Request $request)
     // {
@@ -1518,7 +1671,7 @@ public function archivePatient(Request $request, $patient_id)
 
 
 
-    public function requestImagingServices(Request $request)
+    public function requestImagingServices(Request $request, $patient_id)
 {
     $validationResponse = CredentialValidationService::validateCredentials($request);
     
@@ -1538,6 +1691,7 @@ public function archivePatient(Request $request, $patient_id)
         // Add more validation rules as needed
     ]);
 
+    $patientId = $validatedData['patient_id'];
 
     // Create a new imaging service request
     $serviceRequest = new ServiceRequest();
@@ -1561,22 +1715,30 @@ public function archivePatient(Request $request, $patient_id)
     // Save the imaging service request
     $serviceRequest->save();
 
-    // Notify the relevant radtech users based on their role
-    $radTechs = User::where('role', 'radtech')->get();
-    foreach ($radTechs as $radTech) {
-        // Construct notification message with nurse information and service request details
-        $message = $request->user()->first_name . ' ' . $request->user()->last_name . ' requested a ' . strtoupper($serviceRequest->procedure_type) . ' service';
 
-        // Insert notification into the database
-        DB::table('notifications')->insert([
-            'user_id' => $radTech->id,
-            'request_id' => $serviceRequest->request_id,
-            'type' => 'new_service_request',
-            'message' => $message,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+            
+    // Get the requester
+    $requester = Auth::user();
+
+    // Identify the medtech users
+    $radtechUsers = User::where('role', 'radtech')->get();
+
+    // Send notification to each medtech user
+    foreach ($radtechUsers as $radtechUser) {
+        $radtechUser->notify(new ServiceRequested($serviceRequest, $requester));
     }
+
+    // Retrieve the patient from the 'patients' table
+    $patient = Patients::findOrFail($patient_id);
+
+    $user = auth()->user();
+    //$patientName = $patient->first_name . ' ' . $patient->last_name; // Concatenate first and last names
+
+    // Log activity
+    activity()
+        ->causedBy($user)
+        ->performedOn($patient)
+        ->log("Requested {$validatedData['procedure_type']} service for '{$validatedData['sender_message']}' tests");
 
     // Optionally, you can redirect the user after submitting the form
     return redirect()->back()->with('message', 'Imaging service request submitted successfully');
